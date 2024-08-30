@@ -7,18 +7,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.yungying.game.Main;
+import com.yungying.game.Player.Player;
 
 public class MainGameScreen implements Screen {
-
-    float speed = 200;
-
-    float x;
-    float y;
     float stateTime;
-    Animation<Texture> runAnimation;
-    Animation<Texture> jumpAnimation;
-
-    Texture currentFrame;
+    Player player;
 
     //camera to follow player
     private OrthographicCamera camera;
@@ -27,11 +20,7 @@ public class MainGameScreen implements Screen {
 
     public MainGameScreen(Main game) {
         this.game = game;
-        x = 0;
-        y = 0;
-        runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeRunRight.png"));
-        jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
-        currentFrame = runAnimation.getKeyFrame(stateTime, true);
+        player = new Player();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
     }
@@ -46,32 +35,30 @@ public class MainGameScreen implements Screen {
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
         //auto run to the right
-        x += speed * Gdx.graphics.getDeltaTime();
+        player.run(Gdx.graphics.getDeltaTime(), stateTime);
 
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            y += 800 * Gdx.graphics.getDeltaTime();
-            currentFrame = jumpAnimation.getKeyFrame(stateTime, true);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+            player.jump(stateTime);
         }
 
-        //gravity
-        if(y > 0){
-            y -= 150 * Gdx.graphics.getDeltaTime();
-
-        }else{
-            y = 0;
-            currentFrame = runAnimation.getKeyFrame(stateTime, true);
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+            player.slide(stateTime);
         }
+
+
+
+        player.gravity(stateTime);
 
         stateTime += Gdx.graphics.getDeltaTime();
 
-        camera.position.set(x + camera.viewportWidth / 2, 0 + camera.viewportHeight / 2, 0);
+        camera.position.set(player.getPosition().x + camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 
         game.batch.setProjectionMatrix(camera.combined);
 
 
         game.batch.begin();
-        game.batch.draw(currentFrame, x, y, 150, 150);
+        game.batch.draw(player.getCurrentFrame(), player.getPosition().x, player.getPosition().y, 150, 150);
         game.batch.end();
 
     }
@@ -98,10 +85,8 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void dispose() {
-        runAnimation.getKeyFrames()[0].dispose();
-        runAnimation.getKeyFrames()[1].dispose();
 
-        jumpAnimation.getKeyFrames()[0].dispose();
+        player.getCurrentFrame().dispose();
 
 
     }
