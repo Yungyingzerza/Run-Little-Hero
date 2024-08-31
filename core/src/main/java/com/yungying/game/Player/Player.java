@@ -18,6 +18,7 @@ public class Player {
     private boolean isJumping;
     private boolean isHighestJump;
     private boolean isSliding;
+    private boolean isDead;
 
     public Player() {
         position = new Vector2(0, 128);
@@ -48,6 +49,7 @@ public class Player {
     public void jump() {
         if(isJumping) return;
 
+        positionBeforeJump.x = position.x;
         positionBeforeJump.y = position.y;
         currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
         isJumping = true;
@@ -61,12 +63,12 @@ public class Player {
         isSliding = true;
     }
 
-    public void gravity(boolean isColliding, float TopBorderOfTile) {
+    public void gravity(boolean isColliding, float TopBorderOfTile, String blockType) {
 
-        if(TopBorderOfTile == 0) {
+        if(TopBorderOfTile == 0 && blockType.equals("null")) {
             isJumping = true;
             isHighestJump = true;
-
+            position.y -= 10;
         }
 
         if(isSliding) {
@@ -88,7 +90,7 @@ public class Player {
 
             if(position.y > TopBorderOfTile) {
                 position.y -= TopBorderOfTile * Gdx.graphics.getDeltaTime();
-            }else if (position.y <= TopBorderOfTile && positionBeforeJump.y + 128 >= TopBorderOfTile) {
+            }else if (position.y <= TopBorderOfTile && positionBeforeJump.y + 128 >= TopBorderOfTile && !blockType.equals("null") && position.x - positionBeforeJump.x <= 256) {
                 position.y = TopBorderOfTile;
                 isJumping = false;
                 isHighestJump = false;
@@ -114,7 +116,10 @@ public class Player {
     }
 
     public boolean isDead() {
-        return position.y < -128;
+        if(position.y < -128) {
+            isDead = true;
+        }
+        return isDead;
     }
 
     public void dispose() {

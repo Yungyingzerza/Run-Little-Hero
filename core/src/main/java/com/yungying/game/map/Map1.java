@@ -33,14 +33,14 @@ public class Map1 {
         tiles.add(new Tile("grass", 1152 + initialX, 0 + initialY,2));
         tiles.add(new Tile("grass", 1280 + initialX, 0 + initialY,2));
         tiles.add(new Tile("null", 1408 + initialX, 0 + initialY,2));
-        tiles.add(new Tile("grass", 1536 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("null", 1536 + initialX, 0 + initialY,2));
         tiles.add(new Tile("grass", 1664 + initialX, 0 + initialY,2));
         tiles.add(new Tile("grass", 1792 + initialX, 0 + initialY,2));
         tiles.add(new Tile("grass", 1920 + initialX, 0 + initialY,2));
         tiles.add(new Tile("grass", 2048 + initialX, 0 + initialY,2));
         tiles.add(new Tile("grass", 2176 + initialX, 0 + initialY,2));
-        tiles.add(new Tile("null", 2304 + initialX, 64 + initialY,2));
-        tiles.add(new Tile("grass", 2432 + initialX, 64 + initialY,2));
+        tiles.add(new Tile("null", 2304 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("null", 2432 + initialX, 0 + initialY,2));
         tiles.add(new Tile("grass", 2560 + initialX, 64 + initialY,2));
         tiles.add(new Tile("grass", 2688 + initialX, 64 + initialY,2));
         tiles.add(new Tile("grass", 2816 + initialX, 64 + initialY,2));

@@ -53,6 +53,7 @@ public class MainGameScreen implements Screen {
         float playerY = player.getPosition().y - 64;
 
         boolean isColliding = false;
+        String type = "null";
         float endY = 0;
         float zoom = 1;
 
@@ -60,6 +61,7 @@ public class MainGameScreen implements Screen {
             isColliding = map1.isColliding(playerX, playerY);
             endY = map1.getCurrentTile(playerX).getEndY();
             zoom = map1.getCurrentTile(playerX).getZoom();
+            type = map1.getCurrentTile(playerX).getType();
         }
 
         //input Part
@@ -67,7 +69,7 @@ public class MainGameScreen implements Screen {
 
         //auto run to the right
         player.run(Gdx.graphics.getDeltaTime(), gameStates.stateTime);
-        player.gravity(isColliding, endY);
+        player.gravity(isColliding, endY, type);
 
         //state time
         gameStates.stateTime += Gdx.graphics.getDeltaTime();
