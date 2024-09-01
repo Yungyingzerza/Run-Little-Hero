@@ -21,6 +21,7 @@ public class MainGameScreen implements Screen {
     Main game;
     gameInputHandler inputHandler;
     Map1 map1;
+    Map1 map2;
 
 
     public MainGameScreen(Main game) {
@@ -29,7 +30,9 @@ public class MainGameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
-        map1 = new Map1(player.getPosition().x, 0);
+        map1 = new Map1(player.getPosition().x, 0, "Grass");
+        map2 = new Map1(map1.getLastTile().getEndX(), 0, "GrassWinter");
+        player.setSpeed(map1.getMapSpeed());
     }
 
     @Override
@@ -64,6 +67,22 @@ public class MainGameScreen implements Screen {
             type = map1.getCurrentTile(playerX).getType();
         }
 
+        if(playerX >= map1.getLastTile().getEndX()) {
+            map1 = map2;
+
+            //random between 0 and 1
+            int random = (int) (Math.random() * 2);
+            if(random == 0) {
+                map2 = new Map1(map1.getLastTile().getEndX(), 0, "Grass");
+            }else{
+                map2 = new Map1(map1.getLastTile().getEndX(), 0, "GrassWinter");
+            }
+
+            player.setSpeed(map1.getMapSpeed());
+
+            player.setPosition(map1.getFirstTile().getStartX(), map1.getFirstTile().getEndY());
+        }
+
         //input Part
         inputHandler.handleInput(player);
 
@@ -86,10 +105,10 @@ public class MainGameScreen implements Screen {
         //render Part
         game.batch.begin();
 
-        game.batch.draw(map1.getBackground(), 0, 0, camera.viewportWidth * 2 * camera.zoom, camera.viewportHeight * 2 * camera.zoom);
+        game.batch.draw(map1.getBackground(), camera.position.x - camera.viewportWidth / 2 * camera.zoom, camera.position.y - camera.viewportHeight / 2 * camera.zoom, 800 * camera.zoom, 400 * camera.zoom);
 
         for (Tile tile : map1.getTiles()) {
-            if(tile.getType().equals("grass")) {
+            if(tile.getType().equals("Grass") || tile.getType().equals("GrassWinter")) {
                 game.batch.draw(map1.getGrass(), tile.getStartX(), tile.getStartY(), 128, 128);
             }
         }

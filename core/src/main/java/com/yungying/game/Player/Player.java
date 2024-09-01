@@ -31,6 +31,7 @@ public class Player {
         isJumping = false;
         isHighestJump = false;
         isSliding = false;
+        isDead = false;
     }
 
     public void run(float delta, float stateTime) {
@@ -40,6 +41,11 @@ public class Player {
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public void setPosition(float x, float y) {
+        position.x = x;
+        position.y = y;
     }
 
     public Texture getCurrentFrame() {
@@ -64,7 +70,6 @@ public class Player {
     }
 
     public void gravity(boolean isColliding, float TopBorderOfTile, String blockType) {
-
         if(TopBorderOfTile == 0 && blockType.equals("null")) {
             isJumping = true;
             isHighestJump = true;
@@ -105,14 +110,23 @@ public class Player {
         if(isColliding){
             position.y = TopBorderOfTile;
             isJumping = false;
-
         }else{
             position.y -= gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
+
+            if(position.y > TopBorderOfTile && !blockType.equals("null")) {
+                position.y = TopBorderOfTile;
+                isJumping = false;
+                isHighestJump = false;
+            }
         }
     }
 
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     public boolean isDead() {
