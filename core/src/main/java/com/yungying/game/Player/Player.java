@@ -82,8 +82,6 @@ public class Player {
             currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
             position.y += gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
 
-            System.out.println(jumpCounter);
-
             if(gameStates.stateTime - timeBeforeJump > 0.5f) {
                 isHighestJump = true;
             }
