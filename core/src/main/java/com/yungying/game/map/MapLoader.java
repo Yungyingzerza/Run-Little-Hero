@@ -10,6 +10,8 @@ import java.util.Vector;
 
 public class MapLoader implements Map {
     private final Vector<Tile> tiles;
+    private final Vector<Jelly> jellies;
+    private final Texture Coin;
     private final Texture grassTexture;
     private final Texture grassWinterTexture;
     private final Texture backgroundTexture;
@@ -22,8 +24,10 @@ public class MapLoader implements Map {
     public MapLoader(String jsonFilePath, float initialX) {
         // Initialize textures
         grassTexture = new Texture("Grass.png");
+        Coin = new Texture("Coin.png");
         grassWinterTexture = new Texture("GrassWinter.png");
         tiles = new Vector<Tile>();
+        jellies = new Vector<Jelly>();
         this.initialX = initialX;
 
         // Load and parse JSON
@@ -50,6 +54,16 @@ public class MapLoader implements Map {
             tiles.add(new Tile(type, x, y, zoom));
         }
 
+        for (int i = 0; i < mapData.jellies.size; i++) {
+            MapData.Jelly jellyData = mapData.jellies.get(i);
+            String type = jellyData.type;
+            float x = 128 * i + initialX; // Position calculation
+            float y = jellyData.y;
+
+            // Create and add the jelly
+            jellies.add(new Jelly(type, x, y));
+        }
+
         if (!tiles.isEmpty()) {
             currentTile = tiles.getFirst();
         }
@@ -68,10 +82,28 @@ public class MapLoader implements Map {
         return null;
     }
 
+    @Override
+    public Texture getJellyTextureAtIndex(int index) {
+        if (index >= 0 && index < jellies.size()) {
+            String type = jellies.get(index).getType();
+            if ("Coin".equals(type)) {
+                return Coin;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Vector<Tile> getTiles() {
         return tiles;
     }
 
+    @Override
+    public Vector<Jelly> getJellies() {
+        return jellies;
+    }
+
+    @Override
     public float getMapSpeed() {
         return mapSpeed;
     }

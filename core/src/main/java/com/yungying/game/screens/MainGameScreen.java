@@ -103,13 +103,20 @@ public class MainGameScreen implements Screen {
 
         game.batch.draw(currentMap.getBackground(), camera.position.x - camera.viewportWidth / 2 * camera.zoom, camera.position.y - camera.viewportHeight / 2 * camera.zoom, 800 * camera.zoom, 400 * camera.zoom);
 
-
+        //draw tiles
         for(int i = 0; i < currentMap.getTiles().size(); i++) {
-
             //skip null tiles
             if(currentMap.getTiles().elementAt(i).getType().equals("null")) continue;
 
             game.batch.draw(currentMap.getTileTextureAtIndex(i), currentMap.getTiles().elementAt(i).getStartX(), currentMap.getTiles().elementAt(i).getStartY(), 128, 128);
+        }
+
+        //draw jellies
+        for(int i = 0; i < currentMap.getJellies().size(); i++) {
+
+            if(currentMap.getJellies().elementAt(i).getType().equals("null")) continue;
+
+            game.batch.draw(currentMap.getJellyTextureAtIndex(i), currentMap.getJellies().elementAt(i).getX(), currentMap.getJellies().elementAt(i).getY(), 64, 64);
         }
 
 

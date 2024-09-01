@@ -94,7 +94,7 @@ public class Player {
             currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
 
             //if the player is on the ground
-            if(position.y/TopBorderOfTile <= 1f && position.y/TopBorderOfTile >= 0.95f) {
+            if(position.y/TopBorderOfTile <= 1f && position.y/TopBorderOfTile >= 0.95f && !blockType.equals("null")) {
                 isJumping = false;
                 jumpCounter = 0;
                 isHighestJump = false;

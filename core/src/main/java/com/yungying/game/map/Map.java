@@ -6,9 +6,13 @@ import java.util.Vector;
 
 public  interface Map {
 
+    Texture getJellyTextureAtIndex(int index);
+
     Texture getTileTextureAtIndex(int index);
 
     Vector<Tile> getTiles();
+
+    Vector<Jelly> getJellies();
 
     float getMapSpeed();
 
