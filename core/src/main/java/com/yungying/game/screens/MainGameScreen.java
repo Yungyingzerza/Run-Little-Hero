@@ -6,10 +6,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.yungying.game.Main;
 import com.yungying.game.Player.Player;
 import com.yungying.game.gameInputHandler.gameInputHandler;
-import com.yungying.game.map.Level1;
-import com.yungying.game.map.Level2;
 import com.yungying.game.map.Map;
-import com.yungying.game.map.Tile;
+import com.yungying.game.map.MapLoader;
 import com.yungying.game.states.gameStates;
 
 public class MainGameScreen implements Screen {
@@ -29,8 +27,8 @@ public class MainGameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
-        currentMap = new Level1(player.getPosition().x);
-        nextMap = new Level2(currentMap.getLastTile().getEndX());
+        currentMap = new MapLoader("map/Level1.json", 0);
+        nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
         player.setSpeed(currentMap.getMapSpeed());
     }
 
@@ -70,10 +68,10 @@ public class MainGameScreen implements Screen {
 
             if(currentMap.getNextMap().equals("Level2")){
                 currentMap = nextMap;
-                nextMap = new Level1(currentMap.getLastTile().getEndX());
+                nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
             }else if(currentMap.getNextMap().equals("Level1")){
                 currentMap = nextMap;
-                nextMap = new Level2(currentMap.getLastTile().getEndX());
+                nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
             }
 
             player.setSpeed(currentMap.getMapSpeed());
@@ -105,12 +103,14 @@ public class MainGameScreen implements Screen {
 
         game.batch.draw(currentMap.getBackground(), camera.position.x - camera.viewportWidth / 2 * camera.zoom, camera.position.y - camera.viewportHeight / 2 * camera.zoom, 800 * camera.zoom, 400 * camera.zoom);
 
-        for (Tile tile : currentMap.getTiles()) {
-            if(tile.getType().equals("Grass") || tile.getType().equals("GrassWinter")) {
-                game.batch.draw(currentMap.getTile(), tile.getStartX(), tile.getStartY(), 128, 128);
-            }
-        }
 
+        for(int i = 0; i < currentMap.getTiles().size(); i++) {
+
+            //skip null tiles
+            if(currentMap.getTiles().elementAt(i).getType().equals("null")) continue;
+
+            game.batch.draw(currentMap.getTileTextureAtIndex(i), currentMap.getTiles().elementAt(i).getStartX(), currentMap.getTiles().elementAt(i).getStartY(), 128, 128);
+        }
 
 
 

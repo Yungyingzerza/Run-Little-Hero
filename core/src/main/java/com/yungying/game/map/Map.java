@@ -1,13 +1,12 @@
 package com.yungying.game.map;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.yungying.game.Main;
 
 import java.util.Vector;
 
-public abstract interface Map {
+public  interface Map {
 
-    Texture getTile();
+    Texture getTileTextureAtIndex(int index);
 
     Vector<Tile> getTiles();
 
@@ -24,6 +23,8 @@ public abstract interface Map {
     Tile getFirstTile();
 
     String getNextMap();
+
+    String getNextMapPath();
 
     void dispose();
 }
