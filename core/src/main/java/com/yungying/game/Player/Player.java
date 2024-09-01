@@ -9,7 +9,7 @@ import com.yungying.game.states.gameStates;
 
 public class Player {
     private final Vector2 position;
-    private final Vector2 positionBeforeJump;
+    private float timeBeforeJump;
     private final Animation<Texture> runAnimation;
     private final Animation<Texture> jumpAnimation;
     private final Animation<Texture> slideAnimation;
@@ -22,7 +22,7 @@ public class Player {
 
     public Player() {
         position = new Vector2(0, 128);
-        positionBeforeJump = new Vector2(0, 128);
+        timeBeforeJump = 0;
         runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeRunRight.png"));
         jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
         slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
@@ -55,8 +55,7 @@ public class Player {
     public void jump() {
         if(isJumping) return;
 
-        positionBeforeJump.x = position.x;
-        positionBeforeJump.y = position.y;
+        timeBeforeJump = gameStates.stateTime;
         currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
         isJumping = true;
         isHighestJump = false;
@@ -71,56 +70,38 @@ public class Player {
 
     public void gravity(boolean isColliding, float TopBorderOfTile, String blockType) {
 
-        if(TopBorderOfTile == 0 && blockType.equals("null")) {
-            isJumping = true;
-            isHighestJump = true;
-            position.y -= 10;
-        }
-
         if(isSliding) {
             currentFrame = slideAnimation.getKeyFrame(gameStates.stateTime, true);
             isSliding = false;
         }
 
-        if(isJumping && position.y < TopBorderOfTile + 128 && !isHighestJump && position.y < positionBeforeJump.y + 128) {
-            position.y += 256 * Gdx.graphics.getDeltaTime();
+        if(isJumping && !isHighestJump) {
             currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
+            position.y += gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
 
-            if(position.y >= positionBeforeJump.y + 128) {
+            if(gameStates.stateTime - timeBeforeJump > 0.5f) {
                 isHighestJump = true;
             }
             return;
-        } else if (isHighestJump) {
+        }
+
+        //isJumping && isHighestJump
+        if(isJumping) {
             position.y -= gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
             currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
 
-            if(position.y > TopBorderOfTile) {
-                position.y -= TopBorderOfTile * Gdx.graphics.getDeltaTime();
-            }else if (position.y <= TopBorderOfTile && positionBeforeJump.y + 128 >= TopBorderOfTile && !blockType.equals("null") && (position.x - positionBeforeJump.x <= 256 || position.y + 64 >= TopBorderOfTile)) {
-                position.y = TopBorderOfTile;
+            //if the player is on the ground
+            if(position.y/TopBorderOfTile <= 1f && position.y/TopBorderOfTile >= 0.95f) {
                 isJumping = false;
                 isHighestJump = false;
-            }else if(position.y < positionBeforeJump.y && position.y < TopBorderOfTile) {
-                isHighestJump = true;
-                isJumping = true;
             }
-
             return;
         }
 
         if(isColliding){
             position.y = TopBorderOfTile;
-            isJumping = false;
-
         }else{
             position.y -= gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
-
-
-            if(position.y > TopBorderOfTile && !blockType.equals("null")) {
-                position.y = TopBorderOfTile;
-                isJumping = false;
-                isHighestJump = false;
-            }
         }
     }
 
