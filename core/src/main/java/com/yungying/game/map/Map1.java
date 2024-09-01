@@ -46,6 +46,24 @@ public class Map1 {
         tiles.add(new Tile("grass", 2816 + initialX, 64 + initialY,2));
         tiles.add(new Tile("grass", 2944 + initialX, 64 + initialY,2));
         tiles.add(new Tile("grass", 3072 + initialX, 64 + initialY,2));
+        tiles.add(new Tile("null", 3200 + initialX, 64 + initialY,2));
+        tiles.add(new Tile("null", 3328 + initialX, 64 + initialY,2));
+        tiles.add(new Tile("grass", 3456 + initialX, 128 + initialY,2));
+        tiles.add(new Tile("grass", 3584 + initialX, 128 + initialY,2));
+        tiles.add(new Tile("grass", 3712 + initialX, 128 + initialY,2));
+        tiles.add(new Tile("grass", 3840 + initialX, 128 + initialY,2));
+        tiles.add(new Tile("grass", 3968 + initialX, 128 + initialY,2));
+        tiles.add(new Tile("grass", 4096 + initialX, 128 + initialY,2));
+        tiles.add(new Tile("null", 4224 + initialX, 128 + initialY,2));
+        tiles.add(new Tile("grass", 4352 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("grass", 4480 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("grass", 4608 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("grass", 4736 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("grass", 4864 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("null", 4992 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("null", 5120 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("grass", 5248 + initialX, 0 + initialY,2));
+        tiles.add(new Tile("grass", 5376 + initialX, 0 + initialY,2));
     }
 
     public Texture getGrass() {
@@ -69,7 +87,7 @@ public class Map1 {
     }
 
     public void addTile(String type, float x, float y, float zoom) {
-        tiles.add(new Tile(type, x, y, zoom));
+        tiles.add(new Tile(type, x + 128, y, zoom));
     }
 
 

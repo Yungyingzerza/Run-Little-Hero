@@ -27,7 +27,7 @@ public class Player {
         jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
         slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
         currentFrame = runAnimation.getKeyFrame(0, true);
-        speed = 200;
+        speed = 300;
         isJumping = false;
         isHighestJump = false;
         isSliding = false;
@@ -90,7 +90,7 @@ public class Player {
 
             if(position.y > TopBorderOfTile) {
                 position.y -= TopBorderOfTile * Gdx.graphics.getDeltaTime();
-            }else if (position.y <= TopBorderOfTile && positionBeforeJump.y + 128 >= TopBorderOfTile && !blockType.equals("null") && position.x - positionBeforeJump.x <= 256) {
+            }else if (position.y <= TopBorderOfTile && positionBeforeJump.y + 128 >= TopBorderOfTile && !blockType.equals("null") && (position.x - positionBeforeJump.x <= 256 || position.y + 64 >= TopBorderOfTile)) {
                 position.y = TopBorderOfTile;
                 isJumping = false;
                 isHighestJump = false;

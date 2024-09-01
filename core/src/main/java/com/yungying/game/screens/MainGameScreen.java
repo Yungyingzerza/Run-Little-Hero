@@ -86,6 +86,8 @@ public class MainGameScreen implements Screen {
         //render Part
         game.batch.begin();
 
+        game.batch.draw(map1.getBackground(), 0, 0, camera.viewportWidth * 2 * camera.zoom, camera.viewportHeight * 2 * camera.zoom);
+
         for (Tile tile : map1.getTiles()) {
             if(tile.getType().equals("grass")) {
                 game.batch.draw(map1.getGrass(), tile.getStartX(), tile.getStartY(), 128, 128);
