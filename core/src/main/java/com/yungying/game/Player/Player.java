@@ -10,6 +10,7 @@ import com.yungying.game.states.gameStates;
 public class Player {
     private final Vector2 position;
     private float timeBeforeJump;
+    private int jumpCounter;
     private final Animation<Texture> runAnimation;
     private final Animation<Texture> jumpAnimation;
     private final Animation<Texture> slideAnimation;
@@ -23,6 +24,7 @@ public class Player {
     public Player() {
         position = new Vector2(0, 128);
         timeBeforeJump = 0;
+        jumpCounter = 0;
         runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeRunRight.png"));
         jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
         slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
@@ -53,11 +55,12 @@ public class Player {
     }
 
     public void jump() {
-        if(isJumping) return;
+        if(isJumping && jumpCounter > 2) return;
 
         timeBeforeJump = gameStates.stateTime;
         currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
         isJumping = true;
+        jumpCounter++;
         isHighestJump = false;
     }
 
@@ -75,9 +78,11 @@ public class Player {
             isSliding = false;
         }
 
-        if(isJumping && !isHighestJump) {
+        if(isJumping && !isHighestJump && jumpCounter <= 2) {
             currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
             position.y += gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
+
+            System.out.println(jumpCounter);
 
             if(gameStates.stateTime - timeBeforeJump > 0.5f) {
                 isHighestJump = true;
@@ -93,6 +98,7 @@ public class Player {
             //if the player is on the ground
             if(position.y/TopBorderOfTile <= 1f && position.y/TopBorderOfTile >= 0.95f) {
                 isJumping = false;
+                jumpCounter = 0;
                 isHighestJump = false;
             }
             return;
