@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import com.yungying.game.states.gameStates;
 
+import java.math.BigInteger;
+
 public class Player {
     private final Vector2 position;
     private float timeBeforeJump;
@@ -20,6 +22,7 @@ public class Player {
     private boolean isHighestJump;
     private boolean isSliding;
     private boolean isDead;
+    private int score;
 
     public Player() {
         position = new Vector2(0, 128);
@@ -115,6 +118,14 @@ public class Player {
 
     public float getSpeed() {
         return speed;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public boolean isDead() {

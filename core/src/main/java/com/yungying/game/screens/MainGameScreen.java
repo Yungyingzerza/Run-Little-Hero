@@ -10,6 +10,8 @@ import com.yungying.game.map.Map;
 import com.yungying.game.map.MapLoader;
 import com.yungying.game.states.gameStates;
 
+import java.math.BigInteger;
+
 public class MainGameScreen implements Screen {
     Player player;
 
@@ -85,6 +87,14 @@ public class MainGameScreen implements Screen {
         //auto run to the right
         player.run(Gdx.graphics.getDeltaTime(), gameStates.stateTime);
         player.gravity(isColliding, endY, type);
+
+        //check if player is colliding with jelly
+        int tempScore = currentMap.isCollectJelly(player.getPosition().x, player.getPosition().y);
+        if(tempScore > 0){
+            player.setScore(player.getScore() + tempScore);
+        }
+
+        System.out.println("Score: " + player.getScore());
 
         //state time
         gameStates.stateTime += Gdx.graphics.getDeltaTime();

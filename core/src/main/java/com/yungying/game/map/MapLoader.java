@@ -127,6 +127,18 @@ public class MapLoader implements Map {
     }
 
     @Override
+    public int isCollectJelly(float playerX, float playerY) {
+        for (Jelly jelly : jellies) {
+            int score = jelly.isColliding(playerX, playerY);
+            if (score > 0) {
+                jellies.remove(jelly);
+                return score;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public Tile getLastTile() {
         return tiles.lastElement();
     }

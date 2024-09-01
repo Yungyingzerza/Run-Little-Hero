@@ -22,6 +22,8 @@ public  interface Map {
 
     boolean isColliding(float playerX, float playerY);
 
+    int isCollectJelly(float playerX, float playerY);
+
     Tile getLastTile();
 
     Tile getFirstTile();
