@@ -3,15 +3,14 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.yungying.game.Main;
 import com.yungying.game.Player.Player;
 import com.yungying.game.gameInputHandler.gameInputHandler;
-import com.yungying.game.map.Map1;
+import com.yungying.game.map.Level1;
+import com.yungying.game.map.Level2;
+import com.yungying.game.map.Map;
 import com.yungying.game.map.Tile;
 import com.yungying.game.states.gameStates;
-
-import java.util.Vector;
 
 public class MainGameScreen implements Screen {
     Player player;
@@ -20,8 +19,8 @@ public class MainGameScreen implements Screen {
     private final OrthographicCamera camera;
     Main game;
     gameInputHandler inputHandler;
-    Map1 map1;
-    Map1 map2;
+    Map currentMap;
+    Map nextMap;
 
 
     public MainGameScreen(Main game) {
@@ -30,9 +29,9 @@ public class MainGameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
-        map1 = new Map1(player.getPosition().x, 0, "Grass");
-        map2 = new Map1(map1.getLastTile().getEndX(), 0, "GrassWinter");
-        player.setSpeed(map1.getMapSpeed());
+        currentMap = new Level1(player.getPosition().x);
+        nextMap = new Level2(currentMap.getLastTile().getEndX());
+        player.setSpeed(currentMap.getMapSpeed());
     }
 
     @Override
@@ -60,27 +59,26 @@ public class MainGameScreen implements Screen {
         float endY = 0;
         float zoom = 1;
 
-        if(map1.getCurrentTile(playerX) != null) {
-            isColliding = map1.isColliding(playerX, playerY);
-            endY = map1.getCurrentTile(playerX).getEndY();
-            zoom = map1.getCurrentTile(playerX).getZoom();
-            type = map1.getCurrentTile(playerX).getType();
+        if(currentMap.getCurrentTile(playerX) != null) {
+            isColliding = currentMap.isColliding(playerX, playerY);
+            endY = currentMap.getCurrentTile(playerX).getEndY();
+            zoom = currentMap.getCurrentTile(playerX).getZoom();
+            type = currentMap.getCurrentTile(playerX).getType();
         }
 
-        if(playerX >= map1.getLastTile().getEndX()) {
-            map1 = map2;
+        if(playerX >= currentMap.getLastTile().getEndX()) {
 
-            //random between 0 and 1
-            int random = (int) (Math.random() * 2);
-            if(random == 0) {
-                map2 = new Map1(map1.getLastTile().getEndX(), 0, "Grass");
-            }else{
-                map2 = new Map1(map1.getLastTile().getEndX(), 0, "GrassWinter");
+            if(currentMap.getNextMap().equals("Level2")){
+                currentMap = nextMap;
+                nextMap = new Level1(currentMap.getLastTile().getEndX());
+            }else if(currentMap.getNextMap().equals("Level1")){
+                currentMap = nextMap;
+                nextMap = new Level2(currentMap.getLastTile().getEndX());
             }
 
-            player.setSpeed(map1.getMapSpeed());
+            player.setSpeed(currentMap.getMapSpeed());
 
-            player.setPosition(map1.getFirstTile().getStartX(), map1.getFirstTile().getEndY());
+            player.setPosition(currentMap.getFirstTile().getStartX(), currentMap.getFirstTile().getEndY());
         }
 
         //input Part
@@ -105,11 +103,11 @@ public class MainGameScreen implements Screen {
         //render Part
         game.batch.begin();
 
-        game.batch.draw(map1.getBackground(), camera.position.x - camera.viewportWidth / 2 * camera.zoom, camera.position.y - camera.viewportHeight / 2 * camera.zoom, 800 * camera.zoom, 400 * camera.zoom);
+        game.batch.draw(currentMap.getBackground(), camera.position.x - camera.viewportWidth / 2 * camera.zoom, camera.position.y - camera.viewportHeight / 2 * camera.zoom, 800 * camera.zoom, 400 * camera.zoom);
 
-        for (Tile tile : map1.getTiles()) {
+        for (Tile tile : currentMap.getTiles()) {
             if(tile.getType().equals("Grass") || tile.getType().equals("GrassWinter")) {
-                game.batch.draw(map1.getGrass(), tile.getStartX(), tile.getStartY(), 128, 128);
+                game.batch.draw(currentMap.getTile(), tile.getStartX(), tile.getStartY(), 128, 128);
             }
         }
 
@@ -147,6 +145,6 @@ public class MainGameScreen implements Screen {
     @Override
     public void dispose() {
         player.dispose();
-        map1.dispose();
+        currentMap.dispose();
     }
 }

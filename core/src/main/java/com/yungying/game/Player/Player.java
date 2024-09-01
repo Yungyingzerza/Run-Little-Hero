@@ -70,6 +70,7 @@ public class Player {
     }
 
     public void gravity(boolean isColliding, float TopBorderOfTile, String blockType) {
+
         if(TopBorderOfTile == 0 && blockType.equals("null")) {
             isJumping = true;
             isHighestJump = true;
@@ -110,8 +111,10 @@ public class Player {
         if(isColliding){
             position.y = TopBorderOfTile;
             isJumping = false;
+
         }else{
             position.y -= gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
+
 
             if(position.y > TopBorderOfTile && !blockType.equals("null")) {
                 position.y = TopBorderOfTile;
