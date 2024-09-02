@@ -10,10 +10,16 @@ public class MapData {
     public String nextMapPath;
     public float mapSpeed;
     public Array<TileData> tiles;
+    public Array<Jelly> jellies;
 
     public static class TileData {
         public String type;
         public float y;
         public float zoom;
+    }
+
+    public static class Jelly{
+        public String type;
+        public float y;
     }
 }

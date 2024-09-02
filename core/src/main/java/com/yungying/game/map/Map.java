@@ -6,9 +6,13 @@ import java.util.Vector;
 
 public  interface Map {
 
+    Texture getJellyTextureAtIndex(int index);
+
     Texture getTileTextureAtIndex(int index);
 
     Vector<Tile> getTiles();
+
+    Vector<Jelly> getJellies();
 
     float getMapSpeed();
 
@@ -17,6 +21,8 @@ public  interface Map {
     Texture getBackground();
 
     boolean isColliding(float playerX, float playerY);
+
+    int isCollectJelly(float playerX, float playerY);
 
     Tile getLastTile();
 
