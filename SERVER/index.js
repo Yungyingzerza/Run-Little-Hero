@@ -19,7 +19,6 @@ io.on('connection', (socket) => {
     });
     
     socket.emit('getPlayers', players);
-    socket.broadcast.emit('newPlayer', { id: socket.id });
 
     socket.on('join', (player) => {
         players.push({ id: socket.id, ...player });
@@ -27,9 +26,15 @@ io.on('connection', (socket) => {
 
     socket.on('playerMoved', (player) => {
         const index = players.findIndex(p => p.id === socket.id);
-        players[index] = { ...player };
+
+        if(index === -1) {
+            return;
+        }
+
+        players[index] = { ...players[index], ...player };
+        socket.broadcast.emit('playerMoved', players);
+
         console.log(players);
-        socket.broadcast.emit('playerMoved', player);
     })
 
 });

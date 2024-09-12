@@ -73,34 +73,38 @@ public class Main extends Game {
                 JSONArray players = (JSONArray) args[0];
                 System.out.println(players);
             }
-        }).on("newPlayer", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONArray players = (JSONArray) args[0];
-                try{
-                    for(int i = 0; i < players.length(); i++){
-                        JSONObject player = players.getJSONObject(i);
-                        Player newPlayer = new Player(player.getString("currentFrame"), player.getDouble("x"), player.getDouble("y"), player.getInt("score"), player.getString("username"));
-                        MainGameScreen.otherPlayers.add(newPlayer);
-                    }
-                }catch (Exception e){
-                    System.out.println(e);
-                }
-            }
         }).on("playerMoved", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try{
-                    for(Player otherPlayer : MainGameScreen.otherPlayers){
-                        if(otherPlayer.getUsername().equals(data.getString("username"))){
-                            otherPlayer.setPosition((float)data.getDouble("x"), (float)data.getDouble("y"));
-                            otherPlayer.setScore(data.getInt("score"));
-                        }
+
+                try {
+                    JSONArray players = (JSONArray) args[0];
+
+                    for (int i = 0; i < players.length(); i++) {
+                        JSONObject player = players.getJSONObject(i);
+
+                        // Check if 'username' field exists
+                        String username = player.has("username") ? player.getString("username") : "Unknown";
+
+                        // Check if 'x' and 'y' fields exist
+                        double x = player.has("x") ? player.getDouble("x") : 0.0;
+                        double y = player.has("y") ? player.getDouble("y") : 0.0;
+
+                        // Check if 'score' field exists
+                        int score = player.has("score") ? player.getInt("score") : 0;
+
+                        // Print player details
+                        System.out.println("Username: " + username + ", X: " + x + ", Y: " + y + ", Score: " + score);
                     }
-                }catch (Exception e){
-                    System.out.println(e);
+
+                    // Print size of otherPlayers collection
+                    System.out.println(MainGameScreen.otherPlayers.size());
+
+                } catch (Exception e) {
+                    // Print the exact exception and its message for better debugging
+                    e.printStackTrace();
                 }
+
             }
         });
     }
