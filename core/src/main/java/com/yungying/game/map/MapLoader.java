@@ -12,6 +12,7 @@ public class MapLoader implements Map {
     private final Vector<Tile> tiles;
     private final Vector<Jelly> jellies;
     private final Texture Coin;
+    private final Texture Cherry;
     private final Texture grassTexture;
     private final Texture grassWinterTexture;
     private final Texture backgroundTexture;
@@ -24,7 +25,8 @@ public class MapLoader implements Map {
     public MapLoader(String jsonFilePath, float initialX) {
         // Initialize textures
         grassTexture = new Texture("Grass.png");
-        Coin = new Texture("Coin.png");
+        Coin = new Texture("Point/Coin.png");
+        Cherry = new Texture("Point/Cherry.png");
         grassWinterTexture = new Texture("GrassWinter.png");
         tiles = new Vector<Tile>();
         jellies = new Vector<Jelly>();
@@ -88,6 +90,8 @@ public class MapLoader implements Map {
             String type = jellies.get(index).getType();
             if ("Coin".equals(type)) {
                 return Coin;
+            }else if ("Cherry".equals(type)) {
+                return Cherry;
             }
         }
         return null;

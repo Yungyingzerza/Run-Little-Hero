@@ -9,11 +9,17 @@ import com.yungying.game.gameInputHandler.gameInputHandler;
 import com.yungying.game.map.Map;
 import com.yungying.game.map.MapLoader;
 import com.yungying.game.states.gameStates;
+import netscape.javascript.JSObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.math.BigInteger;
+import java.util.LinkedList;
 
 public class MainGameScreen implements Screen {
     Player player;
+    public static LinkedList<Player> otherPlayers;
+
+    private float lastestSendTime = 0;
 
     //camera to follow player
     private final OrthographicCamera camera;
@@ -26,6 +32,7 @@ public class MainGameScreen implements Screen {
     public MainGameScreen(Main game) {
         this.game = game;
         player = new Player();
+        otherPlayers = new LinkedList<>();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
@@ -94,7 +101,7 @@ public class MainGameScreen implements Screen {
             player.setScore(player.getScore() + tempScore);
         }
 
-        System.out.println("Score: " + player.getScore());
+//        System.out.println("Score: " + player.getScore());
 
         //state time
         gameStates.stateTime += Gdx.graphics.getDeltaTime();
@@ -104,7 +111,7 @@ public class MainGameScreen implements Screen {
 
 
         //camera Part
-        camera.position.set(player.getPosition().x + camera.viewportWidth / 2 * camera.zoom, camera.viewportHeight / 2 * camera.zoom, 0);
+        camera.position.set(player.getPosition().x - 300 + camera.viewportWidth / 2 * camera.zoom, camera.viewportHeight / 2 * camera.zoom, 0);
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
@@ -129,6 +136,12 @@ public class MainGameScreen implements Screen {
             game.batch.draw(currentMap.getJellyTextureAtIndex(i), currentMap.getJellies().elementAt(i).getX(), currentMap.getJellies().elementAt(i).getY(), 64, 64);
         }
 
+        //draw other players
+        for (Player otherPlayer : otherPlayers) {
+            game.batch.draw(otherPlayer.getCurrentFrame(), otherPlayer.getPosition().x, otherPlayer.getPosition().y);
+        }
+
+
 
 
         game.batch.draw(player.getCurrentFrame(), player.getPosition().x, player.getPosition().y);
@@ -137,6 +150,29 @@ public class MainGameScreen implements Screen {
 
         game.batch.end();
 
+
+        if(gameStates.stateTime - lastestSendTime > 0.1){
+            sendPlayerData();
+        }
+
+
+
+    }
+
+    private void sendPlayerData(){
+        try {
+            //send data to server
+            JSONObject data = new JSONObject();
+            data.put("currentFrame", player.getCurrentFrame());
+            data.put("x", player.getPosition().x);
+            data.put("y", player.getPosition().y);
+            data.put("score", player.getScore());
+            data.put("username", "yungying");
+            game.getSocket().emit("playerMoved", data);
+            lastestSendTime = gameStates.stateTime;
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

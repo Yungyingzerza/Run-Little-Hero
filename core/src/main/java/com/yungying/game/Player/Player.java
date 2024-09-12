@@ -23,12 +23,14 @@ public class Player {
     private boolean isSliding;
     private boolean isDead;
     private int score;
+    private String username;
 
     public Player() {
+        this.username = "yungying";
         position = new Vector2(0, 128);
         timeBeforeJump = 0;
         jumpCounter = 0;
-        runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeRunRight.png"));
+        runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
         jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
         slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
         currentFrame = runAnimation.getKeyFrame(0, true);
@@ -37,6 +39,23 @@ public class Player {
         isHighestJump = false;
         isSliding = false;
         isDead = false;
+    }
+
+    public Player(String currentFrame, double x, double y, int score, String username) {
+        this.username = username;
+        position = new Vector2((float)x, (float)y);
+        timeBeforeJump = 0;
+        jumpCounter = 0;
+        runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
+        jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
+        slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
+        this.currentFrame = new Texture(currentFrame);
+        speed = 300;
+        isJumping = false;
+        isHighestJump = false;
+        isSliding = false;
+        isDead = false;
+        this.score = score;
     }
 
     public void run(float delta, float stateTime) {
@@ -76,6 +95,7 @@ public class Player {
 
     public void gravity(boolean isColliding, float TopBorderOfTile, String blockType) {
 
+
         if(isSliding) {
             currentFrame = slideAnimation.getKeyFrame(gameStates.stateTime, true);
             isSliding = false;
@@ -83,7 +103,7 @@ public class Player {
 
         if(isJumping && !isHighestJump && jumpCounter <= 2) {
             currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
-            position.y += gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
+            position.y += (gameStates.JUMP_SPEED) * Gdx.graphics.getDeltaTime();
 
             if(gameStates.stateTime - timeBeforeJump > 0.5f) {
                 isHighestJump = true;
@@ -93,11 +113,11 @@ public class Player {
 
         //isJumping && isHighestJump
         if(isJumping) {
-            position.y -= gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
+            position.y -= (gameStates.GRAVITY + position.y) * Gdx.graphics.getDeltaTime();
             currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
 
             //if the player is on the ground
-            if(position.y/TopBorderOfTile <= 1f && position.y/TopBorderOfTile >= 0.95f && !blockType.equals("null")) {
+            if(position.y/TopBorderOfTile <= 1.0f && (position.y + 64)/TopBorderOfTile >= 0.95f && !blockType.equals("null")) {
                 isJumping = false;
                 jumpCounter = 0;
                 isHighestJump = false;
@@ -105,15 +125,19 @@ public class Player {
             return;
         }
 
-        if(isColliding){
+        if((isColliding || ( (position.y + 64) / TopBorderOfTile) >= 0.95f && (position.y + 64) / TopBorderOfTile <= 1f ) && !blockType.equals("null")) {
             position.y = TopBorderOfTile;
         }else{
-            position.y -= gameStates.GRAVITY * Gdx.graphics.getDeltaTime();
+            position.y -= (gameStates.GRAVITY + position.y) * Gdx.graphics.getDeltaTime();
         }
     }
 
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public float getSpeed() {
@@ -138,6 +162,10 @@ public class Player {
     public void dispose() {
         runAnimation.getKeyFrames()[0].dispose();
         runAnimation.getKeyFrames()[1].dispose();
+        runAnimation.getKeyFrames()[2].dispose();
+        runAnimation.getKeyFrames()[3].dispose();
+        runAnimation.getKeyFrames()[4].dispose();
+
         jumpAnimation.getKeyFrames()[0].dispose();
         slideAnimation.getKeyFrames()[0].dispose();
     }
