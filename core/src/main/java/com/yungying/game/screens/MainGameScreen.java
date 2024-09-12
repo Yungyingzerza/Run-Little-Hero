@@ -140,10 +140,10 @@ public class MainGameScreen implements Screen {
         for (Player otherPlayer : otherPlayers) {
             game.batch.draw(player.getCurrentFrame(), otherPlayer.getPosition().x, otherPlayer.getPosition().y);
 
-            System.out.println("Size: " + otherPlayers.size());
 
         }
 
+        System.out.println("Size: " + otherPlayers.size());
 
 
 

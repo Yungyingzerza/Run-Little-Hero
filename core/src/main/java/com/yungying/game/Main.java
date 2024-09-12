@@ -94,7 +94,10 @@ public class Main extends Game {
                         int score = player.has("score") ? player.getInt("score") : 0;
 
                         // Print player details
-                        System.out.println("Username: " + username + ", X: " + x + ", Y: " + y + ", Score: " + score);
+
+                        Player otherPlayer = new Player("characters/Tee/TeeRunLeft.png", x, y, score, username);
+
+                        MainGameScreen.otherPlayers.add(otherPlayer);
                     }
 
                     // Print size of otherPlayers collection
