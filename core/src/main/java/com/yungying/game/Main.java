@@ -14,10 +14,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
     public SpriteBatch batch;
     private Socket socket;
+    private String MySocketId;
 
     @Override
     public void create() {
@@ -60,6 +63,11 @@ public class Main extends Game {
                     socket.emit("join", data);
                     System.out.println("Connected to server");
 
+                    MySocketId = socket.id();
+
+                    System.out.println(MySocketId);
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -78,30 +86,25 @@ public class Main extends Game {
             public void call(Object... args) {
 
                 try {
+
                     JSONArray players = (JSONArray) args[0];
 
-                    for (int i = 0; i < players.length(); i++) {
-                        JSONObject player = players.getJSONObject(i);
+                    for(int i = 0; i < players.length(); i++){
 
-                        // Check if 'username' field exists
-                        String username = player.has("username") ? player.getString("username") : "Unknown";
+                        float x = ((Double) players.getJSONObject(i).getDouble("x")).floatValue();
+                        float y = ((Double) players.getJSONObject(i).getDouble("y")).floatValue();
+                        String id = players.getJSONObject(i).getString("id");
 
-                        // Check if 'x' and 'y' fields exist
-                        double x = player.has("x") ? player.getDouble("x") : 0.0;
-                        double y = player.has("y") ? player.getDouble("y") : 0.0;
+                        if(!id.equals(MySocketId)){
+                            MainGameScreen.otherPlayer.setPosition(x, y);
+                        }
 
-                        // Check if 'score' field exists
-                        int score = player.has("score") ? player.getInt("score") : 0;
-
-                        // Print player details
-
-                        Player otherPlayer = new Player("characters/Tee/TeeRunLeft.png", x, y, score, username);
-
-                        MainGameScreen.otherPlayers.add(otherPlayer);
                     }
 
+                    System.out.println(players.length());
+
                     // Print size of otherPlayers collection
-                    System.out.println(MainGameScreen.otherPlayers.size());
+//                    System.out.println(MainGameScreen.otherPlayers.size());
 
                 } catch (Exception e) {
                     // Print the exact exception and its message for better debugging

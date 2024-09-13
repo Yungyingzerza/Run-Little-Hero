@@ -24,12 +24,21 @@ public class Player {
     private boolean isDead;
     private int score;
     private String username;
+    private Texture testTexture;
+
+    public Player(boolean isOtherPlayer) {
+        this.runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
+        this.jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
+        this.slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
+        this.position = new Vector2(0, 128);
+    }
 
     public Player() {
         this.username = "yungying";
         position = new Vector2(0, 128);
         timeBeforeJump = 0;
         jumpCounter = 0;
+        testTexture = new Texture("characters/Tee/TeeRunLeft.png");
         runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
         jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
         slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
@@ -41,6 +50,10 @@ public class Player {
         isDead = false;
     }
 
+    public Texture getTestTexture() {
+        return testTexture;
+    }
+
     public Player(String currentFrame, double x, double y, int score, String username) {
         this.username = username;
         position = new Vector2((float)x, (float)y);
@@ -50,6 +63,7 @@ public class Player {
         jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
         slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
         this.currentFrame = new Texture(currentFrame);
+        testTexture = new Texture("characters/Tee/TeeRunLeft.png");
         speed = 300;
         isJumping = false;
         isHighestJump = false;
@@ -75,6 +89,8 @@ public class Player {
     public Texture getCurrentFrame() {
         return currentFrame;
     }
+
+
 
     public void jump() {
         if(isJumping && jumpCounter > 2) return;

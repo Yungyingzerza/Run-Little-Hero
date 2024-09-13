@@ -13,11 +13,12 @@ import netscape.javascript.JSObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class MainGameScreen implements Screen {
     Player player;
-    public static LinkedList<Player> otherPlayers;
+    public static Player otherPlayer;
 
     private float lastestSendTime = 0;
 
@@ -32,7 +33,7 @@ public class MainGameScreen implements Screen {
     public MainGameScreen(Main game) {
         this.game = game;
         player = new Player();
-        otherPlayers = new LinkedList<>();
+        otherPlayer = new Player();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
@@ -137,13 +138,9 @@ public class MainGameScreen implements Screen {
         }
 
         //draw other players
-        for (Player otherPlayer : otherPlayers) {
-            game.batch.draw(player.getCurrentFrame(), otherPlayer.getPosition().x, otherPlayer.getPosition().y);
-
-
+        if(otherPlayer != null){
+            game.batch.draw(otherPlayer.getTestTexture(), otherPlayer.getPosition().x, otherPlayer.getPosition().y);
         }
-
-        System.out.println("Size: " + otherPlayers.size());
 
 
 
@@ -153,10 +150,10 @@ public class MainGameScreen implements Screen {
 
         game.batch.end();
 
+        sendPlayerData();
 
-        if(gameStates.stateTime - lastestSendTime > 0.1){
-            sendPlayerData();
-        }
+//        if(gameStates.stateTime - lastestSendTime > 0.1){
+//        }
 
 
 
