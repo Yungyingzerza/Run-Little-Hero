@@ -3,6 +3,7 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.yungying.game.Main;
 import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
@@ -24,8 +25,10 @@ public class MainGameScreen implements Screen {
     Map currentMap;
     Map nextMap;
 
+    private BitmapFont font;
 
-    public MainGameScreen(Main game) {
+
+    public MainGameScreen(Main game, String username) {
         this.game = game;
         player = new Tee();
         camera = new OrthographicCamera();
@@ -34,7 +37,9 @@ public class MainGameScreen implements Screen {
         currentMap = new MapLoader("map/Level1.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
         player.setSpeed(currentMap.getMapSpeed());
-
+        player.setUsername(username);
+        font = new BitmapFont();
+        font.getData().setScale(2.5f);
     }
 
     @Override
@@ -145,10 +150,13 @@ public class MainGameScreen implements Screen {
                 OtherPlayer player = entry.getValue();
 
                 game.batch.draw(player.getCurrentFrame(), player.getPosition().x, player.getPosition().y, 128,128);
+                font.draw(game.batch, player.getUsername(), player.getPosition().x - 50, player.getPosition().y + 50, 100, 1, false);
             }
         }
 
         game.batch.draw(player.getCurrentFrame(), player.getPosition().x, player.getPosition().y);
+
+        font.draw(game.batch, player.getUsername(), playerX - 50, playerY + 50);
 
         game.batch.end();
 
@@ -166,7 +174,7 @@ public class MainGameScreen implements Screen {
             data.put("y", player.getPosition().y);
             data.put("stateTime", gameStates.stateTime);
             data.put("score", player.getScore());
-            data.put("username", "Username001");
+            data.put("username", player.getUsername());
             game.getSocket().emit("playerMoved", data);
 
         } catch (JSONException e) {

@@ -21,6 +21,7 @@ public class Sakura implements Player {
     private int score;
     float stateTime;
     Enum<PLAYERS> playerType;
+    String username;
 
     public Sakura() {
         playerType = PLAYERS.SAKURA;
@@ -145,6 +146,16 @@ public class Sakura implements Player {
     @Override
     public Enum<PLAYERS> getPlayerType() {
         return playerType;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 

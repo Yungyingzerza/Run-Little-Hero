@@ -20,6 +20,7 @@ public class Tee implements Player {
     private int score;
     float stateTime;
     Enum<PLAYERS> playerType;
+    String username;
 
 
     public Tee() {
@@ -147,5 +148,14 @@ public class Tee implements Player {
         return playerType;
     }
 
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
 }

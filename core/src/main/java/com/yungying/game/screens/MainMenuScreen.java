@@ -2,37 +2,46 @@ package com.yungying.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 
-import java.util.HashMap;
 
 public class MainMenuScreen implements Screen {
 
-    private final int BUTTON_WIDTH = Gdx.graphics.getWidth() / 4;
-    private final int BUTTON_HEIGHT = Gdx.graphics.getHeight() / 4;
-
     Main game;
-
-    Texture playButton;
-    Texture playHover;
-    Texture sakura;
 
     private OrthographicCamera camera;
     Viewport viewport;
 
+    Skin skin;
+    private TextField usernameTextField;
+    private TextButton playButton;
+    private Label usernameLabel;
+    private Label idLabel;
+
+    Stage stage;
+
     public MainMenuScreen(Main game) {
         this.game = game;
-        playButton = new Texture("buttons/play.png");
-        playHover = new Texture("buttons/play-hover.png");
-        sakura = new Texture("characters/Sakura/SakuraRunRight.png");
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin.addRegions(atlas);
+
+        playButton = new TextButton("Play", skin);
+        usernameTextField = new TextField("Username", skin);
+
+
+
     }
 
     @Override
@@ -49,7 +58,61 @@ public class MainMenuScreen implements Screen {
 
         // Ensure the viewport is updated to the current screen size
         viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+
+        stage = new Stage(viewport, game.batch);
+        Gdx.input.setInputProcessor(stage);
+
+        //create a Label for ID top left
+        idLabel = new Label("ID: connecting to server", skin);
+        idLabel.setPosition(0, 380);
+        stage.addActor(idLabel);
+
+        // Create a Label for Username
+        usernameLabel = new Label("Username", skin);
+        usernameLabel.setPosition(200, 320); // Set the position just above the TextField
+        stage.addActor(usernameLabel);
+
+        // Create a TextField
+        usernameTextField = new TextField("", skin);
+        usernameTextField.setPosition(200, 200);
+        usernameTextField.setSize(400, 100);
+        stage.addActor(usernameTextField);
+
+        usernameTextField.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                stage.setKeyboardFocus(usernameTextField);
+                return true;
+            }
+
+        });
+
+
+        // Create a Play button
+        playButton = new TextButton("Play", skin);
+        playButton.setPosition(300, 100);
+        playButton.setSize(200, 50);
+        stage.addActor(playButton);
+
+        // Add click listener to the Play button
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                stage.setKeyboardFocus(null);
+
+                // Only process button click if the TextField is not focused
+                if (stage.getKeyboardFocus() == null || stage.getKeyboardFocus() == playButton) {
+                    String username = usernameTextField.getText();
+
+                    game.setScreen(new MainGameScreen(game, username));
+                    dispose();
+
+                }
+            }
+        });
     }
+
 
     @Override
     public void render(float v) {
@@ -59,43 +122,15 @@ public class MainMenuScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-        game.batch.begin();
+        stage.act(v);
+        stage.draw();
 
-        game.batch.draw(sakura, 0, 0, 128, 128);
-
-        // Get the viewport dimensions
-        float viewportWidth = viewport.getWorldWidth();
-        float viewportHeight = viewport.getWorldHeight();
-
-        // Calculate the button's position relative to the viewport
-        float buttonX = viewportWidth / 2 - BUTTON_WIDTH / 2;
-        float buttonY = viewportHeight / 2 - BUTTON_HEIGHT / 2;
-
-        // Convert screen coordinates to viewport coordinates
-        Vector3 mouseCoordinates = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mouseCoordinates);
-        float mouseX = mouseCoordinates.x;
-        float mouseY = mouseCoordinates.y;
-
-        // Check if the mouse is over the button
-        if (mouseX > buttonX && mouseX < buttonX + BUTTON_WIDTH &&
-            mouseY > buttonY && mouseY < buttonY + BUTTON_HEIGHT) {
-
-            // Draw the hover state of the button
-            game.batch.draw(playHover, buttonX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
-
-            // Handle button click
-            if (Gdx.input.isTouched()) {
-                game.setScreen(new MainGameScreen(game));
-                dispose();
-            }
-        } else {
-            // Draw the normal state of the button
-            game.batch.draw(playButton, buttonX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
+        if(game.getSocket() != null){
+            idLabel.setText("ID: " + game.getSocket().id());
         }
 
-        game.batch.end();
     }
+
 
     @Override
     public void resize(int i, int i1) {
@@ -119,8 +154,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        playButton.dispose();
-        playHover.dispose();
-        sakura.dispose();
+        stage.dispose();
+        skin.dispose();
     }
 }

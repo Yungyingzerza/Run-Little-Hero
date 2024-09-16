@@ -12,6 +12,7 @@ public class OtherPlayer implements Player {
     private int score;
     float stateTime;
     private Enum<PLAYERS> playerType;
+    String username;
 
 
     public OtherPlayer() {
@@ -89,5 +90,16 @@ public class OtherPlayer implements Player {
     public void setPlayerType(Enum<PLAYERS> playerType) {
         this.playerType = playerType;
     }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 
 }

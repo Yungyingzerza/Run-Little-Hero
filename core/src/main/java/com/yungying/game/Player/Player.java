@@ -36,4 +36,7 @@ public interface Player {
 
     Enum<PLAYERS> getPlayerType();
 
+    String getUsername();
+
+    void setUsername(String username);
 }
