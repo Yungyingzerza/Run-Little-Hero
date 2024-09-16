@@ -105,6 +105,11 @@ public class MainMenuScreen implements Screen {
                 if (stage.getKeyboardFocus() == null || stage.getKeyboardFocus() == playButton) {
                     String username = usernameTextField.getText();
 
+                    if(username.isEmpty()){
+                        System.out.println("Username is empty");
+                        return;
+                    }
+
                     game.setScreen(new MainGameScreen(game, username));
                     dispose();
 

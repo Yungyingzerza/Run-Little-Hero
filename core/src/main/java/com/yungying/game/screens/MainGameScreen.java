@@ -158,6 +158,9 @@ public class MainGameScreen implements Screen {
 
         font.draw(game.batch, player.getUsername(), playerX - 50, playerY + 50);
 
+        //draw score top right
+        font.draw(game.batch, ""+player.getScore(), camera.position.x + 600, camera.position.y + 300, 200, 1, true);
+
         game.batch.end();
 
         sendPlayerData();
