@@ -26,13 +26,6 @@ public class Player {
     private String username;
     private Texture testTexture;
 
-    public Player(boolean isOtherPlayer) {
-        this.runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
-        this.jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
-        this.slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
-        this.position = new Vector2(0, 128);
-    }
-
     public Player() {
         this.username = "yungying";
         position = new Vector2(0, 128);
