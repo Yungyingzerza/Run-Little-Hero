@@ -26,6 +26,7 @@ public class Player {
     private int score;
     private final String username;
     boolean isTest;
+    float stateTime;
 
     public Player(boolean test){
         isTest = test;
@@ -60,7 +61,7 @@ public class Player {
 
     public void run(float delta, float stateTime) {
         position.x += speed * delta;
-        if(!isJumping || !isSliding) currentFrame = runAnimation.getKeyFrame(stateTime, true);
+        if(!isTest) currentFrame = runAnimation.getKeyFrame(stateTime, true);
     }
 
     public Vector2 getPosition() {
@@ -76,46 +77,17 @@ public class Player {
         return currentFrame;
     }
 
-    public boolean isJumping() {
-        return isJumping;
+    public void setStateTime(float stateTime) {
+        this.stateTime = stateTime;
     }
 
-    public boolean isSliding() {
-        return isSliding;
+    public float getStateTime() {
+        return stateTime;
     }
 
-    public int getJumpCounter() {
-        return jumpCounter;
+    public void setCurrentFrame(Texture currentFrame) {
+        this.currentFrame = currentFrame;
     }
-
-    public boolean isHighestJump() {
-        return isHighestJump;
-    }
-
-    public boolean isColliding() {
-        return isColliding;
-    }
-
-    public void setJumping(boolean isJumping) {
-        this.isJumping = isJumping;
-    }
-
-    public void setSliding(boolean isSliding) {
-        this.isSliding = isSliding;
-    }
-
-    public void setJumpCounter(int jumpCounter) {
-        this.jumpCounter = jumpCounter;
-    }
-
-    public void setHighestJump(boolean isHighestJump) {
-        this.isHighestJump = isHighestJump;
-    }
-
-    public void setColliding(boolean isColliding) {
-        this.isColliding = isColliding;
-    }
-
 
 
 
@@ -131,6 +103,7 @@ public class Player {
 
     public void slide() {
         if(isJumping) return;
+
 
         currentFrame = slideAnimation.getKeyFrame(gameStates.stateTime, true);
         isSliding = true;

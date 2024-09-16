@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.yungying.game.Main;
 import com.yungying.game.Player.Player;
 import com.yungying.game.gameInputHandler.gameInputHandler;
@@ -16,8 +17,6 @@ import org.json.JSONObject;
 public class MainGameScreen implements Screen {
     Player player;
 
-    private float latestSendTime = 0;
-
     //camera to follow player
     private final OrthographicCamera camera;
     Main game;
@@ -25,9 +24,9 @@ public class MainGameScreen implements Screen {
     Map currentMap;
     Map nextMap;
 
-    private final Texture testTexture;
-
-
+    private Animation<Texture> runAnimation;
+    private  Animation<Texture> jumpAnimation;
+    private  Animation<Texture> slideAnimation;
 
     public MainGameScreen(Main game) {
         this.game = game;
@@ -38,7 +37,10 @@ public class MainGameScreen implements Screen {
         currentMap = new MapLoader("map/Level1.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
         player.setSpeed(currentMap.getMapSpeed());
-        testTexture = new Texture("characters/Tee/TeeRunLeft.png");
+
+        runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
+        jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
+        slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
     }
 
     @Override
@@ -98,11 +100,8 @@ public class MainGameScreen implements Screen {
         //auto run to the right for other players
         if(Main.otherPlayer != null){
             for (java.util.Map.Entry<String, Player> entry : Main.otherPlayer.entrySet()) {
-                // Get the key and value
-                String key = entry.getKey();
                 Player value = entry.getValue();
                 value.setPosition(value.getPosition().x + value.getSpeed() * Gdx.graphics.getDeltaTime(), value.getPosition().y);
-                value.gravity(value.isColliding(), value.getPosition().y, type);
             }
         }
 
@@ -111,8 +110,6 @@ public class MainGameScreen implements Screen {
         if(tempScore > 0){
             player.setScore(player.getScore() + tempScore);
         }
-
-//        System.out.println("Score: " + player.getScore());
 
         //state time
         gameStates.stateTime += Gdx.graphics.getDeltaTime();
@@ -151,12 +148,10 @@ public class MainGameScreen implements Screen {
         if(Main.otherPlayer != null){
             for (java.util.Map.Entry<String, Player> entry : Main.otherPlayer.entrySet()) {
                 // Get the key and value
-                String key = entry.getKey();
                 Player value = entry.getValue();
 
-                // Print the key-value pair
-//                System.out.println("Key: " + key + ", Value: " + value);
-                game.batch.draw(testTexture, value.getPosition().x, value.getPosition().y);
+
+                game.batch.draw(getCurrentFrameByStateTime(value), value.getPosition().x, value.getPosition().y);
             }
         }
 
@@ -169,6 +164,8 @@ public class MainGameScreen implements Screen {
         game.batch.end();
 
         sendPlayerData();
+
+
     }
 
     private void sendPlayerData(){
@@ -178,18 +175,20 @@ public class MainGameScreen implements Screen {
             data.put("currentFrame", player.getCurrentFrame());
             data.put("x", player.getPosition().x);
             data.put("y", player.getPosition().y);
-            data.put("isJumping", player.isJumping());
-            data.put("isSliding", player.isSliding());
-            data.put("isHighestJump", player.isHighestJump());
-            data.put("jumpCounter", player.getJumpCounter());
-            data.put("isColliding", player.isColliding());
+            data.put("stateTime", gameStates.stateTime);
             data.put("score", player.getScore());
             data.put("username", "Username001");
             game.getSocket().emit("playerMoved", data);
-            latestSendTime = gameStates.stateTime;
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Texture getCurrentFrameByStateTime(Player player){
+
+
+        return runAnimation.getKeyFrame(gameStates.stateTime, true);
     }
 
     @Override
@@ -216,8 +215,5 @@ public class MainGameScreen implements Screen {
     public void dispose() {
         player.dispose();
         currentMap.dispose();
-        game.getSocket().off();
-        game.getSocket().disconnect();
-        game.getSocket().close();
     }
 }

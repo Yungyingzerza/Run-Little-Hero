@@ -69,17 +69,15 @@ public class Main extends Game {
         }
     }
 
-    private void addPlayer(String id, float x, float y, boolean isJumping, boolean isSliding, boolean isHighestJump, int jumpCounter, boolean isColliding){
+    private void addPlayer(String id, float x, float y, float stateTime){
         Player player = new Player(true);
+
         player.setPosition(x, y);
-        player.setJumping(isJumping);
-        player.setSliding(isSliding);
-        player.setHighestJump(isHighestJump);
-        player.setJumpCounter(jumpCounter);
-        player.setColliding(isColliding);
+        player.setStateTime(stateTime);
 
         otherPlayer.put(id, player);
     }
+
 
     public void configSocketEvents(){
 
@@ -127,24 +125,17 @@ public class Main extends Game {
 
                         float x = ((Double) players.getJSONObject(i).getDouble("x")).floatValue();
                         float y = ((Double) players.getJSONObject(i).getDouble("y")).floatValue();
-                        boolean isJumping = players.getJSONObject(i).getBoolean("isJumping");
-                        boolean isSliding = players.getJSONObject(i).getBoolean("isSliding");
-                        boolean isHighestJump = players.getJSONObject(i).getBoolean("isHighestJump");
-                        int jumpCounter = players.getJSONObject(i).getInt("jumpCounter");
-                        boolean isColliding = players.getJSONObject(i).getBoolean("isColliding");
+                        float stateTime = ((Double) players.getJSONObject(i).getDouble("stateTime")).floatValue();
 
                         String id = players.getJSONObject(i).getString("id");
 
+                        System.out.println(stateTime);
 
                         if(!id.equals(MySocketId)){
-                            addPlayer(id, x, y, isJumping, isSliding, isHighestJump, jumpCounter, isColliding);
+                            addPlayer(id, x, y, stateTime);
                         }else if(otherPlayer.containsKey(id)){
                             otherPlayer.get(id).setPosition(x, y);
-                            otherPlayer.get(id).setJumping(isJumping);
-                            otherPlayer.get(id).setSliding(isSliding);
-                            otherPlayer.get(id).setHighestJump(isHighestJump);
-                            otherPlayer.get(id).setJumpCounter(jumpCounter);
-                            otherPlayer.get(id).setColliding(isColliding);
+                            otherPlayer.get(id).setStateTime(stateTime);
                         }
 
                     }
@@ -153,6 +144,11 @@ public class Main extends Game {
 //                    e.printStackTrace();
                 }
 
+            }
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                System.out.println("Disconnected from server");
             }
         });
     }

@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 
+import java.util.HashMap;
+
 public class MainMenuScreen implements Screen {
 
     private final int BUTTON_WIDTH = Gdx.graphics.getWidth() / 4;
