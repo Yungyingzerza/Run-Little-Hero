@@ -22,10 +22,14 @@ public class Main extends Game {
     private Socket socket;
     private String MySocketId;
 
+    public static Player otherPlayer;
+
+
     @Override
     public void create() {
         batch = new SpriteBatch();
         this.setScreen(new MainMenuScreen(this));
+        otherPlayer = new Player();
         connectToServer();
         configSocketEvents();
 
@@ -96,7 +100,7 @@ public class Main extends Game {
                         String id = players.getJSONObject(i).getString("id");
 
                         if(!id.equals(MySocketId)){
-                            MainGameScreen.otherPlayer.setPosition(x, y);
+                            otherPlayer.setPosition(x, y);
                         }
 
                     }

@@ -18,7 +18,6 @@ import java.util.LinkedList;
 
 public class MainGameScreen implements Screen {
     Player player;
-    public static Player otherPlayer;
 
     private float lastestSendTime = 0;
 
@@ -33,7 +32,6 @@ public class MainGameScreen implements Screen {
     public MainGameScreen(Main game) {
         this.game = game;
         player = new Player();
-        otherPlayer = new Player();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
@@ -138,8 +136,8 @@ public class MainGameScreen implements Screen {
         }
 
         //draw other players
-        if(otherPlayer != null){
-            game.batch.draw(otherPlayer.getTestTexture(), otherPlayer.getPosition().x, otherPlayer.getPosition().y);
+        if(Main.otherPlayer != null){
+            game.batch.draw(Main.otherPlayer.getTestTexture(), Main.otherPlayer.getPosition().x, Main.otherPlayer.getPosition().y);
         }
 
 
