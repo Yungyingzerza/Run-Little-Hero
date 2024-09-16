@@ -13,25 +13,38 @@ public class Player {
     private final Vector2 position;
     private float timeBeforeJump;
     private int jumpCounter;
-    private final Animation<Texture> runAnimation;
-    private final Animation<Texture> jumpAnimation;
-    private final Animation<Texture> slideAnimation;
+    private  Animation<Texture> runAnimation;
+    private  Animation<Texture> jumpAnimation;
+    private  Animation<Texture> slideAnimation;
     private Texture currentFrame;
     private float speed;
     private boolean isJumping;
     private boolean isHighestJump;
     private boolean isSliding;
     private boolean isDead;
+    private boolean isColliding;
     private int score;
-    private String username;
-    private Texture testTexture;
+    private final String username;
+    boolean isTest;
+
+    public Player(boolean test){
+        isTest = test;
+        this.username = "yungying";
+        position = new Vector2(0, 128);
+        timeBeforeJump = 0;
+        jumpCounter = 0;
+        speed = 300;
+        isJumping = false;
+        isHighestJump = false;
+        isSliding = false;
+        isDead = false;
+    }
 
     public Player() {
         this.username = "yungying";
         position = new Vector2(0, 128);
         timeBeforeJump = 0;
         jumpCounter = 0;
-        testTexture = new Texture("characters/Tee/TeeRunLeft.png");
         runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
         jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
         slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
@@ -41,29 +54,9 @@ public class Player {
         isHighestJump = false;
         isSliding = false;
         isDead = false;
+        isTest = false;
     }
 
-    public Texture getTestTexture() {
-        return testTexture;
-    }
-
-    public Player(String currentFrame, double x, double y, int score, String username) {
-        this.username = username;
-        position = new Vector2((float)x, (float)y);
-        timeBeforeJump = 0;
-        jumpCounter = 0;
-        runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
-        jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
-        slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
-        this.currentFrame = new Texture(currentFrame);
-        testTexture = new Texture("characters/Tee/TeeRunLeft.png");
-        speed = 300;
-        isJumping = false;
-        isHighestJump = false;
-        isSliding = false;
-        isDead = false;
-        this.score = score;
-    }
 
     public void run(float delta, float stateTime) {
         position.x += speed * delta;
@@ -82,6 +75,47 @@ public class Player {
     public Texture getCurrentFrame() {
         return currentFrame;
     }
+
+    public boolean isJumping() {
+        return isJumping;
+    }
+
+    public boolean isSliding() {
+        return isSliding;
+    }
+
+    public int getJumpCounter() {
+        return jumpCounter;
+    }
+
+    public boolean isHighestJump() {
+        return isHighestJump;
+    }
+
+    public boolean isColliding() {
+        return isColliding;
+    }
+
+    public void setJumping(boolean isJumping) {
+        this.isJumping = isJumping;
+    }
+
+    public void setSliding(boolean isSliding) {
+        this.isSliding = isSliding;
+    }
+
+    public void setJumpCounter(int jumpCounter) {
+        this.jumpCounter = jumpCounter;
+    }
+
+    public void setHighestJump(boolean isHighestJump) {
+        this.isHighestJump = isHighestJump;
+    }
+
+    public void setColliding(boolean isColliding) {
+        this.isColliding = isColliding;
+    }
+
 
 
 
@@ -104,14 +138,15 @@ public class Player {
 
     public void gravity(boolean isColliding, float TopBorderOfTile, String blockType) {
 
+        this.isColliding = isColliding;
 
         if(isSliding) {
-            currentFrame = slideAnimation.getKeyFrame(gameStates.stateTime, true);
+            if(!isTest) currentFrame = slideAnimation.getKeyFrame(gameStates.stateTime, true);
             isSliding = false;
         }
 
         if(isJumping && !isHighestJump && jumpCounter <= 2) {
-            currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
+            if(!isTest) currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
             position.y += (gameStates.JUMP_SPEED) * Gdx.graphics.getDeltaTime();
 
             if(gameStates.stateTime - timeBeforeJump > 0.5f) {
@@ -123,7 +158,7 @@ public class Player {
         //isJumping && isHighestJump
         if(isJumping) {
             position.y -= (gameStates.GRAVITY + position.y) * Gdx.graphics.getDeltaTime();
-            currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
+            if(!isTest) currentFrame = jumpAnimation.getKeyFrame(gameStates.stateTime, true);
 
             //if the player is on the ground
             if(position.y/TopBorderOfTile <= 1.0f && (position.y + 64)/TopBorderOfTile >= 0.95f && !blockType.equals("null")) {

@@ -3,23 +3,20 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.yungying.game.Main;
 import com.yungying.game.Player.Player;
 import com.yungying.game.gameInputHandler.gameInputHandler;
 import com.yungying.game.map.Map;
 import com.yungying.game.map.MapLoader;
 import com.yungying.game.states.gameStates;
-import netscape.javascript.JSObject;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.LinkedList;
 
 public class MainGameScreen implements Screen {
     Player player;
 
-    private float lastestSendTime = 0;
+    private float latestSendTime = 0;
 
     //camera to follow player
     private final OrthographicCamera camera;
@@ -27,6 +24,9 @@ public class MainGameScreen implements Screen {
     gameInputHandler inputHandler;
     Map currentMap;
     Map nextMap;
+
+    private final Texture testTexture;
+
 
 
     public MainGameScreen(Main game) {
@@ -38,6 +38,7 @@ public class MainGameScreen implements Screen {
         currentMap = new MapLoader("map/Level1.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
         player.setSpeed(currentMap.getMapSpeed());
+        testTexture = new Texture("characters/Tee/TeeRunLeft.png");
     }
 
     @Override
@@ -94,6 +95,17 @@ public class MainGameScreen implements Screen {
         player.run(Gdx.graphics.getDeltaTime(), gameStates.stateTime);
         player.gravity(isColliding, endY, type);
 
+        //auto run to the right for other players
+        if(Main.otherPlayer != null){
+            for (java.util.Map.Entry<String, Player> entry : Main.otherPlayer.entrySet()) {
+                // Get the key and value
+                String key = entry.getKey();
+                Player value = entry.getValue();
+                value.setPosition(value.getPosition().x + value.getSpeed() * Gdx.graphics.getDeltaTime(), value.getPosition().y);
+                value.gravity(value.isColliding(), value.getPosition().y, type);
+            }
+        }
+
         //check if player is colliding with jelly
         int tempScore = currentMap.isCollectJelly(player.getPosition().x, player.getPosition().y);
         if(tempScore > 0){
@@ -137,7 +149,15 @@ public class MainGameScreen implements Screen {
 
         //draw other players
         if(Main.otherPlayer != null){
-            game.batch.draw(Main.otherPlayer.getTestTexture(), Main.otherPlayer.getPosition().x, Main.otherPlayer.getPosition().y);
+            for (java.util.Map.Entry<String, Player> entry : Main.otherPlayer.entrySet()) {
+                // Get the key and value
+                String key = entry.getKey();
+                Player value = entry.getValue();
+
+                // Print the key-value pair
+//                System.out.println("Key: " + key + ", Value: " + value);
+                game.batch.draw(testTexture, value.getPosition().x, value.getPosition().y);
+            }
         }
 
 
@@ -149,12 +169,6 @@ public class MainGameScreen implements Screen {
         game.batch.end();
 
         sendPlayerData();
-
-//        if(gameStates.stateTime - lastestSendTime > 0.1){
-//        }
-
-
-
     }
 
     private void sendPlayerData(){
@@ -164,10 +178,15 @@ public class MainGameScreen implements Screen {
             data.put("currentFrame", player.getCurrentFrame());
             data.put("x", player.getPosition().x);
             data.put("y", player.getPosition().y);
+            data.put("isJumping", player.isJumping());
+            data.put("isSliding", player.isSliding());
+            data.put("isHighestJump", player.isHighestJump());
+            data.put("jumpCounter", player.getJumpCounter());
+            data.put("isColliding", player.isColliding());
             data.put("score", player.getScore());
-            data.put("username", "yungying");
+            data.put("username", "Username001");
             game.getSocket().emit("playerMoved", data);
-            lastestSendTime = gameStates.stateTime;
+            latestSendTime = gameStates.stateTime;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -197,5 +216,8 @@ public class MainGameScreen implements Screen {
     public void dispose() {
         player.dispose();
         currentMap.dispose();
+        game.getSocket().off();
+        game.getSocket().disconnect();
+        game.getSocket().close();
     }
 }
