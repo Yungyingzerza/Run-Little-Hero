@@ -42,7 +42,8 @@ public class Tile {
     }
 
     public boolean isColliding(float playerX, float playerY) {
-        return playerX >= startX && playerX <= endX && playerY >= startY && playerY <= endY && !type.equals("null");
+//        return playerX >= startX && playerX <= endX && playerY >= startY && playerY <= endY && !type.equals("null");
+        return ((playerY + 64) >= endY || (playerY + 64)/endY >= 0.95f)  && !type.equals("null");
     }
 
 }

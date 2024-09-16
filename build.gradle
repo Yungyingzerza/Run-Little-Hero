@@ -9,7 +9,7 @@ buildscript {
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-
+    classpath "org.docstr:gwt-gradle-plugin:$gwtPluginVersion"
 
   }
 }
@@ -29,17 +29,16 @@ allprojects {
 
 configure(subprojects) {
   apply plugin: 'java-library'
-  sourceCompatibility = 21
-  compileJava {
-    options.incremental = true
-  }
+  sourceCompatibility = 11
+
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
-  compileJava.doLast {
+  tasks.register('generateAssetList') {
+    inputs.dir("${project.rootDir}/assets/")
     // projectFolder/assets
-    def assetsFolder = new File("${project.rootDir}/assets/")
+    File assetsFolder = new File("${project.rootDir}/assets/")
     // projectFolder/assets/assets.txt
-    def assetsFile = new File(assetsFolder, "assets.txt")
+    File assetsFile = new File(assetsFolder, "assets.txt")
     // delete that file in case we've already created it
     assetsFile.delete()
 
@@ -49,6 +48,11 @@ configure(subprojects) {
     fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.each {
       assetsFile.append(it + "\n")
     }
+  }
+  processResources.dependsOn 'generateAssetList'
+
+  compileJava {
+    options.incremental = true
   }
 }
 
@@ -63,6 +67,9 @@ subprojects {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://jitpack.io' }
+  }
+  dependencies {
+    implementation ('io.socket:socket.io-client:2.1.1')
   }
 }
 

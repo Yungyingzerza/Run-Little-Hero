@@ -28,7 +28,9 @@ public class Jelly {
 
             if("Coin".equals(type)){
                 return 50;
-            }else{
+            }else if("Cherry".equals(type)){
+                return 100;
+            }else {
                 return 0;
             }
 
