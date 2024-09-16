@@ -1,7 +1,5 @@
 package com.yungying.game.map;
 
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Array;
 
 public class MapData {

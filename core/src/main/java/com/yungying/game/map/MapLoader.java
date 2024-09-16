@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.Vector;
 
@@ -28,8 +27,8 @@ public class MapLoader implements Map {
         Coin = new Texture("Point/Coin.png");
         Cherry = new Texture("Point/Cherry.png");
         grassWinterTexture = new Texture("GrassWinter.png");
-        tiles = new Vector<Tile>();
-        jellies = new Vector<Jelly>();
+        tiles = new Vector<>();
+        jellies = new Vector<>();
         this.initialX = initialX;
 
         // Load and parse JSON
@@ -127,7 +126,7 @@ public class MapLoader implements Map {
 
     @Override
     public boolean isColliding(float playerX, float playerY) {
-        return currentTile.isColliding(playerX, playerY);
+        return currentTile.isColliding( playerY);
     }
 
     @Override

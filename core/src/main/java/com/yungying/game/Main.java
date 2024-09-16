@@ -3,12 +3,10 @@ package com.yungying.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.yungying.game.Player.OtherPlayer;
-import com.yungying.game.Player.Sakura;
 import com.yungying.game.screens.MainMenuScreen;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +51,7 @@ public class Main extends Game {
             socket = IO.socket("https://gameoopws.yungying.com/");
             socket.connect();
         } catch(Exception e){
-            System.out.println(e);
+//            System.out.println(e);
         }
     }
 
@@ -65,7 +63,7 @@ public class Main extends Game {
                 socket.close(); // Close the socket connection
                 socket = null; // Set the socket to null to indicate it's disposed
             } catch (Exception e) {
-                e.printStackTrace(); // Print the stack trace for debugging purposes
+//                e.printStackTrace(); // Print the stack trace for debugging purposes
             }
         }
     }
@@ -87,72 +85,75 @@ public class Main extends Game {
             return;
         }
 
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            //connect and send message to server
-            @Override
-            public void call(Object... args) {
+        //connect and send message to server
+        socket.on(Socket.EVENT_CONNECT, args -> {
 
+            try {
+                JSONObject data = new JSONObject();
+                data.put("username", "Username001");
+                socket.emit("join", data);
+                System.out.println("Connected to server");
+
+                MySocketId = socket.id();
+
+                System.out.println(MySocketId);
+
+
+            } catch (JSONException e) {
+//                    e.printStackTrace();
+            }
+
+        }).on("getPlayers", args -> {
+            JSONArray players = (JSONArray) args[0];
+
+            for(int i = 0; i < players.length(); i++){
                 try {
-                    JSONObject data = new JSONObject();
-                    data.put("username", "yungying");
-                    socket.emit("join", data);
-                    System.out.println("Connected to server");
+                    JSONObject player = players.getJSONObject(i);
+                    String id = player.getString("id");
+                    float x = ((Double) player.getDouble("x")).floatValue();
+                    float y = ((Double) player.getDouble("y")).floatValue();
+                    float stateTime = ((Double) player.getDouble("stateTime")).floatValue();
+                    String currentFrame = player.getString("currentFrame");
 
-                    MySocketId = socket.id();
-
-                    System.out.println(MySocketId);
-
+                    if(!id.equals(MySocketId)){
+                        addPlayer(id, x, y, stateTime, currentFrame);
+                    }
 
                 } catch (JSONException e) {
-//                    e.printStackTrace();
+//                        e.printStackTrace();
+                }
                 }
 
-            }
+        }).on("playerMoved", args -> {
 
+            try {
 
-        }).on("getPlayers", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
                 JSONArray players = (JSONArray) args[0];
-            }
-        }).on("playerMoved", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
 
-                try {
+                for(int i = 0; i < players.length(); i++){
 
-                    JSONArray players = (JSONArray) args[0];
+                    float x = ((Double) players.getJSONObject(i).getDouble("x")).floatValue();
+                    float y = ((Double) players.getJSONObject(i).getDouble("y")).floatValue();
+                    float stateTime = ((Double) players.getJSONObject(i).getDouble("stateTime")).floatValue();
+                    String currentFrame = players.getJSONObject(i).getString("currentFrame");
 
-                    for(int i = 0; i < players.length(); i++){
+                    String id = players.getJSONObject(i).getString("id");
 
-                        float x = ((Double) players.getJSONObject(i).getDouble("x")).floatValue();
-                        float y = ((Double) players.getJSONObject(i).getDouble("y")).floatValue();
-                        float stateTime = ((Double) players.getJSONObject(i).getDouble("stateTime")).floatValue();
-                        String currentFrame = players.getJSONObject(i).getString("currentFrame");
-
-                        String id = players.getJSONObject(i).getString("id");
-
-                        if(!id.equals(MySocketId)){
-                            addPlayer(id, x, y, stateTime, currentFrame);
-                        }else if(otherPlayer.containsKey(id)){
-                            otherPlayer.get(id).setPosition(x, y);
-                            otherPlayer.get(id).setStateTime(stateTime);
-                            otherPlayer.get(id).setCurrentFrameString(currentFrame);
-                        }
-
+                    if(!id.equals(MySocketId)){
+                        addPlayer(id, x, y, stateTime, currentFrame);
+                    }else if(otherPlayer.containsKey(id)){
+                        otherPlayer.get(id).setPosition(x, y);
+                        otherPlayer.get(id).setStateTime(stateTime);
+                        otherPlayer.get(id).setCurrentFrameString(currentFrame);
                     }
-                } catch (Exception e) {
-                    // Print the exact exception and its message for better debugging
-//                    e.printStackTrace();
-                }
 
+                }
+            } catch (Exception e) {
+                // Print the exact exception and its message for better debugging
+//                    e.printStackTrace();
             }
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                System.out.println("Disconnected from server");
-            }
-        });
+
+        }).on(Socket.EVENT_DISCONNECT, args -> System.out.println("Disconnected from server"));
     }
 
     public Socket getSocket(){

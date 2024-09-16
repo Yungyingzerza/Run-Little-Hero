@@ -13,9 +13,9 @@ public class playerTextureList {
     public static final Texture teeSlide = new Texture("characters/Tee/TeeSlide.png");
 
 
-    public static final Animation<Texture> runAnimationTee = new Animation<Texture>(0.1f, teeRunLeft, teeAgainLeft, teeRunRight, teeAgainRight, teeAgainLeft);
-    public static final Animation<Texture> jumpAnimationTee = new Animation<Texture>(0.1f, teeJump);
-    public static final Animation<Texture> slideAnimationTee = new Animation<Texture>(0.1f, teeSlide);
+    public static final Animation<Texture> runAnimationTee = new Animation<>(0.1f, teeRunLeft, teeAgainLeft, teeRunRight, teeAgainRight, teeAgainLeft);
+    public static final Animation<Texture> jumpAnimationTee = new Animation<>(0.1f, teeJump);
+    public static final Animation<Texture> slideAnimationTee = new Animation<>(0.1f, teeSlide);
 
     public static final Texture sakuraRunLeft = new Texture("characters/Sakura/SakuraRunLeft.png");
     public static final Texture sakuraAgainLeft = new Texture("characters/Sakura/SakuraAgainLeft.png");
@@ -24,9 +24,9 @@ public class playerTextureList {
     public static final Texture sakuraJump = new Texture("characters/Sakura/SakuraJump.png");
     public static final Texture sakuraSlide = new Texture("characters/Sakura/SakuraSlide.png");
 
-    public static final Animation<Texture> runAnimationSakura = new Animation<Texture>(0.1f, sakuraRunLeft, sakuraAgainLeft, sakuraRunRight, sakuraAgainRight, sakuraAgainLeft);
-    public static final Animation<Texture> jumpAnimationSakura = new Animation<Texture>(0.1f, sakuraJump);
-    public static final Animation<Texture> slideAnimationSakura = new Animation<Texture>(0.1f, sakuraSlide);
+    public static final Animation<Texture> runAnimationSakura = new Animation<>(0.1f, sakuraRunLeft, sakuraAgainLeft, sakuraRunRight, sakuraAgainRight, sakuraAgainLeft);
+    public static final Animation<Texture> jumpAnimationSakura = new Animation<>(0.1f, sakuraJump);
+    public static final Animation<Texture> slideAnimationSakura = new Animation<>(0.1f, sakuraSlide);
 
     public static Texture getRunTexture(Enum<PLAYERS> player, float stateTime){
         if(player == PLAYERS.TEE){
