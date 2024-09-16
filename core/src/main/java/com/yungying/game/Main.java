@@ -2,7 +2,8 @@ package com.yungying.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.yungying.game.Player.Player;
+import com.yungying.game.Player.OtherPlayer;
+import com.yungying.game.Player.Sakura;
 import com.yungying.game.screens.MainMenuScreen;
 
 import io.socket.client.IO;
@@ -21,7 +22,7 @@ public class Main extends Game {
     private Socket socket;
     private String MySocketId;
 
-    public static HashMap<String, Player> otherPlayer;
+    public static HashMap<String, OtherPlayer> otherPlayer;
 
 
     @Override
@@ -69,11 +70,12 @@ public class Main extends Game {
         }
     }
 
-    private void addPlayer(String id, float x, float y, float stateTime){
-        Player player = new Player(true);
+    private void addPlayer(String id, float x, float y, float stateTime, String currentFrame){
+        OtherPlayer player = new OtherPlayer();
 
         player.setPosition(x, y);
         player.setStateTime(stateTime);
+        player.setCurrentFrameString(currentFrame);
 
         otherPlayer.put(id, player);
     }
@@ -126,16 +128,16 @@ public class Main extends Game {
                         float x = ((Double) players.getJSONObject(i).getDouble("x")).floatValue();
                         float y = ((Double) players.getJSONObject(i).getDouble("y")).floatValue();
                         float stateTime = ((Double) players.getJSONObject(i).getDouble("stateTime")).floatValue();
+                        String currentFrame = players.getJSONObject(i).getString("currentFrame");
 
                         String id = players.getJSONObject(i).getString("id");
 
-                        System.out.println(stateTime);
-
                         if(!id.equals(MySocketId)){
-                            addPlayer(id, x, y, stateTime);
+                            addPlayer(id, x, y, stateTime, currentFrame);
                         }else if(otherPlayer.containsKey(id)){
                             otherPlayer.get(id).setPosition(x, y);
                             otherPlayer.get(id).setStateTime(stateTime);
+                            otherPlayer.get(id).setCurrentFrameString(currentFrame);
                         }
 
                     }

@@ -3,10 +3,10 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.yungying.game.Main;
+import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
+import com.yungying.game.Player.Tee;
 import com.yungying.game.gameInputHandler.gameInputHandler;
 import com.yungying.game.map.Map;
 import com.yungying.game.map.MapLoader;
@@ -24,13 +24,10 @@ public class MainGameScreen implements Screen {
     Map currentMap;
     Map nextMap;
 
-    private Animation<Texture> runAnimation;
-    private  Animation<Texture> jumpAnimation;
-    private  Animation<Texture> slideAnimation;
 
     public MainGameScreen(Main game) {
         this.game = game;
-        player = new Player();
+        player = new Tee();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
@@ -38,9 +35,6 @@ public class MainGameScreen implements Screen {
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
         player.setSpeed(currentMap.getMapSpeed());
 
-        runAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeRunLeft.png"), new Texture("characters/Tee/TeeAgainLeft.png"), new Texture("characters/Tee/TeeRunRight.png"), new Texture("characters/Tee/TeeAgainRight.png"), new Texture("characters/Tee/TeeAgainLeft.png"));
-        jumpAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeJump.png"));
-        slideAnimation = new Animation<Texture>(0.1f, new Texture("characters/Tee/TeeSlide.png"));
     }
 
     @Override
@@ -99,9 +93,9 @@ public class MainGameScreen implements Screen {
 
         //auto run to the right for other players
         if(Main.otherPlayer != null){
-            for (java.util.Map.Entry<String, Player> entry : Main.otherPlayer.entrySet()) {
-                Player value = entry.getValue();
-                value.setPosition(value.getPosition().x + value.getSpeed() * Gdx.graphics.getDeltaTime(), value.getPosition().y);
+            for (java.util.Map.Entry<String, OtherPlayer> entry : Main.otherPlayer.entrySet()) {
+                OtherPlayer player = entry.getValue();
+                player.setPosition(player.getPosition().x + player.getSpeed() * Gdx.graphics.getDeltaTime(), player.getPosition().y);
             }
         }
 
@@ -146,20 +140,15 @@ public class MainGameScreen implements Screen {
 
         //draw other players
         if(Main.otherPlayer != null){
-            for (java.util.Map.Entry<String, Player> entry : Main.otherPlayer.entrySet()) {
+            for (java.util.Map.Entry<String, OtherPlayer> entry : Main.otherPlayer.entrySet()) {
                 // Get the key and value
-                Player value = entry.getValue();
+                OtherPlayer player = entry.getValue();
 
-
-                game.batch.draw(getCurrentFrameByStateTime(value), value.getPosition().x, value.getPosition().y);
+                game.batch.draw(player.getCurrentFrame(), player.getPosition().x, player.getPosition().y, 128,128);
             }
         }
 
-
-
         game.batch.draw(player.getCurrentFrame(), player.getPosition().x, player.getPosition().y);
-
-
 
         game.batch.end();
 
@@ -185,35 +174,20 @@ public class MainGameScreen implements Screen {
         }
     }
 
-    private Texture getCurrentFrameByStateTime(Player player){
-
-
-        return runAnimation.getKeyFrame(gameStates.stateTime, true);
-    }
+    @Override
+    public void resize(int width, int height) {}
 
     @Override
-    public void resize(int width, int height) {
-
-    }
+    public void pause() {}
 
     @Override
-    public void pause() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
-        player.dispose();
         currentMap.dispose();
     }
 }
