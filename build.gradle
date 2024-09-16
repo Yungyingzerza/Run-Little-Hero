@@ -68,6 +68,9 @@ subprojects {
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://jitpack.io' }
   }
+  dependencies {
+    implementation ('io.socket:socket.io-client:2.1.1')
+  }
 }
 
 eclipse.project.name = 'CuteCuteWorld' + '-parent'
