@@ -22,4 +22,20 @@ public class Spike {
     public float getY() {
         return y;
     }
+
+    public int isColliding(float playerX, float playerY) {
+        if(playerX < x + 64 && playerX + 64 > x && playerY < y && playerY + 128 > y){
+
+            if("Spike".equals(type)){
+
+                return -50;
+            }else {
+                return 0;
+            }
+
+        }else{
+            return 0;
+        }
+    }
+
 }
