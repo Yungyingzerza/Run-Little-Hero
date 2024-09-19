@@ -85,6 +85,28 @@ public class MainMenuScreen implements Screen {
                 return true;
             }
 
+
+
+        });
+
+        //on enter key pressed on textfield
+        usernameTextField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if(c == '\r' || c == '\n'){
+                    //start game
+                    String username = usernameTextField.getText();
+
+                    if(username.isEmpty()){
+                        game.setScreen(new MainGameScreen(game, "noName"));
+                        dispose();
+                        return;
+                    }
+
+                    game.setScreen(new MainGameScreen(game, username));
+                    dispose();
+                }
+            }
         });
 
 
@@ -106,7 +128,8 @@ public class MainMenuScreen implements Screen {
                     String username = usernameTextField.getText();
 
                     if(username.isEmpty()){
-                        System.out.println("Username is empty");
+                        game.setScreen(new MainGameScreen(game, "noName"));
+                        dispose();
                         return;
                     }
 
@@ -116,6 +139,10 @@ public class MainMenuScreen implements Screen {
                 }
             }
         });
+
+
+
+
     }
 
 
