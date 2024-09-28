@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.screens.MainMenuScreen;
 
+import com.yungying.game.screens.MainMenuScreen1;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -26,7 +27,7 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        this.setScreen(new MainMenuScreen(this));
+        this.setScreen(new MainMenuScreen1(this));
         otherPlayer = new HashMap<>();
 
         connectToServer();

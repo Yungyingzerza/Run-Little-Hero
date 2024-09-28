@@ -92,8 +92,8 @@ public class MainMenuScreen implements Screen {
         //on enter key pressed on textfield
         usernameTextField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\r' || c == '\n'){
+            public void keyTyped(TextField textField, char inputKey) {
+                if(inputKey == '\r' || inputKey == '\n'){
                     //start game
                     String username = usernameTextField.getText();
 
