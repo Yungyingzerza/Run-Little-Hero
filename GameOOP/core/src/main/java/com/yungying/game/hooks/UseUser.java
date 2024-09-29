@@ -34,7 +34,56 @@ public class UseUser {
         // Build the request
         Net.HttpRequest request = requestBuilder.newRequest()
             .method("POST")
-            .url("http://localhost:8080/user/login") // Update this URL to match your Spring Boot API
+            .url("https://api.yungying.com/gameoop/user/login") // Update this URL to match your Spring Boot API
+            .header("Content-Type", "application/json")
+            .content(jsonContent) // Set the JSON content for the request
+            .build();
+
+        // Send the HTTP request
+        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse response) {
+                if (response.getStatus().getStatusCode() == HttpStatus.SC_OK) { // Check for OK status
+                    // Parse the JSON response into User object
+                    User user = gson.fromJson(response.getResultAsString(), User.class); // Parse the JSON response
+
+                    // Output the username from the response
+                    UseUser.username = user.getUsername();
+                    UseUser.userId = user.getId();
+
+                    latch.countDown(); // Count down the latch to signal completion
+
+                } else {
+                    System.out.println("Failed to fetch user: " + response.getResultAsString());
+                    latch.countDown(); // Count down the latch to signal completion
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                System.out.println("Request failed: " + t.getMessage());
+                latch.countDown(); // Count down the latch to signal completion
+            }
+
+            @Override
+            public void cancelled() {
+                System.out.println("Request cancelled");
+                latch.countDown(); // Count down the latch to signal completion
+            }
+        });
+    }
+
+    public void register(String username, String password, CountDownLatch latch) {
+        // Create a new HttpRequestBuilder
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+
+        // Convert the User object to JSON
+        String jsonContent = gson.toJson(new User(username, password));
+
+        // Build the request
+        Net.HttpRequest request = requestBuilder.newRequest()
+            .method("POST")
+            .url("https://api.yungying.com/gameoop/user/register") // Update this URL to match your Spring Boot API
             .header("Content-Type", "application/json")
             .content(jsonContent) // Set the JSON content for the request
             .build();
@@ -81,7 +130,7 @@ public class UseUser {
         // Build the request
         Net.HttpRequest request = requestBuilder.newRequest()
             .method("GET")
-            .url("http://localhost:8080/user/profile") // Update this URL to match your Spring Boot API
+            .url("https://api.yungying.com/gameoop/user/profile") // Update this URL to match your Spring Boot API
             .header("Content-Type", "application/json")
             .build();
 
