@@ -45,6 +45,8 @@ public class LobbyScreen implements Screen {
         useUser = new UseUser();
 
         loginAndPrintUsername();
+
+        useUser.register("Yung", "1234", new CountDownLatch(1));
     }
 
     private void loginAndPrintUsername() {
