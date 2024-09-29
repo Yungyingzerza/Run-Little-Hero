@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -28,7 +29,7 @@ public class MainMenuScreen implements Screen {
     private TextButton playButton;
     private Label usernameLabel;
     private Label idLabel;
-
+    boolean isInputClick = false;
     Stage stage;
 
     public MainMenuScreen(Main game) {
@@ -46,6 +47,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+
+
+
         // Initialize the camera with your desired viewport size
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 400, camera);
@@ -82,12 +86,28 @@ public class MainMenuScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 stage.setKeyboardFocus(usernameTextField);
+                isInputClick = true;
                 return true;
+            }
+
+            @Override
+            public void exit(InputEvent event,float x, float y,int pointer, Actor fromActor){
+                isInputClick = false;
             }
 
 
 
+
+
+
+
+
         });
+
+
+
+
+
 
         //on enter key pressed on textfield
         usernameTextField.setTextFieldListener(new TextField.TextFieldListener() {
@@ -121,7 +141,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                stage.setKeyboardFocus(null);
+//                stage.setKeyboardFocus(null);
 
                 // Only process button click if the TextField is not focused
                 if (stage.getKeyboardFocus() == null || stage.getKeyboardFocus() == playButton) {
@@ -141,6 +161,16 @@ public class MainMenuScreen implements Screen {
         });
 
 
+        stage.addListener(new ClickListener(){
+            @Override
+            public void clicked (InputEvent event, float x, float y) {
+                if (isInputClick){
+                    return;
+                }
+                stage.setKeyboardFocus(null);
+            }
+
+        });
 
 
     }

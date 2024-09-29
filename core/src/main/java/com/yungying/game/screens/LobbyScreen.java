@@ -4,46 +4,58 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 
-public class MainMenuScreen1 implements Screen {
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class LobbyScreen implements Screen {
 
     Main game;
     private Stage stage;
     private Viewport viewport;
     private OrthographicCamera camera;
     private Skin skin;
-    private TextButton startButton;
+    private ImageButton startButton;
     private TextButton exitButton;
     private Texture backgroundTexture;
 
-    public MainMenuScreen1(Main game) {
+
+    public LobbyScreen(Main game) {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Assuming you have a "uiskin.json" for the button style
+        backgroundTexture = new Texture(Gdx.files.internal("Background.png"));
     }
 
     @Override
     public void show() {
-        // Load the background texture
-        backgroundTexture = new Texture(Gdx.files.internal("background.png"));
+        Texture startTexture = new Texture(Gdx.files.internal("buttons/start.png"));
+        TextureRegionDrawable startDrawable = new TextureRegionDrawable(startTexture);
 
         // Initialize the stage and set the input processor
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
         // Create the "Start" button
-        startButton = new TextButton("Start", skin);
+        startButton = new ImageButton(startDrawable);
         startButton.setPosition(300, 200);  // Adjust the button's position
-        startButton.setSize(200, 50);       // Adjust the button's size
+        startButton.setSize(200, 50);
+
+        // Adjust the button's size
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -51,6 +63,17 @@ public class MainMenuScreen1 implements Screen {
                 game.setScreen(new MainMenuScreen(game));
                 dispose();  // Dispose of the current screen resources
             }
+
+            @Override
+            public void enter(InputEvent event,float x, float y,int pointer, Actor fromActor){
+                startButton.setSize(300,100);
+            }
+
+            @Override
+            public void exit(InputEvent event,float x, float y,int pointer, Actor fromActor){
+                startButton.setSize(200,50);
+            }
+
         });
         stage.addActor(startButton);  // Add the Start button to the stage
 
@@ -76,7 +99,9 @@ public class MainMenuScreen1 implements Screen {
         // Update the camera and set the projection matrix
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
-
+        game.batch.begin();
+        game.batch.draw(backgroundTexture,0,0,camera.viewportWidth,camera.viewportHeight);
+        game.batch.end();
         // Update and draw the stage (UI elements)
         stage.act(delta);  // Process input and actions
         stage.draw();      // Render the stage and its actors (buttons, etc.)
