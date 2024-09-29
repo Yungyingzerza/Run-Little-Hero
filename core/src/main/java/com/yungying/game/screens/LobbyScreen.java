@@ -67,11 +67,13 @@ public class LobbyScreen implements Screen {
             @Override
             public void enter(InputEvent event,float x, float y,int pointer, Actor fromActor){
                 startButton.setSize(300,100);
+                startButton.setPosition(250, 200);
             }
 
             @Override
             public void exit(InputEvent event,float x, float y,int pointer, Actor fromActor){
                 startButton.setSize(200,50);
+                startButton.setPosition(300, 200);
             }
 
         });

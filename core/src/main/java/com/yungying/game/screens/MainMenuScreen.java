@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
@@ -140,11 +141,6 @@ public class MainMenuScreen implements Screen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
-//                stage.setKeyboardFocus(null);
-
-                // Only process button click if the TextField is not focused
-                if (stage.getKeyboardFocus() == null || stage.getKeyboardFocus() == playButton) {
                     String username = usernameTextField.getText();
 
                     if(username.isEmpty()){
@@ -156,7 +152,13 @@ public class MainMenuScreen implements Screen {
                     game.setScreen(new MainGameScreen(game, username));
                     dispose();
 
-                }
+                
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                System.out.println("enter");
+                isInputClick = false;
             }
         });
 
