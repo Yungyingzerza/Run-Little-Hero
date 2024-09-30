@@ -1,5 +1,5 @@
 package com.yungying.game.textureLoader;
 
-public enum PLAYERS {
+public enum PlayerType {
     TEE, SAKURA
 }

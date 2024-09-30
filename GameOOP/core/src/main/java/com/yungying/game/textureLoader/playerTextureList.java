@@ -28,35 +28,35 @@ public class playerTextureList {
     public static final Animation<Texture> jumpAnimationSakura = new Animation<>(0.1f, sakuraJump);
     public static final Animation<Texture> slideAnimationSakura = new Animation<>(0.1f, sakuraSlide);
 
-    public static Texture getRunTexture(Enum<PLAYERS> player, float stateTime){
-        if(player == PLAYERS.TEE){
+    public static Texture getRunTexture(PlayerType player, float stateTime){
+        if(player == PlayerType.TEE){
             return runAnimationTee.getKeyFrame(stateTime, true);
-        }else if(player == PLAYERS.SAKURA){
+        }else if(player == PlayerType.SAKURA){
             return runAnimationSakura.getKeyFrame(stateTime, true);
         }
         return null;
     }
 
-    public static Texture getJumpTexture(Enum<PLAYERS> player, float stateTime){
-        if(player == PLAYERS.TEE){
+    public static Texture getJumpTexture(PlayerType player, float stateTime){
+        if(player == PlayerType.TEE){
             return jumpAnimationTee.getKeyFrame(stateTime, true);
-        }else if(player == PLAYERS.SAKURA){
+        }else if(player == PlayerType.SAKURA){
             return jumpAnimationSakura.getKeyFrame(stateTime, true);
         }
         return null;
     }
 
-    public static Texture getSlideTexture(Enum<PLAYERS> player, float stateTime){
-        if(player == PLAYERS.TEE){
+    public static Texture getSlideTexture(PlayerType player, float stateTime){
+        if(player == PlayerType.TEE){
             return slideAnimationTee.getKeyFrame(stateTime, true);
-        }else if(player == PLAYERS.SAKURA){
+        }else if(player == PlayerType.SAKURA){
             return slideAnimationSakura.getKeyFrame(stateTime, true);
         }
         return null;
     }
 
-    public static Texture getTextureByString(Enum<PLAYERS> player, String skinPath){
-        if(player == PLAYERS.TEE){
+    public static Texture getTextureByString(PlayerType player, String skinPath){
+        if(player == PlayerType.TEE){
 
             if(skinPath == null){
                 return teeRunLeft;
@@ -80,7 +80,7 @@ public class playerTextureList {
             }
 
 
-        }else if(player == PLAYERS.SAKURA){
+        }else if(player == PlayerType.SAKURA){
 
             if(skinPath == null){
                 return sakuraRunLeft;

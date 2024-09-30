@@ -1,17 +1,14 @@
 package com.yungying.game.Player;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
-import com.yungying.game.textureLoader.PLAYERS;
-import com.yungying.game.textureLoader.playerTextureList;
+import com.yungying.game.textureLoader.PlayerType;
+
 
 public class OtherPlayer extends Player {
 
     private String currentFrame;
 
     public OtherPlayer() {
-        super(PLAYERS.TEE);
-        playerType = PLAYERS.TEE;
+        super(PlayerType.TEE);
         this.currentFrame = "characters/Tee/TeeRunLeft.png";
     }
 
