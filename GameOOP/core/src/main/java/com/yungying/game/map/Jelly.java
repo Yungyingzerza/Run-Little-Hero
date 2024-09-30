@@ -1,17 +1,17 @@
 package com.yungying.game.map;
 
 public class Jelly {
-    private final String type;
+    private final ItemType type;
     private final float x;
     private final float y;
 
-    public Jelly(String type, float x, float y) {
+    public Jelly(ItemType type, float x, float y) {
         this.type = type;
         this.x = x;
         this.y = y;
     }
 
-    public String getType() {
+    public ItemType getType() {
         return type;
     }
 
@@ -26,9 +26,9 @@ public class Jelly {
     public int isColliding(float playerX, float playerY) {
         if(playerX < x + 64 && playerX + 64 > x && playerY < y && playerY + 128 > y){
 
-            if("Coin".equals(type)){
+            if(type == ItemType.Coin){
                 return 50;
-            }else if("Cherry".equals(type)){
+            }else if(type == ItemType.Cherry){
                 return 100;
             }else {
                 return 0;

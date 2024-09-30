@@ -9,6 +9,8 @@ import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
 import com.yungying.game.Player.Tee;
 import com.yungying.game.gameInputHandler.gameInputHandler;
+import com.yungying.game.map.BlockType;
+import com.yungying.game.map.ItemType;
 import com.yungying.game.map.Map;
 import com.yungying.game.map.MapLoader;
 import com.yungying.game.states.gameStates;
@@ -32,7 +34,7 @@ public class MainGameScreen implements Screen {
     float playerY;
 
     boolean isColliding;
-    String blockType;
+    BlockType blockType;
     float blockYHighest;
 
     private final BitmapFont font;
@@ -57,7 +59,7 @@ public class MainGameScreen implements Screen {
         playerY = player.getPosition().y - 64;
 
         isColliding = false;
-        blockType = "null";
+        blockType = BlockType.Air;
         blockYHighest = 0;
     }
 
@@ -165,7 +167,7 @@ public class MainGameScreen implements Screen {
         //draw tiles
         for(int i = 0; i < currentMap.getTiles().size(); i++) {
             //skip null tiles
-            if(currentMap.getTiles().elementAt(i).getType().equals("null")) continue;
+            if(currentMap.getTiles().elementAt(i).getType().equals(BlockType.Air)) continue;
 
             game.batch.draw(currentMap.getTileTextureAtIndex(i), currentMap.getTiles().elementAt(i).getStartX(), currentMap.getTiles().elementAt(i).getStartY(), 128, 128);
         }
@@ -173,7 +175,7 @@ public class MainGameScreen implements Screen {
         //draw jellies
         for(int i = 0; i < currentMap.getJellies().size(); i++) {
 
-            if(currentMap.getJellies().elementAt(i).getType().equals("null")) continue;
+            if(currentMap.getJellies().elementAt(i).getType().equals(ItemType.Air)) continue;
 
             game.batch.draw(currentMap.getJellyTextureAtIndex(i), currentMap.getJellies().elementAt(i).getX(), currentMap.getJellies().elementAt(i).getY(), 64, 64);
         }

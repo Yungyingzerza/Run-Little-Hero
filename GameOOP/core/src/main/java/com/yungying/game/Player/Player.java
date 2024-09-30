@@ -3,6 +3,7 @@ package com.yungying.game.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.yungying.game.map.BlockType;
 import com.yungying.game.states.gameStates;
 import com.yungying.game.textureLoader.PLAYERS;
 import com.yungying.game.textureLoader.playerTextureList;
@@ -77,7 +78,7 @@ public class Player {
         isSliding = true;
     }
 
-    public void gravity(boolean isColliding, float TopBorderOfTile, String blockType) {
+    public void gravity(boolean isColliding, float TopBorderOfTile, BlockType blockType) {
 
         if(isSliding) {
             currentFrame = playerTextureList.getSlideTexture(playerType, gameStates.stateTime);
@@ -100,7 +101,7 @@ public class Player {
             currentFrame = playerTextureList.getJumpTexture(playerType, gameStates.stateTime);
 
             //if the player is on the ground
-            if(position.y/TopBorderOfTile <= 1.3f && (position.y + 64)/TopBorderOfTile >= 0.98f && !blockType.equals("null")) {
+            if(position.y/TopBorderOfTile <= 1.3f && (position.y + 64)/TopBorderOfTile >= 0.98f && !blockType.equals(BlockType.Air)) {
                 isJumping = false;
                 jumpCounter = 0;
                 isHighestJump = false;
@@ -108,7 +109,7 @@ public class Player {
             return;
         }
 
-        if((isColliding || ( (position.y + 64) / TopBorderOfTile) >= 0.98f && (position.y + 64) / TopBorderOfTile <= 1.3f ) && !blockType.equals("null")) {
+        if((isColliding || ( (position.y + 64) / TopBorderOfTile) >= 0.98f && (position.y + 64) / TopBorderOfTile <= 1.3f ) && !blockType.equals(BlockType.Air)) {
             position.y = TopBorderOfTile;
         }else{
             position.y -= (gameStates.GRAVITY + position.y) * Gdx.graphics.getDeltaTime();
