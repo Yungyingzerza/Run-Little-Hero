@@ -25,7 +25,17 @@ public class MainGameScreen implements Screen {
     Map currentMap;
     Map nextMap;
 
-    private BitmapFont font;
+    //zoom for camera
+    private float zoom = 1;
+
+    float playerX;
+    float playerY;
+
+    boolean isColliding;
+    String blockType;
+    float blockYHighest;
+
+    private final BitmapFont font;
 
 
     public MainGameScreen(Main game, String username) {
@@ -40,6 +50,15 @@ public class MainGameScreen implements Screen {
         player.setUsername(username);
         font = new BitmapFont();
         font.getData().setScale(2.5f);
+
+        //+64 to get the middle of the player
+        playerX = player.getPosition().x + 64;
+        //64 to get the middle of the player (bottom)
+        playerY = player.getPosition().y - 64;
+
+        isColliding = false;
+        blockType = "null";
+        blockYHighest = 0;
     }
 
     @Override
@@ -48,33 +67,28 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
+        checkDeath();
+        handleNextMap();
+        input();
+        logic();
+        camera();
+        draw();
+
+        sendPlayerData();
+
+
+    }
+
+    public void checkDeath(){
         if(player.isDead()){
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }
+    }
 
-        //+64 to get the middle of the player
-        float playerX = player.getPosition().x + 64;
-
-        //64 to get the middle of the player (bottom)
-        float playerY = player.getPosition().y - 64;
-
-        boolean isColliding = false;
-        String type = "null";
-        float endY = 0;
-        float zoom = 1;
-
-        if(currentMap.getCurrentTile(playerX) != null) {
-            isColliding = currentMap.isColliding(playerX, playerY);
-            endY = currentMap.getCurrentTile(playerX).getEndY();
-            zoom = currentMap.getCurrentTile(playerX).getZoom();
-            type = currentMap.getCurrentTile(playerX).getType();
-        }
-
-        if(playerX >= currentMap.getLastTile().getEndX()) {
+    public void handleNextMap(){
+        if(player.getPosition().x >= currentMap.getLastTile().getEndX()) {
 
             if(currentMap.getNextMap().equals("Level2")){
                 currentMap = nextMap;
@@ -88,13 +102,28 @@ public class MainGameScreen implements Screen {
 
             player.setPosition(currentMap.getFirstTile().getStartX(), currentMap.getFirstTile().getEndY());
         }
+    }
 
+    public void input(){
         //input Part
         inputHandler.handleInput(player);
+    }
+
+    public void logic(){
+
+        playerX = player.getPosition().x + 64;
+        playerY = player.getPosition().y - 64;
+
+        if(currentMap.getCurrentTile(playerX) != null) {
+            isColliding = currentMap.isColliding(playerX, playerY);
+            blockYHighest = currentMap.getCurrentTile(playerX).getEndY();
+            zoom = currentMap.getCurrentTile(playerX).getZoom();
+            blockType = currentMap.getCurrentTile(playerX).getType();
+        }
 
         //auto run to the right
         player.run(Gdx.graphics.getDeltaTime(), gameStates.stateTime);
-        player.gravity(isColliding, endY, type);
+        player.gravity(isColliding, blockYHighest, blockType);
 
         //auto run to the right for other players
         if(Main.otherPlayer != null){
@@ -112,15 +141,21 @@ public class MainGameScreen implements Screen {
 
         //state time
         gameStates.stateTime += Gdx.graphics.getDeltaTime();
+    }
 
+    public void camera(){
         //smooth zoom
         camera.zoom -= (camera.zoom - zoom) * 0.025f;
-
-
         //camera Part
         camera.position.set(player.getPosition().x - 300 + camera.viewportWidth / 2 * camera.zoom, camera.viewportHeight / 2 * camera.zoom, 0);
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
+    }
+
+
+    public void draw(){
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
         //render Part
         game.batch.begin();
@@ -162,10 +197,6 @@ public class MainGameScreen implements Screen {
         font.draw(game.batch, ""+player.getScore(), camera.position.x + 600, camera.position.y + 300, 200, 1, true);
 
         game.batch.end();
-
-        sendPlayerData();
-
-
     }
 
     private void sendPlayerData(){
