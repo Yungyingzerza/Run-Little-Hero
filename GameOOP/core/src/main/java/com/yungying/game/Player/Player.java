@@ -100,7 +100,7 @@ public class Player {
             currentFrame = playerTextureList.getJumpTexture(playerType, gameStates.stateTime);
 
             //if the player is on the ground
-            if(position.y/TopBorderOfTile <= 1.0f && (position.y + 64)/TopBorderOfTile >= 0.95f && !blockType.equals("null")) {
+            if(position.y/TopBorderOfTile <= 1.3f && (position.y + 64)/TopBorderOfTile >= 0.98f && !blockType.equals("null")) {
                 isJumping = false;
                 jumpCounter = 0;
                 isHighestJump = false;
@@ -108,7 +108,7 @@ public class Player {
             return;
         }
 
-        if((isColliding || ( (position.y + 64) / TopBorderOfTile) >= 0.95f && (position.y + 64) / TopBorderOfTile <= 1f ) && !blockType.equals("null")) {
+        if((isColliding || ( (position.y + 64) / TopBorderOfTile) >= 0.98f && (position.y + 64) / TopBorderOfTile <= 1.3f ) && !blockType.equals("null")) {
             position.y = TopBorderOfTile;
         }else{
             position.y -= (gameStates.GRAVITY + position.y) * Gdx.graphics.getDeltaTime();

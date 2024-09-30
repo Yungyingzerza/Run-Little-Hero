@@ -42,7 +42,7 @@ public class Tile {
     }
 
     public boolean isColliding(float playerY) {
-        return ((playerY + 64) >= endY || (playerY + 64)/endY >= 0.95f)  && !type.equals("null");
+        return ((playerY + 64) >= endY || (playerY + 64)/endY >= 0.98f)  && !type.equals("null");
     }
 
 }
