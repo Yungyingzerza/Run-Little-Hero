@@ -3,15 +3,16 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -77,11 +78,28 @@ public class MainMenuScreen implements Screen {
         usernameLabel.setPosition(200, 320); // Set the position just above the TextField
         stage.addActor(usernameLabel);
 
+        Texture backgroundTexture = new Texture(Gdx.files.internal("test.jpg"));
+        Drawable backgroundDrawable = new TextureRegionDrawable(backgroundTexture);
+
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = skin.getFont("default-font");
+        textFieldStyle.fontColor = skin.getColor("black");
+        textFieldStyle.background = backgroundDrawable;
+
+
+        Texture cursorTexture = new Texture(Gdx.files.internal("test2.png")); // Replace with your own cursor image if needed
+        TextureRegionDrawable cursorDrawable = new TextureRegionDrawable(new TextureRegion(cursorTexture));
+        cursorDrawable.setMinHeight(50);
+        cursorDrawable.setMinWidth(20);
+        textFieldStyle.cursor = cursorDrawable;
+        
+
         // Create a TextField
-        usernameTextField = new TextField("", skin);
+        usernameTextField = new TextField("", textFieldStyle);
+
+
         usernameTextField.setPosition(200, 200);
         usernameTextField.setSize(400, 100);
-        stage.addActor(usernameTextField);
 
         usernameTextField.addListener(new ClickListener() {
             @Override
@@ -96,19 +114,7 @@ public class MainMenuScreen implements Screen {
                 isInputClick = false;
             }
 
-
-
-
-
-
-
-
         });
-
-
-
-
-
 
         //on enter key pressed on textfield
         usernameTextField.setTextFieldListener(new TextField.TextFieldListener() {
@@ -129,6 +135,9 @@ public class MainMenuScreen implements Screen {
                 }
             }
         });
+
+
+        stage.addActor(usernameTextField);
 
 
         // Create a Play button
@@ -152,7 +161,7 @@ public class MainMenuScreen implements Screen {
                     game.setScreen(new MainGameScreen(game, username));
                     dispose();
 
-                
+
             }
 
             @Override
