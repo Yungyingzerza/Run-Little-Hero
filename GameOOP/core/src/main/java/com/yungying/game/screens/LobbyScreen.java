@@ -34,7 +34,6 @@ public class LobbyScreen implements Screen {
     private ImageButton startButton;
     private TextButton exitButton;
     private Texture backgroundTexture;
-    private UseUser useUser;
 
 
     public LobbyScreen(Main game) {
@@ -43,30 +42,11 @@ public class LobbyScreen implements Screen {
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Assuming you have a "uiskin.json" for the button style
         backgroundTexture = new Texture(Gdx.files.internal("Background.png"));
-        useUser = new UseUser();
 
-        loginAndPrintUsername();
 
     }
 
-    private void loginAndPrintUsername() {
-        CountDownLatch latch = new CountDownLatch(1); // Initialize latch with count of 1
 
-        System.out.println("Logging in...");
-        Enum<Authentication> status = useUser.login("Yung", "1234", latch); // Pass the latch
-        System.out.println("Status: " + status);
-        // Wait for the login to complete
-        new Thread(() -> {
-            try {
-                latch.await(); // Wait until the latch is counted down
-                // Now that login is complete, print the username
-                if(status.equals(Authentication.SUCCESS))
-                    System.out.println("Username: " + UseUser.username);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start(); // Start the thread
-    }
 
     @Override
     public void show() {

@@ -17,6 +17,10 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
+import com.yungying.game.hooks.Authentication;
+import com.yungying.game.hooks.UseUser;
+
+import java.util.concurrent.CountDownLatch;
 
 
 public class MainMenuScreen implements Screen {
@@ -29,10 +33,12 @@ public class MainMenuScreen implements Screen {
     Skin skin;
     private TextField usernameTextField;
     private TextButton playButton;
+    private TextButton loginButton;
     private Label usernameLabel;
     private Label idLabel;
     boolean isInputClick = false;
     Stage stage;
+    private UseUser useUser;
 
     public MainMenuScreen(Main game) {
         this.game = game;
@@ -41,7 +47,9 @@ public class MainMenuScreen implements Screen {
         skin.addRegions(atlas);
 
         playButton = new TextButton("Play", skin);
+        loginButton = new TextButton("Login",skin);
         usernameTextField = new TextField("Username", skin);
+        useUser = new UseUser();
 
 
 
@@ -92,7 +100,7 @@ public class MainMenuScreen implements Screen {
         cursorDrawable.setMinHeight(50);
         cursorDrawable.setMinWidth(20);
         textFieldStyle.cursor = cursorDrawable;
-        
+
 
         // Create a TextField
         usernameTextField = new TextField("", textFieldStyle);
@@ -166,11 +174,29 @@ public class MainMenuScreen implements Screen {
 
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
-                System.out.println("enter");
                 isInputClick = false;
             }
         });
 
+        // Create a Play button
+        loginButton = new TextButton("Login", skin);
+        loginButton.setPosition(300, 50);
+        loginButton.setSize(200, 50);
+        stage.addActor(loginButton);
+
+        // Add click listener to the Play button
+        loginButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LoginScreen(game));
+                dispose();
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                isInputClick = false;
+            }
+        });
 
         stage.addListener(new ClickListener(){
             @Override
