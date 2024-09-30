@@ -47,7 +47,7 @@ public class MapLoader implements Map {
         for (int i = 0; i < mapData.tiles.size; i++) {
             MapData.TileData tileData = mapData.tiles.get(i);
             float x = 128 * i + initialX; // Position calculation
-            String type = tileData.type;
+            BlockType type = tileData.type;
             float y = tileData.y;
             float zoom = tileData.zoom;
 
@@ -57,7 +57,7 @@ public class MapLoader implements Map {
 
         for (int i = 0; i < mapData.jellies.size; i++) {
             MapData.Jelly jellyData = mapData.jellies.get(i);
-            String type = jellyData.type;
+            ItemType type = jellyData.type;
             float x = 128 * i + initialX; // Position calculation
             float y = jellyData.y;
 
@@ -73,10 +73,10 @@ public class MapLoader implements Map {
     @Override
     public Texture getTileTextureAtIndex(int index) {
         if (index >= 0 && index < tiles.size()) {
-            String type = tiles.get(index).getType();
-            if ("Grass".equals(type)) {
+            BlockType type = tiles.get(index).getType();
+            if (type.equals(BlockType.Grass)) {
                 return grassTexture;
-            } else if ("GrassWinter".equals(type)) {
+            } else if (type.equals(BlockType.GrassWinter)) {
                 return grassWinterTexture;
             }
         }
@@ -86,10 +86,10 @@ public class MapLoader implements Map {
     @Override
     public Texture getJellyTextureAtIndex(int index) {
         if (index >= 0 && index < jellies.size()) {
-            String type = jellies.get(index).getType();
-            if ("Coin".equals(type)) {
+            ItemType type = jellies.get(index).getType();
+            if (type.equals(ItemType.Coin)) {
                 return Coin;
-            }else if ("Cherry".equals(type)) {
+            }else if (type.equals(ItemType.Cherry)) {
                 return Cherry;
             }
         }

@@ -11,13 +11,13 @@ public class MapData {
     public Array<Jelly> jellies;
 
     public static class TileData {
-        public String type;
+        public BlockType type;
         public float y;
         public float zoom;
     }
 
     public static class Jelly{
-        public String type;
+        public ItemType type;
         public float y;
     }
 }
