@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
+import com.yungying.game.hooks.Authentication;
 import com.yungying.game.hooks.UseUser;
 
 import java.awt.event.MouseEvent;
@@ -46,21 +47,21 @@ public class LobbyScreen implements Screen {
 
         loginAndPrintUsername();
 
-        useUser.register("Yung", "1234", new CountDownLatch(1));
     }
 
     private void loginAndPrintUsername() {
         CountDownLatch latch = new CountDownLatch(1); // Initialize latch with count of 1
 
         System.out.println("Logging in...");
-        useUser.login("Yung", "1234", latch); // Pass the latch
-
+        Enum<Authentication> status = useUser.login("Yung", "1234", latch); // Pass the latch
+        System.out.println("Status: " + status);
         // Wait for the login to complete
         new Thread(() -> {
             try {
                 latch.await(); // Wait until the latch is counted down
                 // Now that login is complete, print the username
-                System.out.println("Username: " + UseUser.username);
+                if(status.equals(Authentication.SUCCESS))
+                    System.out.println("Username: " + UseUser.username);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

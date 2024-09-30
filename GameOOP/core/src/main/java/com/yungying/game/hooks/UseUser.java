@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Json;
 import com.google.gson.Gson;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class UseUser {
 
@@ -22,14 +23,14 @@ public class UseUser {
 
 
 
-    public void login(String username, String password, CountDownLatch latch) {
+    public Enum<Authentication> login(String username, String password, CountDownLatch latch) {
         // Create a new HttpRequestBuilder
         HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
 
         // Convert the User object to JSON
         String jsonContent = gson.toJson(new User(username, password));
 
-        System.out.println(jsonContent);
+        AtomicReference<Authentication> authResult = new AtomicReference<>(Authentication.ERROR);
 
         // Build the request
         Net.HttpRequest request = requestBuilder.newRequest()
@@ -51,10 +52,21 @@ public class UseUser {
                     UseUser.username = user.getUsername();
                     UseUser.userId = user.getId();
 
+                    authResult.set(Authentication.SUCCESS);
+
                     latch.countDown(); // Count down the latch to signal completion
 
                 } else {
-                    System.out.println("Failed to fetch user: " + response.getResultAsString());
+                    ErrorResponse errorResponse = gson.fromJson(response.getResultAsString(), ErrorResponse.class); // Parse the JSON response
+
+                    if (errorResponse.getMessage().equals("User not found")) {
+                        authResult.set(Authentication.USER_NOT_FOUND);
+                    } else if (errorResponse.getMessage().equals("Invalid password")) {
+                        authResult.set(Authentication.WRONG_PASSWORD);
+                    } else {
+                        authResult.set(Authentication.ERROR);
+                    }
+
                     latch.countDown(); // Count down the latch to signal completion
                 }
             }
@@ -62,23 +74,43 @@ public class UseUser {
             @Override
             public void failed(Throwable t) {
                 System.out.println("Request failed: " + t.getMessage());
+
+                authResult.set(Authentication.ERROR);
+
                 latch.countDown(); // Count down the latch to signal completion
             }
 
             @Override
             public void cancelled() {
                 System.out.println("Request cancelled");
+
+                authResult.set(Authentication.ERROR);
+
                 latch.countDown(); // Count down the latch to signal completion
             }
         });
+
+        // Wait for the HTTP request to finish
+        try {
+            latch.await(); // This blocks until latch.countDown() is called
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            authResult.set(Authentication.ERROR); // Set the result to ERROR if interrupted
+        }
+
+        // Return the authentication result
+        return authResult.get();
+
     }
 
-    public void register(String username, String password, CountDownLatch latch) {
+    public Enum<Authentication> register(String username, String password, CountDownLatch latch) {
         // Create a new HttpRequestBuilder
         HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
 
         // Convert the User object to JSON
         String jsonContent = gson.toJson(new User(username, password));
+
+        AtomicReference<Authentication> authResult = new AtomicReference<>(Authentication.ERROR);
 
         // Build the request
         Net.HttpRequest request = requestBuilder.newRequest()
@@ -100,10 +132,22 @@ public class UseUser {
                     UseUser.username = user.getUsername();
                     UseUser.userId = user.getId();
 
+                    authResult.set(Authentication.SUCCESS);
+
                     latch.countDown(); // Count down the latch to signal completion
 
+
+
                 } else {
-                    System.out.println("Failed to fetch user: " + response.getResultAsString());
+
+                    ErrorResponse errorResponse = gson.fromJson(response.getResultAsString(), ErrorResponse.class); // Parse the JSON response
+
+                    if (errorResponse.getMessage().equals("User already exists")) {
+                        authResult.set(Authentication.USER_ALREADY_EXISTS);
+                    } else {
+                        authResult.set(Authentication.ERROR);
+                    }
+
                     latch.countDown(); // Count down the latch to signal completion
                 }
             }
@@ -111,15 +155,32 @@ public class UseUser {
             @Override
             public void failed(Throwable t) {
                 System.out.println("Request failed: " + t.getMessage());
+
+                authResult.set(Authentication.ERROR);
+
                 latch.countDown(); // Count down the latch to signal completion
             }
 
             @Override
             public void cancelled() {
                 System.out.println("Request cancelled");
+
+                authResult.set(Authentication.ERROR);
+
                 latch.countDown(); // Count down the latch to signal completion
             }
         });
+
+        // Wait for the HTTP request to finish
+        try {
+            latch.await(); // This blocks until latch.countDown() is called
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            authResult.set(Authentication.ERROR); // Set the result to ERROR if interrupted
+        }
+
+        // Return the authentication result
+        return authResult.get();
     }
 
 
