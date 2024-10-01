@@ -2,6 +2,7 @@ package com.yungying.game.textureLoader;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.yungying.game.Main;
 
 public class playerTextureList {
 
@@ -11,7 +12,6 @@ public class playerTextureList {
     public static final Texture teeAgainRight = new Texture("characters/Tee/TeeAgainRight.png");
     public static final Texture teeJump = new Texture("characters/Tee/TeeJump.png");
     public static final Texture teeSlide = new Texture("characters/Tee/TeeSlide.png");
-
 
     public static final Animation<Texture> runAnimationTee = new Animation<>(0.1f, teeRunLeft, teeAgainLeft, teeRunRight, teeAgainRight, teeAgainLeft);
     public static final Animation<Texture> jumpAnimationTee = new Animation<>(0.1f, teeJump);
@@ -85,6 +85,8 @@ public class playerTextureList {
     public static final Animation<Texture> runAnimationCuteGirl = new Animation<>(0.01f, cuteGirlRun1, cuteGirlRun2, cuteGirlRun3, cuteGirlRun4, cuteGirlRun5, cuteGirlRun6, cuteGirlRun7, cuteGirlRun8, cuteGirlRun9, cuteGirlRun10, cuteGirlRun11, cuteGirlRun12, cuteGirlRun13, cuteGirlRun14, cuteGirlRun15, cuteGirlRun16, cuteGirlRun17, cuteGirlRun18, cuteGirlRun19, cuteGirlRun20);
     public static final Animation<Texture> jumpAnimationCuteGirl = new Animation<>(0.01f, cuteGirlJump1, cuteGirlJump2, cuteGirlJump3, cuteGirlJump4, cuteGirlJump5, cuteGirlJump6, cuteGirlJump7, cuteGirlJump8, cuteGirlJump9, cuteGirlJump10, cuteGirlJump11, cuteGirlJump12, cuteGirlJump13, cuteGirlJump14, cuteGirlJump15, cuteGirlJump16, cuteGirlJump17, cuteGirlJump18, cuteGirlJump19, cuteGirlJump20, cuteGirlJump21, cuteGirlJump22, cuteGirlJump23, cuteGirlJump24, cuteGirlJump25, cuteGirlJump26, cuteGirlJump27, cuteGirlJump28, cuteGirlJump29, cuteGirlJump30);
     public static final Animation<Texture> slideAnimationCuteGirl = new Animation<>(0.01f, cuteGirlSlide1);
+
+
 
     public static Texture getRunTexture(PlayerType player, float stateTime){
         if(player == PlayerType.TEE){
@@ -282,5 +284,10 @@ public class playerTextureList {
         }
 
         return null;
+    }
+
+    static {
+        System.out.println("Loading textures...");
+        Main.isTextureLoaded = true;
     }
 }

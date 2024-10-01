@@ -50,6 +50,7 @@ public class MainMenuScreen implements Screen {
         loginButton = new TextButton("Login",skin);
         usernameTextField = new TextField("Username", skin);
 
+
     }
 
     @Override

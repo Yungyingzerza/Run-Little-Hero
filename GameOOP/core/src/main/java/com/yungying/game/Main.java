@@ -20,6 +20,8 @@ public class Main extends Game {
     private Socket socket;
     private String MySocketId;
 
+    public static boolean isTextureLoaded = false;
+
     public static HashMap<String, OtherPlayer> otherPlayer;
 
 
@@ -105,6 +107,11 @@ public class Main extends Game {
             }
 
         }).on("getPlayers", args -> {
+
+            if(!isTextureLoaded){
+                return;
+            }
+
             JSONArray players = (JSONArray) args[0];
 
             for(int i = 0; i < players.length(); i++){
@@ -128,6 +135,10 @@ public class Main extends Game {
                 }
 
         }).on("playerMoved", args -> {
+
+            if(!isTextureLoaded){
+                return;
+            }
 
             try {
 
