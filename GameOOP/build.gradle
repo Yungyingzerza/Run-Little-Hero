@@ -71,6 +71,9 @@ subprojects {
   dependencies {
     implementation ('io.socket:socket.io-client:2.1.1')
     implementation ('com.google.code.gson:gson:2.7')
+    implementation ('com.badlogicgames.gdx:gdx-freetype:1.12.1')
+    implementation ('com.badlogicgames.gdx:gdx-freetype-platform:1.12.1:natives-desktop')
+    implementation ('com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10.1')
   }
 }
 

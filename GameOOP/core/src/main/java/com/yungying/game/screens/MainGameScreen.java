@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.yungying.game.Main;
+import com.yungying.game.Player.CuteGirl;
 import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
-import com.yungying.game.Player.Tee;
 import com.yungying.game.gameInputHandler.gameInputHandler;
 import com.yungying.game.map.BlockType;
 import com.yungying.game.map.ItemType;
@@ -42,7 +43,7 @@ public class MainGameScreen implements Screen {
 
     public MainGameScreen(Main game, String username) {
         this.game = game;
-        player = new Tee();
+        player = new CuteGirl();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
@@ -50,8 +51,12 @@ public class MainGameScreen implements Screen {
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
         player.setSpeed(currentMap.getMapSpeed());
         player.setUsername(username);
-        font = new BitmapFont();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Bungee-Regular.otf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 12;
+        font = generator.generateFont(parameter);
         font.getData().setScale(2.5f);
+        generator.dispose();
 
         //+64 to get the middle of the player
         playerX = player.getPosition().x + 64;
@@ -211,6 +216,7 @@ public class MainGameScreen implements Screen {
             data.put("stateTime", gameStates.stateTime);
             data.put("score", player.getScore());
             data.put("username", player.getUsername());
+            data.put("playerType", player.getPlayerType().toString());
             game.getSocket().emit("playerMoved", data);
 
         } catch (JSONException e) {

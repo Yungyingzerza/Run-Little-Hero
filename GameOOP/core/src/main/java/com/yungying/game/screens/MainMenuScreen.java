@@ -32,13 +32,14 @@ public class MainMenuScreen implements Screen {
 
     Skin skin;
     private TextField usernameTextField;
-    private TextButton playButton;
+    private ImageButton playButton;
     private TextButton loginButton;
-    private Label usernameLabel;
     private Label idLabel;
     boolean isInputClick = false;
     Stage stage;
-    private UseUser useUser;
+
+    private Texture playTexture;
+    private Texture hoverPlayTexture;
 
     public MainMenuScreen(Main game) {
         this.game = game;
@@ -46,12 +47,8 @@ public class MainMenuScreen implements Screen {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         skin.addRegions(atlas);
 
-        playButton = new TextButton("Play", skin);
         loginButton = new TextButton("Login",skin);
         usernameTextField = new TextField("Username", skin);
-        useUser = new UseUser();
-
-
 
     }
 
@@ -82,7 +79,7 @@ public class MainMenuScreen implements Screen {
         stage.addActor(idLabel);
 
         // Create a Label for Username
-        usernameLabel = new Label("Username", skin);
+        Label usernameLabel = new Label("Username", skin);
         usernameLabel.setPosition(200, 320); // Set the position just above the TextField
         stage.addActor(usernameLabel);
 
@@ -147,11 +144,15 @@ public class MainMenuScreen implements Screen {
 
         stage.addActor(usernameTextField);
 
+        playTexture = new Texture(Gdx.files.internal("buttons/Play/Default.png"));
+        hoverPlayTexture = new Texture(Gdx.files.internal("buttons/Play/Hover.png"));
+        TextureRegionDrawable playDrawable = new TextureRegionDrawable(new TextureRegion(playTexture));
+
 
         // Create a Play button
-        playButton = new TextButton("Play", skin);
+        playButton = new ImageButton(playDrawable);
         playButton.setPosition(300, 100);
-        playButton.setSize(200, 50);
+        playButton.setSize(200, 100);
         stage.addActor(playButton);
 
         // Add click listener to the Play button
@@ -175,6 +176,13 @@ public class MainMenuScreen implements Screen {
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
+
+                playButton.getStyle().imageUp = new TextureRegionDrawable(hoverPlayTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                playButton.getStyle().imageUp = new TextureRegionDrawable(playTexture);
             }
         });
 

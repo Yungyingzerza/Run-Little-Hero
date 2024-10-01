@@ -25,6 +25,8 @@ public class LobbyScreen implements Screen {
     private final Skin skin;
     private ImageButton startButton;
     private final Texture backgroundTexture;
+    private Texture startTexture;
+    private Texture hoverStartTexture;
 
     // Define initial size and position
     float initialX = 400;
@@ -45,7 +47,7 @@ public class LobbyScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Assuming you have a "uiskin.json" for the button style
-        backgroundTexture = new Texture(Gdx.files.internal("Background.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("Backgrounds/Midnight.jpeg"));
 
 
     }
@@ -54,7 +56,8 @@ public class LobbyScreen implements Screen {
 
     @Override
     public void show() {
-        Texture startTexture = new Texture(Gdx.files.internal("buttons/start.png"));
+        startTexture = new Texture(Gdx.files.internal("buttons/Start/Default.png"));
+        hoverStartTexture = new Texture(Gdx.files.internal("buttons/Start/Hover.png"));
         TextureRegionDrawable startDrawable = new TextureRegionDrawable(startTexture);
 
         // Initialize the stage and set the input processor
@@ -81,6 +84,9 @@ public class LobbyScreen implements Screen {
                 // Set target size to larger when the mouse enters
                 targetWidth = 300;
                 targetHeight = 150;
+
+                // Change the button texture on hover
+                startButton.getStyle().imageUp = new TextureRegionDrawable(hoverStartTexture);
             }
 
             @Override
@@ -88,6 +94,9 @@ public class LobbyScreen implements Screen {
                 // Set target size back to the original when the mouse exits
                 targetWidth = initialWidth;
                 targetHeight = initialHeight;
+
+                // Change the button texture back to the original
+                startButton.getStyle().imageUp = new TextureRegionDrawable(startTexture);
             }
         });
         stage.addActor(startButton);  // Add the Start button to the stage

@@ -68,8 +68,8 @@ public class Main extends Game {
         }
     }
 
-    private void addPlayer(String id, float x, float y, float stateTime, String currentFrame, String username){
-        OtherPlayer player = new OtherPlayer();
+    private void addPlayer(String id, float x, float y, float stateTime, String currentFrame, String username, String playerType){
+        OtherPlayer player = new OtherPlayer(playerType);
 
         player.setPosition(x, y);
         player.setStateTime(stateTime);
@@ -116,9 +116,10 @@ public class Main extends Game {
                     float stateTime = ((Double) player.getDouble("stateTime")).floatValue();
                     String currentFrame = player.getString("currentFrame");
                     String username = player.getString("username");
+                    String playerType = player.getString("playerType");
 
                     if(!id.equals(MySocketId)){
-                        addPlayer(id, x, y, stateTime, currentFrame, username);
+                        addPlayer(id, x, y, stateTime, currentFrame, username, playerType);
                     }
 
                 } catch (JSONException e) {
@@ -141,9 +142,10 @@ public class Main extends Game {
                     String username = players.getJSONObject(i).getString("username");
 
                     String id = players.getJSONObject(i).getString("id");
+                    String playerType = players.getJSONObject(i).getString("playerType");
 
                     if(!id.equals(MySocketId)){
-                        addPlayer(id, x, y, stateTime, currentFrame, username);
+                        addPlayer(id, x, y, stateTime, currentFrame, username, playerType);
                     }else if(otherPlayer.containsKey(id)){
                         otherPlayer.get(id).setPosition(x, y);
                         otherPlayer.get(id).setStateTime(stateTime);

@@ -118,7 +118,7 @@ public class Player {
         if((isColliding || ( (position.y + 64) / TopBorderOfTile) >= 0.98f && (position.y + 64) / TopBorderOfTile <= 1.1f ) && !blockType.equals(BlockType.Air)) {
             position.y = TopBorderOfTile;
         }else{
-            position.y -= (gameStates.GRAVITY/2.5f) * Gdx.graphics.getDeltaTime();
+            position.y -= (gameStates.GRAVITY/3.25f) * Gdx.graphics.getDeltaTime();
         }
     }
 
