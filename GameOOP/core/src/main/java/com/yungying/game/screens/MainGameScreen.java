@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 public class MainGameScreen implements Screen {
     Player player;
+    float timer;
 
     //camera to follow player
     private final OrthographicCamera camera;
@@ -66,6 +67,8 @@ public class MainGameScreen implements Screen {
         isColliding = false;
         blockType = BlockType.Air;
         blockYHighest = 0;
+
+        timer = 0;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class MainGameScreen implements Screen {
         camera();
         draw();
 
-        sendPlayerData();
+        sendPlayerData(delta);
 
 
     }
@@ -191,8 +194,11 @@ public class MainGameScreen implements Screen {
                 // Get the key and value
                 OtherPlayer player = entry.getValue();
 
-                game.batch.draw(player.getCurrentFrame(), player.getPosition().x, player.getPosition().y, 128,128);
+                // Draw the player at the smoothed position
+                game.batch.draw(player.getCurrentFrame(), player.getPosition().x,  player.getPosition().y, 128, 128);
                 font.draw(game.batch, player.getUsername(), player.getPosition().x - 50, player.getPosition().y + 50, 100, 1, false);
+
+
             }
         }
 
@@ -206,22 +212,30 @@ public class MainGameScreen implements Screen {
         game.batch.end();
     }
 
-    private void sendPlayerData(){
-        try {
-            //send data to server
-            JSONObject data = new JSONObject();
-            data.put("currentFrame", player.getCurrentFrame());
-            data.put("x", player.getPosition().x);
-            data.put("y", player.getPosition().y);
-            data.put("stateTime", gameStates.stateTime);
-            data.put("score", player.getScore());
-            data.put("username", player.getUsername());
-            data.put("playerType", player.getPlayerType().toString());
-            game.getSocket().emit("playerMoved", data);
+    private void sendPlayerData(float delta) {
 
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        timer += delta;
+
+        if(timer >= gameStates.SEND_PLAYER_POSITION_INTERVAL){
+            timer = 0;
+            try {
+                //send data to server
+                JSONObject data = new JSONObject();
+                data.put("currentFrame", player.getCurrentFrame());
+                data.put("x", player.getPosition().x);
+                data.put("y", player.getPosition().y);
+                data.put("stateTime", gameStates.stateTime);
+                data.put("score", player.getScore());
+                data.put("username", player.getUsername());
+                data.put("playerType", player.getPlayerType().toString());
+                game.getSocket().emit("playerMoved", data);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+
     }
 
     @Override

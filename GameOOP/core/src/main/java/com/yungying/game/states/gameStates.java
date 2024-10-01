@@ -4,4 +4,5 @@ public class gameStates {
     public static float stateTime;
     public static final float GRAVITY = 1960f; // 9.8 * 200
     public static final float JUMP_SPEED = 600f;
+    public static final float SEND_PLAYER_POSITION_INTERVAL = 1/60f;
 }
