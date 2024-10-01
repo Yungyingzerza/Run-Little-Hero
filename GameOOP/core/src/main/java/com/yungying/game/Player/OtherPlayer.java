@@ -7,9 +7,11 @@ public class OtherPlayer extends Player {
 
     private String currentFrame;
 
-    public OtherPlayer() {
-        super(PlayerType.TEE);
-        this.currentFrame = "characters/Tee/TeeRunLeft.png";
+    public OtherPlayer(String playerType) {
+
+        super(PlayerType.CUTEGIRL);
+
+        this.currentFrame = "characters/CuteGirl/Run (1).png";
     }
 
     public void setCurrentFrameString(String currentFrame) {
