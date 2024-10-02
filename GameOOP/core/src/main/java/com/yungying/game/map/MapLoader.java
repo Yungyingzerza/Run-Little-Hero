@@ -102,7 +102,7 @@ public class MapLoader implements Map {
 
     @Override
     public Texture getSpikesTextureAtIndex(int index) {
-        if (index >= 0 && index < jellies.size()) {
+        if (index >= 0 && index < spikes.size()) {
             SpikeType type = spikes.get(index).getType();
             if (type.equals(SpikeType.LONG_METAL)) {
                 return LongMetal;
