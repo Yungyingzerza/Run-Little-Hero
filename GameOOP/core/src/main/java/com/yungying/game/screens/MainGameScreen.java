@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Null;
@@ -59,6 +58,14 @@ public class MainGameScreen implements Screen {
     private  ImageButton resumeButton;
     private  Texture hoverResumeTexture;
     private  Texture resumeTexture;
+
+    private  ImageButton restartButton;
+    private  Texture hoverRestartTexture;
+    private  Texture restartTexture;
+
+    private  ImageButton exitButton;
+    private  Texture hoverExitTexture;
+    private  Texture exitTexture;
     TextureRegionDrawable startDrawable;
     private Stage stage;
     private Viewport viewport;
@@ -106,10 +113,19 @@ public class MainGameScreen implements Screen {
         hoverResumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
         startDrawable = new TextureRegionDrawable(resumeTexture);
 
+        exitTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
+        hoverExitTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
+        startDrawable = new TextureRegionDrawable(exitTexture);
+
+        restartTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
+        hoverRestartTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
+        startDrawable = new TextureRegionDrawable(restartTexture);
+
         viewport = new FitViewport(800, 400, camera);
         viewport.apply(); // Apply the viewport settings
 
     }
+
 
     @Override
     public void show() {
@@ -147,9 +163,78 @@ public class MainGameScreen implements Screen {
                 updateMenuPosition();  // Keep the button's position centered
             }
         });
-
-
         stage.addActor(resumeButton);
+
+        restartButton = new ImageButton(startDrawable);
+        restartButton.setSize(initialWidth, initialHeight);
+        restartButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
+
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dispose();
+                // Create a new instance of MainGameScreen to reset the game state
+                game.setScreen(new MainGameScreen(game, player.getUsername()));
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Change the style when the mouse enters
+                ImageButton.ImageButtonStyle hoverStyle = new ImageButton.ImageButtonStyle(restartButton.getStyle());
+                hoverStyle.imageUp = new TextureRegionDrawable(hoverRestartTexture); // Set hover texture
+                restartButton.setStyle(hoverStyle); // Apply the new style
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Revert to the original style when the mouse exits
+                ImageButton.ImageButtonStyle normalStyle = new ImageButton.ImageButtonStyle(restartButton.getStyle());
+                normalStyle.imageUp = new TextureRegionDrawable(restartTexture); // Set normal texture
+                restartButton.setStyle(normalStyle); // Apply the original style
+                updateMenuPosition();  // Keep the button's position centered
+            }
+        });
+
+
+        stage.addActor(restartButton);
+
+
+
+
+
+
+
+        exitButton = new ImageButton(startDrawable);
+        exitButton.setSize(initialWidth, initialHeight);
+        exitButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Change the style when the mouse enters
+                ImageButton.ImageButtonStyle hoverStyle = new ImageButton.ImageButtonStyle(exitButton.getStyle());
+                hoverStyle.imageUp = new TextureRegionDrawable(hoverExitTexture); // Set hover texture
+                exitButton.setStyle(hoverStyle); // Apply the new style
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Revert to the original style when the mouse exits
+                ImageButton.ImageButtonStyle normalStyle = new ImageButton.ImageButtonStyle(exitButton.getStyle());
+                normalStyle.imageUp = new TextureRegionDrawable(exitTexture); // Set normal texture
+                exitButton.setStyle(normalStyle); // Apply the original style
+                updateMenuPosition();  // Keep the button's position centered
+            }
+        });
+
+
+        stage.addActor(exitButton);
     }
 
     @Override
@@ -265,7 +350,10 @@ public class MainGameScreen implements Screen {
     }
 
     private void updateMenuPosition(){
-        resumeButton.setPosition(camera.position.x -180f, camera.position.y);
+
+        resumeButton.setPosition(camera.position.x -185f, camera.position.y+100);
+        restartButton.setPosition(camera.position.x -185f, camera.position.y );
+        exitButton.setPosition(camera.position.x -185f, camera.position.y -100f);
     }
 
 
@@ -368,6 +456,8 @@ public class MainGameScreen implements Screen {
     public void resize(int width, int height) {
         stage.getViewport().update(width, height);
         resumeButton.setPosition(camera.position.x, camera.position.y);
+        restartButton.setPosition(camera.position.x, camera.position.y);
+        exitButton.setPosition(camera.position.x, camera.position.y);
     }
 
     @Override
