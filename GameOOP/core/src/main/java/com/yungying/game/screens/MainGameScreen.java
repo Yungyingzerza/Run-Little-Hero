@@ -3,8 +3,19 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 import com.yungying.game.Player.CuteGirl;
 import com.yungying.game.Player.OtherPlayer;
@@ -41,6 +52,21 @@ public class MainGameScreen implements Screen {
 
     private final BitmapFont font;
 
+    public static boolean isMenuShow;
+    private  ImageButton resumeButton;
+    private  Texture hoverResumeTexture;
+    private  Texture resumeTexture;
+    TextureRegionDrawable startDrawable;
+    private Stage stage;
+    private Viewport viewport;
+
+
+    // Define initial size
+    float initialWidth = 400;
+    float initialHeight = 200;
+
+
+
 
     public MainGameScreen(Main game, String username) {
         this.game = game;
@@ -69,10 +95,56 @@ public class MainGameScreen implements Screen {
         blockYHighest = 0;
 
         timer = 0;
+
+        isMenuShow = false;
+        resumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
+        hoverResumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
+        startDrawable = new TextureRegionDrawable(resumeTexture);
+
+        viewport = new FitViewport(800, 400, camera);
+        viewport.apply(); // Apply the viewport settings
+
     }
 
     @Override
     public void show() {
+
+        // Initialize the stage and set the input processor
+        stage = new Stage(viewport, game.batch);
+        Gdx.input.setInputProcessor(stage);
+
+
+        // Create the "Start" button
+        resumeButton = new ImageButton(startDrawable);
+        resumeButton.setSize(initialWidth, initialHeight);
+        resumeButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
+
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isMenuShow = false;
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Change the style when the mouse enters
+                ImageButton.ImageButtonStyle hoverStyle = new ImageButton.ImageButtonStyle(resumeButton.getStyle());
+                hoverStyle.imageUp = new TextureRegionDrawable(hoverResumeTexture); // Set hover texture
+                resumeButton.setStyle(hoverStyle); // Apply the new style
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Revert to the original style when the mouse exits
+                ImageButton.ImageButtonStyle normalStyle = new ImageButton.ImageButtonStyle(resumeButton.getStyle());
+                normalStyle.imageUp = new TextureRegionDrawable(resumeTexture); // Set normal texture
+                resumeButton.setStyle(normalStyle); // Apply the original style
+                updateMenuPosition();  // Keep the button's position centered
+            }
+        });
+
+
+        stage.addActor(resumeButton);
     }
 
     @Override
@@ -121,6 +193,8 @@ public class MainGameScreen implements Screen {
 
     public void logic(){
 
+        updateMenuPosition();
+
         playerX = player.getPosition().x + 64;
         playerY = player.getPosition().y - 64;
 
@@ -162,10 +236,16 @@ public class MainGameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
     }
 
+    private void updateMenuPosition(){
+        resumeButton.setPosition(camera.position.x -180f, camera.position.y);
+    }
+
 
     public void draw(){
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+
+
 
         //render Part
         game.batch.begin();
@@ -209,7 +289,15 @@ public class MainGameScreen implements Screen {
         //draw score top right
         font.draw(game.batch, ""+player.getScore(), camera.position.x + 600, camera.position.y + 300, 200, 1, true);
 
+
+
+
         game.batch.end();
+
+        if(isMenuShow) {
+            stage.draw();
+
+        }
     }
 
     private void sendPlayerData(float delta) {
@@ -239,7 +327,10 @@ public class MainGameScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height);
+        resumeButton.setPosition(camera.position.x, camera.position.y);
+    }
 
     @Override
     public void pause() {}

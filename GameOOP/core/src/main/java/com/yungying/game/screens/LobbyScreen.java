@@ -23,8 +23,11 @@ public class LobbyScreen implements Screen {
     private final Viewport viewport;
     private final OrthographicCamera camera;
     private final Skin skin;
-    private ImageButton startButton;
+
     private final Texture backgroundTexture;
+
+
+    private ImageButton startButton;
     private Texture startTexture;
     private Texture hoverStartTexture;
 
@@ -56,7 +59,7 @@ public class LobbyScreen implements Screen {
 
     @Override
     public void show() {
-        startTexture = new Texture(Gdx.files.internal("buttons/Start/Default.png"));
+        startTexture = new Texture(Gdx.files.internal("buttons/Start/Start.png"));
         hoverStartTexture = new Texture(Gdx.files.internal("buttons/Start/Hover.png"));
         TextureRegionDrawable startDrawable = new TextureRegionDrawable(startTexture);
 
@@ -78,6 +81,8 @@ public class LobbyScreen implements Screen {
                 game.setScreen(new MainMenuScreen(game));
                 dispose();  // Dispose of the current screen resources
             }
+
+
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
