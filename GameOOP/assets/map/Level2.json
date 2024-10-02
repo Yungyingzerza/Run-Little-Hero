@@ -95,5 +95,20 @@
     {"type": "Coin", "y": 160},
     {"type": "Coin", "y": 160},
     {"type": "Coin", "y": 160}
+  ],
+  "spikes": [
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "LONG_METAL", "y": 64},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0},
+    {"type": "LONG_METAL", "y": 64}
   ]
 }

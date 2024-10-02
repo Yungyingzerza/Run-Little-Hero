@@ -6,6 +6,8 @@ import java.util.Vector;
 
 public  interface Map {
 
+    Texture getSpikesTextureAtIndex(int index);
+
     Texture getJellyTextureAtIndex(int index);
 
     Texture getTileTextureAtIndex(int index);
@@ -13,6 +15,8 @@ public  interface Map {
     Vector<Tile> getTiles();
 
     Vector<Jelly> getJellies();
+
+    Vector<Spike> getSpikes();
 
     float getMapSpeed();
 
@@ -23,6 +27,8 @@ public  interface Map {
     boolean isColliding(float playerX, float playerY);
 
     int isCollectJelly(float playerX, float playerY);
+
+    int isCollidingSpike(float playerX, float playerY);
 
     Tile getLastTile();
 

@@ -10,10 +10,7 @@ import com.yungying.game.Player.CuteGirl;
 import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
 import com.yungying.game.gameInputHandler.gameInputHandler;
-import com.yungying.game.map.BlockType;
-import com.yungying.game.map.ItemType;
-import com.yungying.game.map.Map;
-import com.yungying.game.map.MapLoader;
+import com.yungying.game.map.*;
 import com.yungying.game.states.gameStates;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +18,8 @@ import org.json.JSONObject;
 public class MainGameScreen implements Screen {
     Player player;
     float timer;
+
+    float latestCheckHealth;
 
     //camera to follow player
     private final OrthographicCamera camera;
@@ -38,6 +37,10 @@ public class MainGameScreen implements Screen {
     boolean isColliding;
     BlockType blockType;
     float blockYHighest;
+
+    float speedBeforeHit;
+    boolean isResetSpeed = true;
+    float latestHitTime;
 
     private final BitmapFont font;
 
@@ -69,6 +72,8 @@ public class MainGameScreen implements Screen {
         blockYHighest = 0;
 
         timer = 0;
+        latestCheckHealth = 0;
+        latestHitTime = 0;
     }
 
     @Override
@@ -121,6 +126,13 @@ public class MainGameScreen implements Screen {
 
     public void logic(){
 
+        //decrease every 1 second by conparing the game time and the latest check health time
+        if(gameStates.stateTime - latestCheckHealth >= 1){
+            latestCheckHealth = gameStates.stateTime;
+            player.setHealth(player.getHealth() - 1);
+        }
+
+
         playerX = player.getPosition().x + 64;
         playerY = player.getPosition().y - 64;
 
@@ -147,6 +159,23 @@ public class MainGameScreen implements Screen {
         int tempScore = currentMap.isCollectJelly(player.getPosition().x, player.getPosition().y);
         if(tempScore > 0){
             player.setScore(player.getScore() + tempScore);
+        }
+
+        //check if player is colliding with spike
+        int tempHealth = currentMap.isCollidingSpike(player.getPosition().x, player.getPosition().y);
+        if(tempHealth < 0){
+            player.setHealth(player.getHealth() + tempHealth);
+            latestHitTime = gameStates.stateTime;
+            speedBeforeHit = player.getSpeed();
+            //decide the speed of the player after hit
+            player.setSpeed(speedBeforeHit - 200f);
+            isResetSpeed = false;
+        }
+
+        //after 1 second, set the speed back to normal
+        if(gameStates.stateTime - latestHitTime >= 1 && !isResetSpeed){
+            player.setSpeed(speedBeforeHit);
+            isResetSpeed = true;
         }
 
         //state time
@@ -188,6 +217,14 @@ public class MainGameScreen implements Screen {
             game.batch.draw(currentMap.getJellyTextureAtIndex(i), currentMap.getJellies().elementAt(i).getX(), currentMap.getJellies().elementAt(i).getY(), 64, 64);
         }
 
+        //draw spikes
+        for(int i = 0; i < currentMap.getSpikes().size(); i++) {
+
+            if(currentMap.getSpikes().elementAt(i).getType().equals(SpikeType.Air)) continue;
+
+            game.batch.draw(currentMap.getSpikesTextureAtIndex(i), currentMap.getSpikes().elementAt(i).getX(), currentMap.getSpikes().elementAt(i).getY(), 64, 64);
+        }
+
         //draw other players
         if(Main.otherPlayer != null){
             for (java.util.Map.Entry<String, OtherPlayer> entry : Main.otherPlayer.entrySet()) {
@@ -208,6 +245,9 @@ public class MainGameScreen implements Screen {
 
         //draw score top right
         font.draw(game.batch, ""+player.getScore(), camera.position.x + 600, camera.position.y + 300, 200, 1, true);
+
+        //draw health top left
+        font.draw(game.batch, "Health: "+player.getHealth(), camera.position.x - 600, camera.position.y + 300, 200, 1, true);
 
         game.batch.end();
     }
