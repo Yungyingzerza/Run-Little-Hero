@@ -3,17 +3,25 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 import com.yungying.game.Player.CuteGirl;
 import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
 import com.yungying.game.gameInputHandler.gameInputHandler;
-import com.yungying.game.map.BlockType;
-import com.yungying.game.map.ItemType;
-import com.yungying.game.map.Map;
-import com.yungying.game.map.MapLoader;
+import com.yungying.game.map.*;
 import com.yungying.game.states.gameStates;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +29,8 @@ import org.json.JSONObject;
 public class MainGameScreen implements Screen {
     Player player;
     float timer;
+
+    float latestCheckHealth;
 
     //camera to follow player
     private final OrthographicCamera camera;
@@ -39,7 +49,26 @@ public class MainGameScreen implements Screen {
     BlockType blockType;
     float blockYHighest;
 
+    float speedBeforeHit;
+    boolean isResetSpeed = true;
+    float latestHitTime;
+
     private final BitmapFont font;
+
+    public static boolean isMenuShow;
+    private  ImageButton resumeButton;
+    private  Texture hoverResumeTexture;
+    private  Texture resumeTexture;
+    TextureRegionDrawable startDrawable;
+    private Stage stage;
+    private Viewport viewport;
+
+
+    // Define initial size
+    float initialWidth = 400;
+    float initialHeight = 200;
+
+
 
 
     public MainGameScreen(Main game, String username) {
@@ -69,10 +98,58 @@ public class MainGameScreen implements Screen {
         blockYHighest = 0;
 
         timer = 0;
+        latestCheckHealth = 0;
+        latestHitTime = 0;
+
+        isMenuShow = false;
+        resumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
+        hoverResumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
+        startDrawable = new TextureRegionDrawable(resumeTexture);
+
+        viewport = new FitViewport(800, 400, camera);
+        viewport.apply(); // Apply the viewport settings
+
     }
 
     @Override
     public void show() {
+
+        // Initialize the stage and set the input processor
+        stage = new Stage(viewport, game.batch);
+        Gdx.input.setInputProcessor(stage);
+
+
+        // Create the "Start" button
+        resumeButton = new ImageButton(startDrawable);
+        resumeButton.setSize(initialWidth, initialHeight);
+        resumeButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
+
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isMenuShow = false;
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Change the style when the mouse enters
+                ImageButton.ImageButtonStyle hoverStyle = new ImageButton.ImageButtonStyle(resumeButton.getStyle());
+                hoverStyle.imageUp = new TextureRegionDrawable(hoverResumeTexture); // Set hover texture
+                resumeButton.setStyle(hoverStyle); // Apply the new style
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                // Revert to the original style when the mouse exits
+                ImageButton.ImageButtonStyle normalStyle = new ImageButton.ImageButtonStyle(resumeButton.getStyle());
+                normalStyle.imageUp = new TextureRegionDrawable(resumeTexture); // Set normal texture
+                resumeButton.setStyle(normalStyle); // Apply the original style
+                updateMenuPosition();  // Keep the button's position centered
+            }
+        });
+
+
+        stage.addActor(resumeButton);
     }
 
     @Override
@@ -121,6 +198,14 @@ public class MainGameScreen implements Screen {
 
     public void logic(){
 
+        //decrease every 1 second by conparing the game time and the latest check health time
+        if(gameStates.stateTime - latestCheckHealth >= 1){
+            latestCheckHealth = gameStates.stateTime;
+            player.setHealth(player.getHealth() - 1);
+        }
+
+        updateMenuPosition();
+
         playerX = player.getPosition().x + 64;
         playerY = player.getPosition().y - 64;
 
@@ -149,6 +234,23 @@ public class MainGameScreen implements Screen {
             player.setScore(player.getScore() + tempScore);
         }
 
+        //check if player is colliding with spike
+        int tempHealth = currentMap.isCollidingSpike(player.getPosition().x, player.getPosition().y);
+        if(tempHealth < 0){
+            player.setHealth(player.getHealth() + tempHealth);
+            latestHitTime = gameStates.stateTime;
+            speedBeforeHit = player.getSpeed();
+            //decide the speed of the player after hit
+            player.setSpeed(speedBeforeHit - 200f);
+            isResetSpeed = false;
+        }
+
+        //after 1 second, set the speed back to normal
+        if(gameStates.stateTime - latestHitTime >= 1 && !isResetSpeed){
+            player.setSpeed(speedBeforeHit);
+            isResetSpeed = true;
+        }
+
         //state time
         gameStates.stateTime += Gdx.graphics.getDeltaTime();
     }
@@ -162,10 +264,16 @@ public class MainGameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
     }
 
+    private void updateMenuPosition(){
+        resumeButton.setPosition(camera.position.x -180f, camera.position.y);
+    }
+
 
     public void draw(){
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+
+
 
         //render Part
         game.batch.begin();
@@ -186,6 +294,14 @@ public class MainGameScreen implements Screen {
             if(currentMap.getJellies().elementAt(i).getType().equals(ItemType.Air)) continue;
 
             game.batch.draw(currentMap.getJellyTextureAtIndex(i), currentMap.getJellies().elementAt(i).getX(), currentMap.getJellies().elementAt(i).getY(), 64, 64);
+        }
+
+        //draw spikes
+        for(int i = 0; i < currentMap.getSpikes().size(); i++) {
+
+            if(currentMap.getSpikes().elementAt(i).getType().equals(SpikeType.Air)) continue;
+
+            game.batch.draw(currentMap.getSpikesTextureAtIndex(i), currentMap.getSpikes().elementAt(i).getX(), currentMap.getSpikes().elementAt(i).getY(), 64, 64);
         }
 
         //draw other players
@@ -209,7 +325,17 @@ public class MainGameScreen implements Screen {
         //draw score top right
         font.draw(game.batch, ""+player.getScore(), camera.position.x + 600, camera.position.y + 300, 200, 1, true);
 
+        //draw health top left
+        font.draw(game.batch, "Health: "+player.getHealth(), camera.position.x - 600, camera.position.y + 300, 200, 1, true);
+
+
+
         game.batch.end();
+
+        if(isMenuShow) {
+            stage.draw();
+
+        }
     }
 
     private void sendPlayerData(float delta) {
@@ -239,7 +365,10 @@ public class MainGameScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height);
+        resumeButton.setPosition(camera.position.x, camera.position.y);
+    }
 
     @Override
     public void pause() {}

@@ -10,6 +10,7 @@ import java.util.Vector;
 public class MapLoader implements Map {
     private final Vector<Tile> tiles;
     private final Vector<Jelly> jellies;
+    private final Vector<Spike> spikes;
     private final Texture Coin;
     private final Texture Cherry;
     private final Texture grassTexture;
@@ -21,14 +22,18 @@ public class MapLoader implements Map {
     private Tile currentTile;
     private final float initialX;
 
+    private final Texture LongMetal;
+
     public MapLoader(String jsonFilePath, float initialX) {
         // Initialize textures
         grassTexture = new Texture("Grass.png");
         Coin = new Texture("Point/Coin.png");
         Cherry = new Texture("Point/Cherry.png");
         grassWinterTexture = new Texture("GrassWinter.png");
+        LongMetal = new Texture("Spikes/LongMetal/long_metal_spike.png");
         tiles = new Vector<>();
         jellies = new Vector<>();
+        spikes = new Vector<>();
         this.initialX = initialX;
 
         // Load and parse JSON
@@ -55,6 +60,7 @@ public class MapLoader implements Map {
             tiles.add(new Tile(type, x, y, zoom));
         }
 
+        //load jellies from JSON
         for (int i = 0; i < mapData.jellies.size; i++) {
             MapData.Jelly jellyData = mapData.jellies.get(i);
             ItemType type = jellyData.type;
@@ -63,6 +69,17 @@ public class MapLoader implements Map {
 
             // Create and add the jelly
             jellies.add(new Jelly(type, x, y));
+        }
+
+        //load spikes from JSON
+        for (int i = 0; i < mapData.spikes.size; i++) {
+            MapData.Spike spikeData = mapData.spikes.get(i);
+            SpikeType type = spikeData.type;
+            float x = 128 * i + initialX; // Position calculation
+            float y = spikeData.y;
+
+            // Create and add the spike
+            spikes.add(new Spike(type, x, y));
         }
 
         if (!tiles.isEmpty()) {
@@ -78,6 +95,17 @@ public class MapLoader implements Map {
                 return grassTexture;
             } else if (type.equals(BlockType.GrassWinter)) {
                 return grassWinterTexture;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Texture getSpikesTextureAtIndex(int index) {
+        if (index >= 0 && index < jellies.size()) {
+            SpikeType type = spikes.get(index).getType();
+            if (type.equals(SpikeType.LONG_METAL)) {
+                return LongMetal;
             }
         }
         return null;
@@ -104,6 +132,11 @@ public class MapLoader implements Map {
     @Override
     public Vector<Jelly> getJellies() {
         return jellies;
+    }
+
+    @Override
+    public Vector<Spike> getSpikes() {
+        return spikes;
     }
 
     @Override
@@ -140,6 +173,19 @@ public class MapLoader implements Map {
         }
         return 0;
     }
+
+    @Override
+    public int isCollidingSpike(float playerX, float playerY) {
+        for (Spike spike : spikes) {
+            int health = spike.isColliding(playerX, playerY);
+            if (health < 0) {
+                spikes.remove(spike);
+                return health;
+            }
+        }
+        return 0;
+    }
+
 
     @Override
     public Tile getLastTile() {

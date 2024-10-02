@@ -22,6 +22,7 @@ public class Player {
     float stateTime;
     PlayerType playerType;
     String username;
+    private int health;
 
 
     public Player(PlayerType playerType) {
@@ -35,8 +36,16 @@ public class Player {
         isHighestJump = false;
         isSliding = false;
         isDead = false;
+        health = 100;
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getHealth() {
+        return health;
+    }
 
     public void run(float delta, float stateTime) {
         position.x += speed * delta;
@@ -142,6 +151,12 @@ public class Player {
         if(position.y < -128) {
             isDead = true;
         }
+
+        //if health is 0
+        if(health <= 0){
+            isDead = true;
+        }
+
         return isDead;
     }
 

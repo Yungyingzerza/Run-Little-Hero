@@ -1,17 +1,17 @@
 package com.yungying.game.map;
 
 public class Spike {
-    private final String type;
+    private final SpikeType type;
     private final float x;
     private final float y;
 
-    public Spike(String type, float x, float y) {
+    public Spike(SpikeType type, float x, float y) {
         this.type = type;
         this.x = x;
         this.y = y;
     }
 
-    public String getType() {
+    public SpikeType getType() {
         return type;
     }
 
@@ -24,18 +24,15 @@ public class Spike {
     }
 
     public int isColliding(float playerX, float playerY) {
-        if(playerX < x + 64 && playerX + 64 > x && playerY < y && playerY + 128 > y){
 
-            if("Spike".equals(type)){
-
+        if(type == SpikeType.LONG_METAL){
+            if(playerX < x + 64 && playerX + 64 > x && (playerY == y || playerY <= y + 64) ){
                 return -50;
-            }else {
-                return 0;
             }
-
-        }else{
-            return 0;
         }
+
+        return 0;
+
     }
 
 }

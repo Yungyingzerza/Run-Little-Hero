@@ -9,6 +9,7 @@ public class MapData {
     public float mapSpeed;
     public Array<TileData> tiles;
     public Array<Jelly> jellies;
+    public Array<Spike> spikes;
 
     public static class TileData {
         public BlockType type;
@@ -18,6 +19,11 @@ public class MapData {
 
     public static class Jelly{
         public ItemType type;
+        public float y;
+    }
+
+    public static class Spike{
+        public SpikeType type;
         public float y;
     }
 }

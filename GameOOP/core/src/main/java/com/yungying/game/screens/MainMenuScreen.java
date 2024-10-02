@@ -145,7 +145,7 @@ public class MainMenuScreen implements Screen {
 
         stage.addActor(usernameTextField);
 
-        playTexture = new Texture(Gdx.files.internal("buttons/Play/Default.png"));
+        playTexture = new Texture(Gdx.files.internal("buttons/Play/Play.png"));
         hoverPlayTexture = new Texture(Gdx.files.internal("buttons/Play/Hover.png"));
         TextureRegionDrawable playDrawable = new TextureRegionDrawable(new TextureRegion(playTexture));
 
