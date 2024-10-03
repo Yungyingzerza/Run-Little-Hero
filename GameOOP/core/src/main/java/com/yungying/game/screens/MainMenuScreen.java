@@ -116,6 +116,11 @@ public class MainMenuScreen implements Screen {
         // Create a TextField
         usernameTextField = new TextField("", textFieldStyle);
 
+        //if login is successful, set the username to the textfield
+        if(UseUser.username != null){
+            usernameTextField.setText(UseUser.username);
+        }
+
 
         usernameTextField.setPosition(200, 200);
         usernameTextField.setSize(400, 100);
