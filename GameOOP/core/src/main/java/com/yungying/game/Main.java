@@ -164,7 +164,6 @@ public class Main extends Game {
                     String id = players.getJSONObject(i).getString("id");
                     String playerType = players.getJSONObject(i).getString("playerType");
                     boolean isDead = players.getJSONObject(i).getBoolean("isDead");
-                    
 
                     if(otherPlayer.containsKey(id)){
                         if(isDead) otherPlayer.get(id).setPosition(0, 0);

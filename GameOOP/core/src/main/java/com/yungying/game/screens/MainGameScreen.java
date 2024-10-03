@@ -19,9 +19,11 @@ import com.yungying.game.Main;
 import com.yungying.game.Player.CuteGirl;
 import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
+import com.yungying.game.Player.Tee;
 import com.yungying.game.gameInputHandler.gameInputHandler;
 import com.yungying.game.map.*;
 import com.yungying.game.states.gameStates;
+import com.yungying.game.textureLoader.PlayerType;
 import com.yungying.game.textureLoader.playerTextureList;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,9 +80,17 @@ public class MainGameScreen implements Screen {
 
 
 
-    public MainGameScreen(Main game, String username) {
+    public MainGameScreen(Main game, String username, PlayerType playerType) {
         this.game = game;
-        player = new CuteGirl();
+
+        if(playerType == PlayerType.CUTEGIRL){
+            player = new CuteGirl();
+        }else if(playerType == PlayerType.TEE) {
+            player = new Tee();
+        }else{
+            player = new CuteGirl();
+        }
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
@@ -176,7 +186,7 @@ public class MainGameScreen implements Screen {
 
                 dispose();
                 // Create a new instance of MainGameScreen to reset the game state
-                game.setScreen(new MainGameScreen(game, player.getUsername()));
+                game.setScreen(new MainGameScreen(game, player.getUsername(), player.getPlayerType()));
             }
 
             @Override

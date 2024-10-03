@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,7 +21,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 import com.yungying.game.hooks.Authentication;
 import com.yungying.game.hooks.UseUser;
+import com.yungying.game.textureLoader.PlayerType;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -41,6 +45,10 @@ public class MainMenuScreen implements Screen {
     private Texture playTexture;
     private Texture hoverPlayTexture;
 
+    private PlayerType currentPlayerType;
+
+    private final BitmapFont font;
+
     public MainMenuScreen(Main game) {
         this.game = game;
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
@@ -50,6 +58,11 @@ public class MainMenuScreen implements Screen {
         loginButton = new TextButton("Login",skin);
         usernameTextField = new TextField("Username", skin);
 
+        currentPlayerType = PlayerType.CUTEGIRL;
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Bungee-Regular.otf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 16;
+        font = generator.generateFont(parameter);
 
     }
 
@@ -131,12 +144,12 @@ public class MainMenuScreen implements Screen {
                     String username = usernameTextField.getText();
 
                     if(username.isEmpty()){
-                        game.setScreen(new MainGameScreen(game, "noName"));
+                        game.setScreen(new MainGameScreen(game, "noName", currentPlayerType));
                         dispose();
                         return;
                     }
 
-                    game.setScreen(new MainGameScreen(game, username));
+                    game.setScreen(new MainGameScreen(game, username, currentPlayerType));
                     dispose();
                 }
             }
@@ -163,12 +176,12 @@ public class MainMenuScreen implements Screen {
                     String username = usernameTextField.getText();
 
                     if(username.isEmpty()){
-                        game.setScreen(new MainGameScreen(game, "noName"));
+                        game.setScreen(new MainGameScreen(game, "noName", currentPlayerType));
                         dispose();
                         return;
                     }
 
-                    game.setScreen(new MainGameScreen(game, username));
+                    game.setScreen(new MainGameScreen(game, username, currentPlayerType));
                     dispose();
 
 
@@ -218,6 +231,23 @@ public class MainMenuScreen implements Screen {
 
         });
 
+        //next character button
+        TextButton nextCharacterButton = new TextButton("Next Character", skin);
+        nextCharacterButton.setPosition(camera.viewportWidth / 2 + 150, camera.viewportHeight - 50);
+        nextCharacterButton.setSize(150, 50);
+        stage.addActor(nextCharacterButton);
+
+        nextCharacterButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(currentPlayerType == PlayerType.CUTEGIRL){
+                    currentPlayerType = PlayerType.TEE;
+                }else if(currentPlayerType == PlayerType.TEE){
+                    currentPlayerType = PlayerType.CUTEGIRL;
+                }
+            }
+        });
+
 
     }
 
@@ -236,6 +266,12 @@ public class MainMenuScreen implements Screen {
         if(game.getSocket() != null){
             idLabel.setText("ID: " + game.getSocket().id());
         }
+
+        game.batch.begin();
+
+        font.draw(game.batch, "Current Character is: "+ currentPlayerType.toString(), camera.viewportWidth / 2 - 200, camera.viewportHeight - 20);
+
+        game.batch.end();
 
     }
 

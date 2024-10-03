@@ -12,7 +12,8 @@ public class OtherPlayer extends Player {
 
     public OtherPlayer(String playerType, float initialX, float initialY) {
 
-        super(PlayerType.CUTEGIRL);
+        super(PlayerType.valueOf(playerType));
+
         setPosition(initialX, initialY);
         targetPosition = new Vector2(0, 0);
     }
