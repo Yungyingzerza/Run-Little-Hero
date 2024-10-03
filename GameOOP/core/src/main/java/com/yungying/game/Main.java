@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.yungying.game.Player.OtherPlayer;
 
 import com.yungying.game.screens.LobbyScreen;
+import com.yungying.game.textureLoader.PlayerType;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -165,6 +166,8 @@ public class Main extends Game {
                     String playerType = players.getJSONObject(i).getString("playerType");
                     boolean isDead = players.getJSONObject(i).getBoolean("isDead");
 
+                    PlayerType playerType1 = PlayerType.valueOf(playerType);
+
                     if(otherPlayer.containsKey(id)){
                         if(isDead) otherPlayer.get(id).setPosition(0, 0);
                         otherPlayer.get(id).setTargetPosition(new Vector2(x, y));
@@ -173,6 +176,7 @@ public class Main extends Game {
                         otherPlayer.get(id).setIsJumping(isJumping);
                         otherPlayer.get(id).setUsername(username);
                         otherPlayer.get(id).setIsDead(isDead);
+                        otherPlayer.get(id).setPlayerType(playerType1);
                     }else if(!id.equals(MySocketId)){
                         addPlayer(id, x, y, stateTime, isSliding, isJumping, username, playerType, isDead);
                     }
