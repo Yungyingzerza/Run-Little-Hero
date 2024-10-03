@@ -1,6 +1,7 @@
 package com.yungying.game.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
@@ -21,6 +22,7 @@ public class MapLoader implements Map {
     private final String nextMapPath;
     private Tile currentTile;
     private final float initialX;
+    Music music;
 
     private final Texture LongMetal;
 
@@ -47,6 +49,7 @@ public class MapLoader implements Map {
         nextMap = mapData.nextMap;
         nextMapPath = mapData.nextMapPath;
         backgroundTexture = new Texture(mapData.background);
+        music = Gdx.audio.newMusic(Gdx.files.internal(mapData.song));
 
         // Load tiles from JSON
         for (int i = 0; i < mapData.tiles.size; i++) {
@@ -98,6 +101,11 @@ public class MapLoader implements Map {
             }
         }
         return null;
+    }
+
+    @Override
+    public Music getMusic() {
+        return music;
     }
 
     @Override

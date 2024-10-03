@@ -1,10 +1,13 @@
 package com.yungying.game.map;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.Vector;
 
 public  interface Map {
+
+    Music getMusic();
 
     Texture getSpikesTextureAtIndex(int index);
 

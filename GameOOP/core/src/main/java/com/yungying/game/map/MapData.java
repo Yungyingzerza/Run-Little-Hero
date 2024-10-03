@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class MapData {
     public String background;
+    public String song;
     public String nextMap;
     public String nextMapPath;
     public float mapSpeed;

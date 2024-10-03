@@ -2,6 +2,7 @@ package com.yungying.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
@@ -77,6 +79,8 @@ public class MainGameScreen implements Screen {
     float initialWidth = 400;
     float initialHeight = 200;
 
+    Music currentMusic;
+
 
 
 
@@ -96,6 +100,11 @@ public class MainGameScreen implements Screen {
         inputHandler = new gameInputHandler();
         currentMap = new MapLoader("map/Level1.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
+
+        //music
+        currentMusic = currentMap.getMusic();
+
+
         player.setSpeed(currentMap.getMapSpeed());
         player.setUsername(username);
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Bungee-Regular.otf"));
@@ -250,6 +259,12 @@ public class MainGameScreen implements Screen {
 
 
         stage.addActor(exitButton);
+
+        if (currentMusic != null && !currentMusic.isPlaying()) {
+            currentMusic.setLooping(true);  // Set looping if required
+            currentMusic.play();            // Only play if it's not already playing
+        }
+
     }
 
     @Override
@@ -270,6 +285,7 @@ public class MainGameScreen implements Screen {
     public void checkDeath(){
         if(player.isDead()){
             sendPlayerData();
+            currentMusic.stop();
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }
@@ -278,19 +294,26 @@ public class MainGameScreen implements Screen {
     public void handleNextMap(){
         if(player.getPosition().x >= currentMap.getLastTile().getEndX()) {
 
-            if(currentMap.getNextMap().equals("Level2")){
                 currentMap = nextMap;
                 nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
-            }else if(currentMap.getNextMap().equals("Level1")){
-                currentMap = nextMap;
-                nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
-            }
+//                nextMusic = nextMap.getMusic();
+
 
             player.setSpeed(currentMap.getMapSpeed());
 
             player.setPosition(currentMap.getFirstTile().getStartX(), currentMap.getFirstTile().getEndY());
+
+
+                // Stop the current music if it's playing
+            currentMusic.stop();
+            currentMusic.dispose();
+
+            currentMusic = currentMap.getMusic();
+            currentMusic.play();
+
         }
     }
+
 
     public void input(){
         //input Part
@@ -367,9 +390,9 @@ public class MainGameScreen implements Screen {
 
     private void updateMenuPosition(){
 
-        resumeButton.setPosition(camera.position.x -185f, camera.position.y+100);
+        resumeButton.setPosition(camera.position.x -185f, camera.position.y+130);
         restartButton.setPosition(camera.position.x -185f, camera.position.y );
-        exitButton.setPosition(camera.position.x -185f, camera.position.y -100f);
+        exitButton.setPosition(camera.position.x -185f, camera.position.y -130f);
     }
 
 
@@ -481,6 +504,7 @@ public class MainGameScreen implements Screen {
 
     }
 
+
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height);
@@ -500,6 +524,7 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void dispose() {
+        currentMusic.dispose();
         currentMap.dispose();
     }
 }
