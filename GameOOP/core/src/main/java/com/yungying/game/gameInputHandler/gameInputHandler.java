@@ -13,7 +13,10 @@ public class gameInputHandler {
 
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
             player.slide();
+        }else{
+            player.stopSlide();
         }
+
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             MainGameScreen.isMenuShow = !MainGameScreen.isMenuShow;

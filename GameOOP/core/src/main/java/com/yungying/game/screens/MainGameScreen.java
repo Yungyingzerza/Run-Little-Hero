@@ -19,15 +19,17 @@ import com.yungying.game.Main;
 import com.yungying.game.Player.CuteGirl;
 import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
+import com.yungying.game.Player.Tee;
 import com.yungying.game.gameInputHandler.gameInputHandler;
 import com.yungying.game.map.*;
 import com.yungying.game.states.gameStates;
+import com.yungying.game.textureLoader.PlayerType;
+import com.yungying.game.textureLoader.playerTextureList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainGameScreen implements Screen {
     Player player;
-    float timer;
 
     float latestCheckHealth;
 
@@ -78,9 +80,17 @@ public class MainGameScreen implements Screen {
 
 
 
-    public MainGameScreen(Main game, String username) {
+    public MainGameScreen(Main game, String username, PlayerType playerType) {
         this.game = game;
-        player = new CuteGirl();
+
+        if(playerType == PlayerType.CUTEGIRL){
+            player = new CuteGirl();
+        }else if(playerType == PlayerType.TEE) {
+            player = new Tee();
+        }else{
+            player = new CuteGirl();
+        }
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
@@ -104,7 +114,6 @@ public class MainGameScreen implements Screen {
         blockType = BlockType.Air;
         blockYHighest = 0;
 
-        timer = 0;
         latestCheckHealth = 0;
         latestHitTime = 0;
 
@@ -172,9 +181,12 @@ public class MainGameScreen implements Screen {
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                if(!isMenuShow) return;
+
                 dispose();
                 // Create a new instance of MainGameScreen to reset the game state
-                game.setScreen(new MainGameScreen(game, player.getUsername()));
+                game.setScreen(new MainGameScreen(game, player.getUsername(), player.getPlayerType()));
             }
 
             @Override
@@ -211,6 +223,9 @@ public class MainGameScreen implements Screen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                if(!isMenuShow) return;
+
                 game.setScreen(new MainMenuScreen(game));
                 dispose();
             }
@@ -247,13 +262,14 @@ public class MainGameScreen implements Screen {
         camera();
         draw();
 
-        sendPlayerData(delta);
+        sendPlayerData();
 
 
     }
 
     public void checkDeath(){
         if(player.isDead()){
+            sendPlayerData();
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }
@@ -309,7 +325,7 @@ public class MainGameScreen implements Screen {
         if(Main.otherPlayer != null){
             for (java.util.Map.Entry<String, OtherPlayer> entry : Main.otherPlayer.entrySet()) {
                 OtherPlayer player = entry.getValue();
-                player.setPosition(player.getPosition().x + player.getSpeed() * Gdx.graphics.getDeltaTime(), player.getPosition().y);
+                player.run();
             }
         }
 
@@ -396,11 +412,27 @@ public class MainGameScreen implements Screen {
         if(Main.otherPlayer != null){
             for (java.util.Map.Entry<String, OtherPlayer> entry : Main.otherPlayer.entrySet()) {
                 // Get the key and value
-                OtherPlayer player = entry.getValue();
+                OtherPlayer otherPlayer = entry.getValue();
 
-                // Draw the player at the smoothed position
-                game.batch.draw(player.getCurrentFrame(), player.getPosition().x,  player.getPosition().y, 128, 128);
-                font.draw(game.batch, player.getUsername(), player.getPosition().x - 50, player.getPosition().y + 50, 100, 1, false);
+                //reduce opacity for other players
+                game.batch.setColor(1, 1, 1, 0.5f);
+
+                //check if player is sliding
+                if(otherPlayer.isSliding()){
+                    game.batch.draw(playerTextureList.getSlideTexture(otherPlayer.getPlayerType(), otherPlayer.getStateTime() + gameStates.stateTime), otherPlayer.getPosition().x, otherPlayer.getPosition().y, 128, 128);
+                }else if(otherPlayer.isJumping()){
+                    game.batch.draw(playerTextureList.getJumpTexture(otherPlayer.getPlayerType(), otherPlayer.getStateTime() + gameStates.stateTime), otherPlayer.getPosition().x, otherPlayer.getPosition().y, 128, 128);
+                }else if(otherPlayer.isDead()){
+                    game.batch.draw(playerTextureList.getSlideTexture(otherPlayer.getPlayerType(), otherPlayer.getStateTime() + gameStates.stateTime), otherPlayer.getPosition().x, otherPlayer.getPosition().y, 128, 128);
+                }else{
+                    game.batch.draw(playerTextureList.getRunTexture(otherPlayer.getPlayerType(), otherPlayer.getStateTime() + gameStates.stateTime), otherPlayer.getPosition().x, otherPlayer.getPosition().y, 128, 128);
+                }
+
+                //reset opacity
+                game.batch.setColor(1, 1, 1, 1);
+
+
+                font.draw(game.batch, otherPlayer.getUsername(), otherPlayer.getPosition().x - 50, otherPlayer.getPosition().y + 50, 100, 1, false);
 
 
             }
@@ -426,29 +458,26 @@ public class MainGameScreen implements Screen {
         }
     }
 
-    private void sendPlayerData(float delta) {
+    private void sendPlayerData() {
 
-        timer += delta;
-
-        if(timer >= gameStates.SEND_PLAYER_POSITION_INTERVAL){
-            timer = 0;
             try {
                 //send data to server
                 JSONObject data = new JSONObject();
-                data.put("currentFrame", player.getCurrentFrame());
                 data.put("x", player.getPosition().x);
                 data.put("y", player.getPosition().y);
                 data.put("stateTime", gameStates.stateTime);
                 data.put("score", player.getScore());
                 data.put("username", player.getUsername());
                 data.put("playerType", player.getPlayerType().toString());
+                data.put("isSliding", player.isSliding());
+                data.put("isJumping", player.isJumping());
+                data.put("isDead", player.isDead());
+
                 game.getSocket().emit("playerMoved", data);
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-        }
-
 
     }
 

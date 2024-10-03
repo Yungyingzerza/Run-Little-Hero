@@ -14,12 +14,12 @@ public class Player {
     private int jumpCounter;
     private Texture currentFrame;
     private float speed;
-    private boolean isJumping;
+     boolean isJumping;
     private boolean isHighestJump;
-    private boolean isSliding;
-    private boolean isDead;
+     boolean isSliding;
+     boolean isDead;
     private int score;
-    float stateTime;
+    private float stateTime;
     PlayerType playerType;
     String username;
     private int health;
@@ -37,6 +37,15 @@ public class Player {
         isSliding = false;
         isDead = false;
         health = 100;
+        stateTime = 0f;
+    }
+
+    public boolean isJumping() {
+        return isJumping;
+    }
+
+    public boolean isSliding() {
+        return isSliding;
     }
 
     public void setHealth(int health) {
@@ -69,6 +78,10 @@ public class Player {
         this.stateTime = stateTime;
     }
 
+    public float getStateTime() {
+        return stateTime;
+    }
+
     public void jump() {
         if(isJumping && jumpCounter >= 2) return;
 
@@ -87,11 +100,14 @@ public class Player {
         isSliding = true;
     }
 
+    public void stopSlide() {
+        isSliding = false;
+    }
+
     public void gravity(boolean isColliding, float TopBorderOfTile, BlockType blockType) {
 
         if(isSliding) {
             currentFrame = playerTextureList.getSlideTexture(playerType, gameStates.stateTime);
-            isSliding = false;
         }
 
         if(isJumping && !isHighestJump && jumpCounter <= 2) {

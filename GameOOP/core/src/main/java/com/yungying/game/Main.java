@@ -2,6 +2,7 @@ package com.yungying.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.yungying.game.Player.OtherPlayer;
 
 import com.yungying.game.screens.LobbyScreen;
@@ -70,13 +71,18 @@ public class Main extends Game {
         }
     }
 
-    private void addPlayer(String id, float x, float y, float stateTime, String currentFrame, String username, String playerType){
-        OtherPlayer player = new OtherPlayer(playerType);
+    private void addPlayer(String id, float x, float y, float stateTime, boolean isSliding, boolean isJumping, String username, String playerType, boolean isDead){
+        if(isDead){
+            return;
+        }
 
-        player.setPosition(x, y);
-        player.setStateTime(stateTime);
-        player.setCurrentFrameString(currentFrame);
+        OtherPlayer player = new OtherPlayer(playerType, x, y);
+
+        player.setTargetPosition(new Vector2(x, y));
+        if(player.getStateTime() == 0) player.setStateTime(stateTime);
         player.setUsername(username);
+        player.setIsSliding(isSliding);
+        player.setIsJumping(isJumping);
 
         otherPlayer.put(id, player);
     }
@@ -121,12 +127,14 @@ public class Main extends Game {
                     float x = ((Double) player.getDouble("x")).floatValue();
                     float y = ((Double) player.getDouble("y")).floatValue();
                     float stateTime = ((Double) player.getDouble("stateTime")).floatValue();
-                    String currentFrame = player.getString("currentFrame");
                     String username = player.getString("username");
+                    boolean isSliding = player.getBoolean("isSliding");
+                    boolean isJumping = player.getBoolean("isJumping");
                     String playerType = player.getString("playerType");
+                    boolean isDead = player.getBoolean("isDead");
 
                     if(!id.equals(MySocketId)){
-                        addPlayer(id, x, y, stateTime, currentFrame, username, playerType);
+                        addPlayer(id, x, y, stateTime, isSliding, isJumping, username, playerType, isDead);
                     }
 
                 } catch (JSONException e) {
@@ -149,19 +157,24 @@ public class Main extends Game {
                     float x = ((Double) players.getJSONObject(i).getDouble("x")).floatValue();
                     float y = ((Double) players.getJSONObject(i).getDouble("y")).floatValue();
                     float stateTime = ((Double) players.getJSONObject(i).getDouble("stateTime")).floatValue();
-                    String currentFrame = players.getJSONObject(i).getString("currentFrame");
+                    boolean isSliding = players.getJSONObject(i).getBoolean("isSliding");
+                    boolean isJumping = players.getJSONObject(i).getBoolean("isJumping");
                     String username = players.getJSONObject(i).getString("username");
 
                     String id = players.getJSONObject(i).getString("id");
                     String playerType = players.getJSONObject(i).getString("playerType");
+                    boolean isDead = players.getJSONObject(i).getBoolean("isDead");
 
-                    if(!id.equals(MySocketId)){
-                        addPlayer(id, x, y, stateTime, currentFrame, username, playerType);
-                    }else if(otherPlayer.containsKey(id)){
-                        otherPlayer.get(id).setPosition(x, y);
-                        otherPlayer.get(id).setStateTime(stateTime);
-                        otherPlayer.get(id).setCurrentFrameString(currentFrame);
+                    if(otherPlayer.containsKey(id)){
+                        if(isDead) otherPlayer.get(id).setPosition(0, 0);
+                        otherPlayer.get(id).setTargetPosition(new Vector2(x, y));
+                        if(otherPlayer.get(id).getStateTime() == 0f) otherPlayer.get(id).setStateTime(stateTime);
+                        otherPlayer.get(id).setIsSliding(isSliding);
+                        otherPlayer.get(id).setIsJumping(isJumping);
                         otherPlayer.get(id).setUsername(username);
+                        otherPlayer.get(id).setIsDead(isDead);
+                    }else if(!id.equals(MySocketId)){
+                        addPlayer(id, x, y, stateTime, isSliding, isJumping, username, playerType, isDead);
                     }
 
                 }
