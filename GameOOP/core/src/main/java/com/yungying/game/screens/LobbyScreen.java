@@ -53,8 +53,8 @@ public class LobbyScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Assuming you have a "uiskin.json" for the button style
-        backgroundTexture = new Texture(Gdx.files.internal("Backgrounds/Midnight.jpeg"));
-        music = Gdx.audio.newMusic(Gdx.files.internal("Songs/Journey of Sweet Adventures.mp3"));
+        backgroundTexture = new Texture(Gdx.files.internal("Backgrounds/Lobby Screen.png"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Songs/Whimsy Welcome.mp3"));
 
 
     }
@@ -122,12 +122,23 @@ public class LobbyScreen implements Screen {
         });
         stage.addActor(exitButton);  // Add the Exit button to the stage
 
+        music.setVolume(0f);
         music.setLooping(true);
         music.play();
     }
 
+    final float fadeDuration = 10f;  // Duration for fade-in in seconds
+    float fadeTime = 0f;
+
+
     @Override
     public void render(float delta) {
+
+        if(fadeTime < fadeDuration){
+            fadeTime += delta;
+            float volume = Math.min(1f, fadeTime / fadeDuration);
+            music.setVolume(volume);
+        }
 
         renderAnimationStartButton(delta);
 
