@@ -2,6 +2,7 @@ package com.yungying.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -38,12 +39,18 @@ public class LoginScreen implements Screen {
     private TextButton registerButton;
     private UseUser useUser;
 
+    Music music;
+
     public LoginScreen(Main game){
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         useUser = new UseUser();
+        music = LobbyScreen.music;
+
+        music.play();
+
     }
 
 

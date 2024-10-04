@@ -2,6 +2,7 @@ package com.yungying.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -44,6 +45,8 @@ public class LobbyScreen implements Screen {
     float targetHeight = initialHeight;
     float animationSpeed = 5f;  // Controls how fast the button grows/shrinks
 
+    public static Music music;
+
 
     public LobbyScreen(Main game) {
         this.game = game;
@@ -51,6 +54,7 @@ public class LobbyScreen implements Screen {
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Assuming you have a "uiskin.json" for the button style
         backgroundTexture = new Texture(Gdx.files.internal("Backgrounds/Midnight.jpeg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Songs/Journey of Sweet Adventures.mp3"));
 
 
     }
@@ -117,6 +121,9 @@ public class LobbyScreen implements Screen {
             }
         });
         stage.addActor(exitButton);  // Add the Exit button to the stage
+
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
