@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -141,6 +142,58 @@ public class UserController {
         }
     }
 
+    //get top5 users with highest score
+    @GetMapping("/top5")
+    public ResponseEntity<?> getTop5() {
+        return ResponseEntity.ok(userRepository.findTop5ByOrderByHighestScoreDesc(PageRequest.of(0, 5)));
+    }
+
+    //create or update user's highest score
+    @PostMapping("/score")
+    public ResponseEntity<?> updateScore(@RequestBody User user, HttpServletRequest request) {
+        // Extract the JWT from cookies
+        String jwt = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    jwt = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        // Validate the JWT
+        if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+            return ResponseEntity.status(401).body(new ErrorResponse("Unauthorized: Invalid or missing token"));
+        }
+
+        try {
+            // Get the username or ID from the token
+            String userId = jwtUtils.getUserIdFromJwtToken(jwt); // Adjust if using ID
+
+            Optional<User> userOptional = userRepository.findById(userId); //
+
+            // Check if the user is present
+            if (userOptional.isPresent()) {
+                User existingUser = userOptional.get();
+                if (user.getHighestScore() > existingUser.getHighestScore()) {
+                    existingUser.setHighestScore(user.getHighestScore());
+                    userRepository.save(existingUser);
+                }
+
+                System.out.println("Current highest score: " + existingUser.getHighestScore() + "rq score: " + user.getHighestScore());
+
+                return ResponseEntity.ok(new UserResponse(existingUser.getId(), existingUser.getUsername()));
+            } else {
+                return ResponseEntity.status(404).body(new ErrorResponse("User not found"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponse("An error occurred"));
+        }
+
+    }
 
 
 }

@@ -62,15 +62,17 @@ public class MainGameScreen implements Screen {
     private  ImageButton resumeButton;
     private  Texture hoverResumeTexture;
     private  Texture resumeTexture;
+    TextureRegionDrawable resumeDrawable;
 
     private  ImageButton restartButton;
     private  Texture hoverRestartTexture;
     private  Texture restartTexture;
+    TextureRegionDrawable restartDrawable;
 
     private  ImageButton exitButton;
     private  Texture hoverExitTexture;
     private  Texture exitTexture;
-    TextureRegionDrawable startDrawable;
+    TextureRegionDrawable exitDrawable;
     private Stage stage;
     private Viewport viewport;
 
@@ -129,15 +131,15 @@ public class MainGameScreen implements Screen {
         isMenuShow = false;
         resumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
         hoverResumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
-        startDrawable = new TextureRegionDrawable(resumeTexture);
+        resumeDrawable = new TextureRegionDrawable(resumeTexture);
 
-        exitTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
-        hoverExitTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
-        startDrawable = new TextureRegionDrawable(exitTexture);
+        exitTexture = new Texture(Gdx.files.internal("buttons/Exit/Exit.png"));
+        hoverExitTexture = new Texture(Gdx.files.internal("buttons/Exit/Hover.png"));
+        exitDrawable = new TextureRegionDrawable(exitTexture);
 
-        restartTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
-        hoverRestartTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
-        startDrawable = new TextureRegionDrawable(restartTexture);
+        restartTexture = new Texture(Gdx.files.internal("buttons/Restart/Restart.png"));
+        hoverRestartTexture = new Texture(Gdx.files.internal("buttons/Restart/Hover.png"));
+        restartDrawable = new TextureRegionDrawable(restartTexture);
 
         viewport = new FitViewport(800, 400, camera);
         viewport.apply(); // Apply the viewport settings
@@ -154,8 +156,8 @@ public class MainGameScreen implements Screen {
 
 
         // Create the "Start" button
-        resumeButton = new ImageButton(startDrawable);
-        resumeButton.setSize(initialWidth, initialHeight);
+        resumeButton = new ImageButton(resumeDrawable);
+        resumeButton.setSize(250, 150);
         resumeButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
 
         resumeButton.addListener(new ClickListener() {
@@ -183,8 +185,8 @@ public class MainGameScreen implements Screen {
         });
         stage.addActor(resumeButton);
 
-        restartButton = new ImageButton(startDrawable);
-        restartButton.setSize(initialWidth, initialHeight);
+        restartButton = new ImageButton(restartDrawable);
+        restartButton.setSize(250, 150);
         restartButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
 
         restartButton.addListener(new ClickListener() {
@@ -225,8 +227,8 @@ public class MainGameScreen implements Screen {
 
 
 
-        exitButton = new ImageButton(startDrawable);
-        exitButton.setSize(initialWidth, initialHeight);
+        exitButton = new ImageButton(exitDrawable);
+        exitButton.setSize(250, 150);
         exitButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
 
         exitButton.addListener(new ClickListener() {

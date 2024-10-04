@@ -38,13 +38,17 @@ public class MainMenuScreen implements Screen {
     Skin skin;
     private TextField usernameTextField;
     private ImageButton playButton;
-    private TextButton loginButton;
+    private ImageButton loginButton;
     private Label idLabel;
     boolean isInputClick = false;
     Stage stage;
 
     private Texture playTexture;
     private Texture hoverPlayTexture;
+
+    private Texture loginTexture;
+    private Texture hoverLoginTexture;
+    TextureRegionDrawable loginDrawable;
 
     private PlayerType currentPlayerType;
 
@@ -58,8 +62,14 @@ public class MainMenuScreen implements Screen {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         skin.addRegions(atlas);
 
-        loginButton = new TextButton("Login",skin);
+
+        loginTexture = new Texture(Gdx.files.internal("buttons/Login/Login.png"));
+        hoverLoginTexture = new Texture(Gdx.files.internal("buttons/Login/Hover.png"));
+        loginDrawable = new TextureRegionDrawable(new TextureRegion(loginTexture));
+
+
         usernameTextField = new TextField("Username", skin);
+
 
         currentPlayerType = PlayerType.CUTEGIRL;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Bungee-Regular.otf"));
@@ -215,23 +225,25 @@ public class MainMenuScreen implements Screen {
         });
 
         // Create a Play button
-        loginButton = new TextButton("Login", skin);
+        loginButton = new ImageButton(loginDrawable);
         loginButton.setPosition(300, 50);
         loginButton.setSize(200, 50);
         stage.addActor(loginButton);
 
-        // Add click listener to the Play button
         loginButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
                 game.setScreen(new LoginScreen(game));
                 dispose();
+
             }
 
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
             }
+
         });
 
         stage.addListener(new ClickListener(){
