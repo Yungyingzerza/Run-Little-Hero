@@ -32,6 +32,10 @@ public class LobbyScreen implements Screen {
     private Texture startTexture;
     private Texture hoverStartTexture;
 
+    private ImageButton exitButton;
+    private Texture exitTexture;
+    private Texture hoverExitTexture;
+
     // Define initial size and position
     float initialX = 400;
     float initialY = 250;
@@ -65,7 +69,12 @@ public class LobbyScreen implements Screen {
     public void show() {
         startTexture = new Texture(Gdx.files.internal("buttons/Start/Start.png"));
         hoverStartTexture = new Texture(Gdx.files.internal("buttons/Start/Hover.png"));
+
+        exitTexture = new Texture(Gdx.files.internal("buttons/Exit/Exit.png"));
+        hoverExitTexture = new Texture(Gdx.files.internal("buttons/Exit/Hover.png"));
+
         TextureRegionDrawable startDrawable = new TextureRegionDrawable(startTexture);
+        TextureRegionDrawable exitDrawable = new TextureRegionDrawable(exitTexture);
 
         // Initialize the stage and set the input processor
         stage = new Stage(viewport, game.batch);
@@ -110,14 +119,40 @@ public class LobbyScreen implements Screen {
         });
         stage.addActor(startButton);  // Add the Start button to the stage
 
-        // Create the "Exit" button
-        TextButton exitButton = new TextButton("Exit", skin);
-        exitButton.setPosition(300, 150);  // Adjust the button's position
-        exitButton.setSize(200, 50);       // Adjust the button's size
+        // Create the "Start" button
+        exitButton = new ImageButton(exitDrawable);
+        exitButton.setSize(200, 50);
+        exitButton.setPosition(initialX - initialWidth / 2, 150);  // Centering the button
+
+// Adjust the button's size on hover
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();  // This will close the game
+                // Transition to the next screen (MainMenuScreen)
+                game.setScreen(new MainMenuScreen(game));
+                dispose();  // Dispose of the current screen resources
+            }
+
+
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Set target size to larger when the mouse enters
+                exitButton.setSize(250, 90);
+                exitButton.setPosition(275, 150);
+
+                // Change the button texture on hover
+                exitButton.getStyle().imageUp = new TextureRegionDrawable(hoverExitTexture);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Set target size back to the original when the mouse exits
+                exitButton.setSize(200, 50);
+                exitButton.setPosition(initialX - initialWidth / 2, 150);  // Centering the button
+
+                // Change the button texture back to the original
+                exitButton.getStyle().imageUp = new TextureRegionDrawable(exitTexture);
             }
         });
         stage.addActor(exitButton);  // Add the Exit button to the stage

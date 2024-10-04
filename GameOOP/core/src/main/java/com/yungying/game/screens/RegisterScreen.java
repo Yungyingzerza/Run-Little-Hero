@@ -136,7 +136,7 @@ public class RegisterScreen implements Screen {
 
         stage.addActor(passwordTextField);
 
-        // Create the "Login" button
+        // Create the "Register" button
         registerButton = new TextButton("Register",skin);
         registerButton.setPosition(200, 0);  // Adjust the button's position
         registerButton.setSize(200, 50);
