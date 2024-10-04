@@ -1,5 +1,6 @@
 {
   "background": "Background.png",
+  "song": "Songs/happy-shiny-day.mp3",
   "nextMap": "Level2",
   "nextMapPath": "map/Level2.json",
   "mapSpeed": 300,
