@@ -362,9 +362,14 @@ public class MainGameScreen implements Screen {
         }
 
         //check if player is colliding with jelly
-        int tempScore = currentMap.isCollectJelly(player.getPosition().x, player.getPosition().y);
-        if(tempScore > 0){
-            player.setScore(player.getScore() + tempScore);
+        CollectJelly tempScore = currentMap.isCollectJelly(player.getPosition().x, player.getPosition().y);
+        if(tempScore.value > 0){
+            if(tempScore.jelly != ItemType.Potion){
+                player.setScore(player.getScore() + tempScore.value);
+            }else{
+                player.setHealth(player.getHealth() + tempScore.value);
+            }
+
         }
 
         //check if player is colliding with spike

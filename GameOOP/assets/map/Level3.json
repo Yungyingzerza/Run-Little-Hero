@@ -1,9 +1,9 @@
 {
   "background": "Background2.png",
-  "song": "Songs/running-on-the-hill.mp3",
-  "nextMap": "Level3",
-  "nextMapPath": "map/Level3.json",
-  "mapSpeed": 600,
+  "song": "Songs/Neon Dust.mp3",
+  "nextMap": "Level1",
+  "nextMapPath": "map/Level1.json",
+  "mapSpeed": 750,
   "tiles": [
       {"type": "GrassWinter", "y": 0, "zoom": 2},
       {"type": "GrassWinter", "y": 0, "zoom": 2},
@@ -19,7 +19,6 @@
       {"type": "GrassWinter",  "y": 0, "zoom": 2},
       {"type": "GrassWinter",  "y": 0, "zoom": 2},
       {"type": "GrassWinter", "y": 0, "zoom": 2},
-      {"type": "Air", "y": 0, "zoom": 2},
       {"type": "Air", "y": 0, "zoom": 2},
       {"type": "Air", "y": 0, "zoom": 2},
       {"type": "Air", "y": 0, "zoom": 2},
@@ -64,6 +63,7 @@
     {"type": "GrassWinter",  "y": 0, "zoom": 2},
     {"type": "GrassWinter",  "y": 0, "zoom": 2},
     {"type": "GrassWinter", "y": 0, "zoom": 2},
+    {"type": "Air", "y": 0, "zoom": 2},
     {"type": "Air", "y": 0, "zoom": 2},
     {"type": "Air", "y": 0, "zoom": 2},
     {"type": "Air", "y": 0, "zoom": 2},
@@ -149,19 +149,14 @@
     {"type": "Air", "y": 0},
     {"type": "Air", "y": 0},
     {"type": "Air", "y": 0},
-    {"type": "LONG_METAL", "y": 128},
     {"type": "Air", "y": 0},
     {"type": "Air", "y": 0},
     {"type": "Air", "y": 0},
-    {"type": "Air", "y": 0},
-    {"type": "Air", "y": 0},
-    {"type": "Air", "y": 0},
-    {"type": "Air", "y": 0},
-    {"type": "LONG_METAL", "y": 128},
     {"type": "Air", "y": 0},
     {"type": "Air", "y": 0},
     {"type": "Air", "y": 0},
     {"type": "LONG_METAL", "y": 128},
-    {"type": "LONG_METAL", "y": 128}
+    {"type": "Air", "y": 0},
+    {"type": "Air", "y": 0}
   ]
 }
