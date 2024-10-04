@@ -17,6 +17,7 @@ public class MapLoader implements Map {
     private final Texture grassTexture;
     private final Texture grassWinterTexture;
     private final Texture backgroundTexture;
+    private final Texture potionTexture;
     private final float mapSpeed;
     private final String nextMap;
     private final String nextMapPath;
@@ -31,6 +32,7 @@ public class MapLoader implements Map {
         grassTexture = new Texture("Grass.png");
         Coin = new Texture("Point/Coin.png");
         Cherry = new Texture("Point/Cherry.png");
+        potionTexture = new Texture("Potion/1.png");
         grassWinterTexture = new Texture("GrassWinter.png");
         LongMetal = new Texture("Spikes/LongMetal/long_metal_spike.png");
         tiles = new Vector<>();
@@ -127,6 +129,8 @@ public class MapLoader implements Map {
                 return Coin;
             }else if (type.equals(ItemType.Cherry)) {
                 return Cherry;
+            } else if (type.equals(ItemType.Potion)) {
+                return potionTexture;
             }
         }
         return null;
@@ -171,15 +175,15 @@ public class MapLoader implements Map {
     }
 
     @Override
-    public int isCollectJelly(float playerX, float playerY) {
+    public CollectJelly isCollectJelly(float playerX, float playerY) {
         for (Jelly jelly : jellies) {
-            int score = jelly.isColliding(playerX, playerY);
-            if (score > 0) {
+            CollectJelly jellyTemp = jelly.isColliding(playerX, playerY);
+            if (jellyTemp.value > 0) {
                 jellies.remove(jelly);
-                return score;
+                return jellyTemp;
             }
         }
-        return 0;
+        return new CollectJelly(ItemType.Air, 0);
     }
 
     @Override

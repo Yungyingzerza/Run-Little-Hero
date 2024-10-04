@@ -23,19 +23,21 @@ public class Jelly {
         return y;
     }
 
-    public int isColliding(float playerX, float playerY) {
+    public CollectJelly isColliding(float playerX, float playerY) {
         if(playerX < x + 64 && playerX + 64 > x && playerY < y && playerY + 128 > y){
 
             if(type == ItemType.Coin){
-                return 50;
+                return new CollectJelly(ItemType.Coin, 10);
             }else if(type == ItemType.Cherry){
-                return 100;
-            }else {
-                return 0;
+                return new CollectJelly(ItemType.Cherry, 20);
+            }else if(type == ItemType.Potion){
+                return new CollectJelly(ItemType.Potion, 15);
+            }else{
+                return new CollectJelly(ItemType.Air, 0);
             }
 
         }else{
-            return 0;
+            return new CollectJelly(ItemType.Air, 0);
         }
     }
 }

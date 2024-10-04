@@ -29,7 +29,7 @@ public  interface Map {
 
     boolean isColliding(float playerX, float playerY);
 
-    int isCollectJelly(float playerX, float playerY);
+    CollectJelly isCollectJelly(float playerX, float playerY);
 
     int isCollidingSpike(float playerX, float playerY);
 

@@ -1,5 +1,5 @@
 package com.yungying.game.map;
 
 public enum ItemType {
-    Air,Coin, Cherry
+    Air,Coin, Cherry, Potion
 }
