@@ -270,26 +270,35 @@ public class MainGameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        checkDeath();
-        handleNextMap();
-        input();
-        logic();
-        camera();
-        draw();
+        if(!player.isDead()){
+            handleNextMap();
+            input();
+            logic();
+            camera();
+            draw();
+        }else{
+            drawDead();
+        }
+
+
 
         sendPlayerData();
 
 
     }
 
-    public void checkDeath(){
-        if(player.isDead()){
-            sendPlayerData();
-            currentMusic.stop();
-            game.setScreen(new MainMenuScreen(game));
-            dispose();
-        }
+    public void drawDead() {
+        updateMenuPosition();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+        game.batch.begin();
+        font.draw(game.batch, "YOU DIED", camera.position.x-185, camera.position.y +200, 500, 1, true);
+        game.batch.end();
+        isMenuShow = true;
+        draw();
     }
+
+
 
     public void handleNextMap(){
         if(player.getPosition().x >= currentMap.getLastTile().getEndX()) {
@@ -390,9 +399,9 @@ public class MainGameScreen implements Screen {
 
     private void updateMenuPosition(){
 
-        resumeButton.setPosition(camera.position.x -185f, camera.position.y+130);
-        restartButton.setPosition(camera.position.x -185f, camera.position.y );
-        exitButton.setPosition(camera.position.x -185f, camera.position.y -130f);
+        resumeButton.setPosition(camera.position.x -185f, camera.position.y);
+        restartButton.setPosition(camera.position.x -185f, camera.position.y-120f );
+        exitButton.setPosition(camera.position.x -185f, camera.position.y -240f);
     }
 
 
