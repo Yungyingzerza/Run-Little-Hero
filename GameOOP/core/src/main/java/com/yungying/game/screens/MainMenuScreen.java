@@ -2,6 +2,7 @@ package com.yungying.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -49,6 +50,8 @@ public class MainMenuScreen implements Screen {
 
     private final BitmapFont font;
 
+    private Music music;
+
     public MainMenuScreen(Main game) {
         this.game = game;
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
@@ -63,6 +66,7 @@ public class MainMenuScreen implements Screen {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 16;
         font = generator.generateFont(parameter);
+        music = LobbyScreen.music;
 
     }
 
@@ -97,12 +101,13 @@ public class MainMenuScreen implements Screen {
         usernameLabel.setPosition(200, 320); // Set the position just above the TextField
         stage.addActor(usernameLabel);
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("test.jpg"));
+
+        Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/textbox.png"));
         Drawable backgroundDrawable = new TextureRegionDrawable(backgroundTexture);
 
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = skin.getFont("default-font");
-        textFieldStyle.fontColor = skin.getColor("black");
+        textFieldStyle.fontColor = skin.getColor("white");
         textFieldStyle.background = backgroundDrawable;
 
 
@@ -148,6 +153,8 @@ public class MainMenuScreen implements Screen {
                     //start game
                     String username = usernameTextField.getText();
 
+                    music.stop();
+
                     if(username.isEmpty()){
                         game.setScreen(new MainGameScreen(game, "noName", currentPlayerType));
                         dispose();
@@ -179,6 +186,8 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                     String username = usernameTextField.getText();
+
+                    music.stop();
 
                     if(username.isEmpty()){
                         game.setScreen(new MainGameScreen(game, "noName", currentPlayerType));
@@ -254,6 +263,8 @@ public class MainMenuScreen implements Screen {
         });
 
 
+        music.play();
+
     }
 
 
@@ -275,6 +286,12 @@ public class MainMenuScreen implements Screen {
         game.batch.begin();
 
         font.draw(game.batch, "Current Character is: "+ currentPlayerType.toString(), camera.viewportWidth / 2 - 200, camera.viewportHeight - 20);
+
+        font.draw(game.batch, "Highest Score", 0, camera.viewportHeight / 2 + 170);
+
+        for(int i=0; i < 5; i++){
+            font.draw(game.batch, "User" + " Kuy", 0, camera.viewportHeight / 2 - 50 * (i+1) + 170);
+        }
 
         game.batch.end();
 
