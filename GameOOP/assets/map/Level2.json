@@ -1,5 +1,6 @@
 {
   "background": "Background2.png",
+  "song": "Songs/running-on-the-hill.mp3",
   "nextMap": "Level1",
   "nextMapPath": "map/Level1.json",
   "mapSpeed": 800,

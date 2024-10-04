@@ -199,6 +199,7 @@ public class LoginScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        loginButton.setPosition(camera.position.x, camera.position.y);
     }
 
     @Override
