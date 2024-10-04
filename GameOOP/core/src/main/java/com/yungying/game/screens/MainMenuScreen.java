@@ -233,31 +233,17 @@ public class MainMenuScreen implements Screen {
         loginButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String username = usernameTextField.getText();
 
-                if(username.isEmpty()){
-                    game.setScreen(new MainGameScreen(game, "noName", currentPlayerType));
-                    dispose();
-                    return;
-                }
-
-                game.setScreen(new MainGameScreen(game, username, currentPlayerType));
+                game.setScreen(new LoginScreen(game));
                 dispose();
-
 
             }
 
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
-
-                loginButton.getStyle().imageUp = new TextureRegionDrawable(hoverLoginTexture);
             }
 
-            @Override
-            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
-                loginButton.getStyle().imageUp = new TextureRegionDrawable(loginDrawable);
-            }
         });
 
         stage.addListener(new ClickListener(){
