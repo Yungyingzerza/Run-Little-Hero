@@ -56,6 +56,8 @@ public class MainMenuScreen implements Screen {
 
     private Music music;
 
+    private UseUser useUser;
+
     public MainMenuScreen(Main game) {
         this.game = game;
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
@@ -78,6 +80,9 @@ public class MainMenuScreen implements Screen {
         font = generator.generateFont(parameter);
         music = LobbyScreen.music;
 
+        useUser = new UseUser();
+
+        useUser.getTopUsers();
     }
 
     @Override
@@ -301,9 +306,13 @@ public class MainMenuScreen implements Screen {
 
         font.draw(game.batch, "Highest Score", 0, camera.viewportHeight / 2 + 170);
 
-        for(int i=0; i < 5; i++){
-            font.draw(game.batch, "User" + " Kuy", 0, camera.viewportHeight / 2 - 50 * (i+1) + 170);
+
+        if(UseUser.topUsers != null){
+            for(int i=0; i < UseUser.topUsers.size(); i++){
+                font.draw(game.batch, UseUser.topUsers.get(i).getUsername() + ": " + UseUser.topUsers.get(i).getHighestScore(), 0, camera.viewportHeight / 2 - 50 * (i+1) + 170);
+            }
         }
+
 
         game.batch.end();
 

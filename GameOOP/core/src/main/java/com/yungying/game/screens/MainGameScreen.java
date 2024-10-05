@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
@@ -23,6 +22,7 @@ import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
 import com.yungying.game.Player.Tee;
 import com.yungying.game.gameInputHandler.gameInputHandler;
+import com.yungying.game.hooks.UseUser;
 import com.yungying.game.map.*;
 import com.yungying.game.states.gameStates;
 import com.yungying.game.textureLoader.PlayerType;
@@ -76,6 +76,7 @@ public class MainGameScreen implements Screen {
     private Stage stage;
     private Viewport viewport;
 
+    private UseUser useUser;
 
     // Define initial size
     float initialWidth = 400;
@@ -143,6 +144,8 @@ public class MainGameScreen implements Screen {
 
         viewport = new FitViewport(800, 400, camera);
         viewport.apply(); // Apply the viewport settings
+
+        useUser = new UseUser();
 
     }
 
@@ -540,6 +543,7 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void dispose() {
+        useUser.postScore(player.getScore());
         currentMusic.dispose();
         currentMap.dispose();
     }
