@@ -145,6 +145,7 @@ public class Player {
         }else{
             position.y -= (gameStates.GRAVITY/3.25f) * Gdx.graphics.getDeltaTime();
         }
+
     }
 
     public void setSpeed(float speed) {

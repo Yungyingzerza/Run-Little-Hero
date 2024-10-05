@@ -3,6 +3,8 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,13 +22,8 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
-import com.yungying.game.hooks.Authentication;
 import com.yungying.game.hooks.UseUser;
 import com.yungying.game.textureLoader.PlayerType;
-
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-
 
 public class MainMenuScreen implements Screen {
 
@@ -39,7 +36,6 @@ public class MainMenuScreen implements Screen {
     private TextField usernameTextField;
     private ImageButton playButton;
     private ImageButton loginButton;
-    private Label idLabel;
     boolean isInputClick = false;
     Stage stage;
 
@@ -78,6 +74,9 @@ public class MainMenuScreen implements Screen {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 16;
         font = generator.generateFont(parameter);
+
+        generator.dispose();
+
         music = LobbyScreen.music;
 
         useUser = new UseUser();
@@ -106,10 +105,6 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
-        //create a Label for ID top left
-        idLabel = new Label("ID: connecting to server", skin);
-        idLabel.setPosition(0, 380);
-        stage.addActor(idLabel);
 
         // Create a Label for Username
         Label usernameLabel = new Label("Username", skin);
@@ -117,13 +112,18 @@ public class MainMenuScreen implements Screen {
         stage.addActor(usernameLabel);
 
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/textbox.png"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/Fantasy_TextBox_A01-1_Red.png"));
         Drawable backgroundDrawable = new TextureRegionDrawable(backgroundTexture);
 
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = skin.getFont("default-font");
+        textFieldStyle.font = font;
         textFieldStyle.fontColor = skin.getColor("white");
         textFieldStyle.background = backgroundDrawable;
+
+        textFieldStyle.background.setLeftWidth(100);
+        textFieldStyle.background.setRightWidth(70);
+        textFieldStyle.background.setTopHeight(20);
+        textFieldStyle.background.setBottomHeight(20);
 
 
         Texture cursorTexture = new Texture(Gdx.files.internal("test2.png")); // Replace with your own cursor image if needed
@@ -287,7 +287,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float v) {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+        Gdx.gl.glClearColor(0.82f, 0.77f, 0.91f, 1); // Light pastel purple
+
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
         camera.update();
@@ -296,9 +297,6 @@ public class MainMenuScreen implements Screen {
         stage.act(v);
         stage.draw();
 
-        if(game.getSocket() != null){
-            idLabel.setText("ID: " + game.getSocket().id());
-        }
 
         game.batch.begin();
 
