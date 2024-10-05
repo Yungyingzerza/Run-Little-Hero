@@ -72,13 +72,18 @@ public class RegisterScreen implements Screen {
         passwordLabel.setPosition(200, 160);
         stage.addActor(passwordLabel);
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("test.jpg"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/Fantasy_TextBox_A01-1_Red.png"));
         Drawable backgroundDrawable = new TextureRegionDrawable(backgroundTexture);
 
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = skin.getFont("default-font");
         textFieldStyle.fontColor = skin.getColor("black");
         textFieldStyle.background = backgroundDrawable;
+
+        textFieldStyle.background.setLeftWidth(100);
+        textFieldStyle.background.setRightWidth(70);
+        textFieldStyle.background.setTopHeight(20);
+        textFieldStyle.background.setBottomHeight(20);
 
 
         Texture cursorTexture = new Texture(Gdx.files.internal("test2.png")); // Replace with your own cursor image if needed

@@ -9,8 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -23,7 +21,6 @@ public class LobbyScreen implements Screen {
     private Stage stage;
     private final Viewport viewport;
     private final OrthographicCamera camera;
-    private final Skin skin;
 
     private final Texture backgroundTexture;
 
@@ -56,7 +53,6 @@ public class LobbyScreen implements Screen {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
-        skin = new Skin(Gdx.files.internal("uiskin.json")); // Assuming you have a "uiskin.json" for the button style
         backgroundTexture = new Texture(Gdx.files.internal("Backgrounds/Lobby Screen.png"));
         music = Gdx.audio.newMusic(Gdx.files.internal("Songs/Whimsy Welcome.mp3"));
 
@@ -129,7 +125,7 @@ public class LobbyScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Transition to the next screen (MainMenuScreen)
-                game.setScreen(new MainMenuScreen(game));
+                Gdx.app.exit();
                 dispose();  // Dispose of the current screen resources
             }
 
@@ -137,20 +133,12 @@ public class LobbyScreen implements Screen {
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Set target size to larger when the mouse enters
-                exitButton.setSize(250, 90);
-                exitButton.setPosition(275, 150);
-
                 // Change the button texture on hover
                 exitButton.getStyle().imageUp = new TextureRegionDrawable(hoverExitTexture);
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Set target size back to the original when the mouse exits
-                exitButton.setSize(200, 50);
-                exitButton.setPosition(initialX - initialWidth / 2, 150);  // Centering the button
-
                 // Change the button texture back to the original
                 exitButton.getStyle().imageUp = new TextureRegionDrawable(exitTexture);
             }
@@ -226,6 +214,5 @@ public class LobbyScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
     }
 }
