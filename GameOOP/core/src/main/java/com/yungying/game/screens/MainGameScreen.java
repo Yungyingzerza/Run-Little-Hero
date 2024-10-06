@@ -565,6 +565,7 @@ public class MainGameScreen implements Screen {
     @Override
     public void dispose() {
         useUser.postScore(player.getScore());
+        useUser.getTopUsers();
         currentMusic.dispose();
         currentMap.dispose();
     }
