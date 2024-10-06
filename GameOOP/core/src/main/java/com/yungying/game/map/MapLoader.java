@@ -12,7 +12,14 @@ public class MapLoader implements Map {
     private final Vector<Tile> tiles;
     private final Vector<Jelly> jellies;
     private final Vector<Spike> spikes;
+
     private final Texture Coin;
+
+    private final Music CoinSound;
+    private final Music defaultSound;
+    private final Music healthSound;
+
+
     private final Texture Cherry;
     private final Texture grassTexture;
     private final Texture mossyTexture;
@@ -32,8 +39,12 @@ public class MapLoader implements Map {
     public MapLoader(String jsonFilePath, float initialX) {
         // Initialize textures
         grassTexture = new Texture("Grass.png");
-        mossyTexture = new Texture("assets/GrassWinter.png");
+        mossyTexture = new Texture("Grass.png");
         Coin = new Texture("Point/Coin.png");
+        CoinSound = Gdx.audio.newMusic(Gdx.files.internal("Point/Coin.mp3"));
+        defaultSound = Gdx.audio.newMusic(Gdx.files.internal("Point/poit-94911.mp3"));
+        healthSound = Gdx.audio.newMusic(Gdx.files.internal("Point/magic_spell_10-39689.mp3"));
+
         Cherry = new Texture("Point/Cherry.png");
         potionTexture = new Texture("Potion/1.png");
         grassWinterTexture = new Texture("GrassWinter.png");
@@ -183,12 +194,23 @@ public class MapLoader implements Map {
         return currentTile.isColliding( playerY);
     }
 
+    private void playJellySound(ItemType type) {
+        if (type.equals(ItemType.Coin)) {
+            CoinSound.play();
+        }else if(type.equals(ItemType.Potion)){
+            healthSound.play();
+        }else{
+            defaultSound.play();
+        }
+    }
+
     @Override
     public CollectJelly isCollectJelly(float playerX, float playerY) {
         for (Jelly jelly : jellies) {
             CollectJelly jellyTemp = jelly.isColliding(playerX, playerY);
             if (jellyTemp.value > 0) {
                 jellies.remove(jelly);
+                playJellySound(jellyTemp.jelly);
                 return jellyTemp;
             }
         }

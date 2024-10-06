@@ -1,6 +1,7 @@
 package com.yungying.game.Player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.yungying.game.map.BlockType;
@@ -24,6 +25,7 @@ public class Player {
     String username;
     private int health;
 
+    Music jumpSound;
 
     public Player(PlayerType playerType) {
         this.playerType = playerType;
@@ -38,6 +40,7 @@ public class Player {
         isDead = false;
         health = 100;
         stateTime = 0f;
+        jumpSound = Gdx.audio.newMusic(Gdx.files.internal("characters/Jump.wav"));
     }
 
     public boolean isJumping() {
@@ -90,17 +93,18 @@ public class Player {
         jumpCounter++;
         velocity.y = gameStates.JUMP_SPEED;
         isHighestJump = false;
+        jumpSound.play();
     }
 
     public void slide() {
         if(isJumping) return;
-
 
         currentFrame = playerTextureList.getSlideTexture(playerType, gameStates.stateTime);
         isSliding = true;
     }
 
     public void stopSlide() {
+
         isSliding = false;
     }
 
