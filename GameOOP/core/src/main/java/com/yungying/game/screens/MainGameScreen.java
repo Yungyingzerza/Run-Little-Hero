@@ -277,6 +277,7 @@ public class MainGameScreen implements Screen {
         stage.addActor(exitButton);
 
         if (currentMusic != null && !currentMusic.isPlaying()) {
+            currentMusic.setVolume(0.5f); // Set the volume to half
             currentMusic.setLooping(true);  // Set looping if required
             currentMusic.play();            // Only play if it's not already playing
         }
@@ -398,7 +399,7 @@ public class MainGameScreen implements Screen {
         }
 
         //check if player is colliding with spike
-        int tempHealth = currentMap.isCollidingSpike(player.getPosition().x, player.getPosition().y);
+        int tempHealth = currentMap.isCollidingSpike(player.getPosition().x, player.getPosition().y, player.isSliding());
         if(tempHealth < 0){
             player.setHealth(player.getHealth() + tempHealth);
             latestHitTime = gameStates.stateTime;

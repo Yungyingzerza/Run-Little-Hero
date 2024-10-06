@@ -23,15 +23,17 @@ public class Spike {
         return y;
     }
 
-    public int isColliding(float playerX, float playerY) {
+    public int isColliding(float playerX, float playerY, boolean isSliding) {
 
         if(type == SpikeType.LONG_METAL){
-            if(playerX < x + 64 && playerX + 64 > x && (playerY == y || playerY <= y + 64) ) {
+            if(playerX < x + 64 && playerX + 64 > x && (playerY <= y + 32 && !(playerY <= y)) ) {
                 return -50;
             }
         }
         if(type == SpikeType.Bird){
-            if(playerX < x + 64 && playerX + 64 > x && (playerY == y-80 || playerY >= y-80 ) ) {
+            if(!isSliding && playerX < x + 64 && playerX + 64 > x && (playerY + 128 >= y && playerY <= y + 64) ) {
+                return -50;
+            }else if(isSliding && playerX < x + 64 && playerX + 64 > x && (playerY + 64 >= y && playerY <= y + 64) ) {
                 return -50;
             }
         }
