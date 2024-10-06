@@ -83,7 +83,13 @@ public class MainGameScreen implements Screen {
     float initialHeight = 200;
 
     Music currentMusic;
+    Music nextMusic;
 
+    //tempLastTile
+    Tile tempLastTile;
+
+    //temp nextMap background
+    Texture nextMapBackground;
 
 
 
@@ -104,8 +110,13 @@ public class MainGameScreen implements Screen {
         currentMap = new MapLoader("map/Level1.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
 
+        tempLastTile = currentMap.getLastTile();
+
         //music
         currentMusic = currentMap.getMusic();
+        nextMusic = nextMap.getMusic();
+
+        nextMapBackground = nextMap.getBackground();
 
 
         player.setSpeed(currentMap.getMapSpeed());
@@ -306,24 +317,33 @@ public class MainGameScreen implements Screen {
 
 
     public void handleNextMap(){
-        if(player.getPosition().x >= currentMap.getLastTile().getEndX()) {
 
-                currentMap = nextMap;
-                nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
-//                nextMusic = nextMap.getMusic();
+        //check if player is at the end of the map
+        if(player.getPosition().x >= tempLastTile.getEndX()) {
 
+            currentMap.setBackground(nextMapBackground);
 
+            //set speed to new map speed
             player.setSpeed(currentMap.getMapSpeed());
 
-            player.setPosition(currentMap.getFirstTile().getStartX(), currentMap.getFirstTile().getEndY());
-
-
-                // Stop the current music if it's playing
+            // Stop the current music if it's playing
             currentMusic.stop();
             currentMusic.dispose();
 
-            currentMusic = currentMap.getMusic();
+            currentMusic = nextMusic;
             currentMusic.play();
+
+            //update the last tile
+            tempLastTile = currentMap.getLastTile();
+        }
+
+        //load next map
+        if(player.getPosition().x + 2048 >= currentMap.getLastTile().getEndX()) {
+
+                currentMap.mergeMap(nextMap);
+                nextMusic = nextMap.getMusic();
+                nextMapBackground = nextMap.getBackground();
+                nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
 
         }
     }

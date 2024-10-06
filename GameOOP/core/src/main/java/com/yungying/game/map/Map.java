@@ -41,5 +41,11 @@ public  interface Map {
 
     String getNextMapPath();
 
+    //merge map
+    void mergeMap(Map map);
+
+    //set background
+    void setBackground(Texture backgroundTexture);
+
     void dispose();
 }
