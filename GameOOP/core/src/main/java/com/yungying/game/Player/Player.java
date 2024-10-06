@@ -174,6 +174,11 @@ public class Player {
             isDead = true;
         }
 
+        //set current frame to dead texture
+        if(isDead) {
+            currentFrame = playerTextureList.getSlideTexture(playerType, gameStates.stateTime);
+        }
+
         return isDead;
     }
 
