@@ -26,7 +26,12 @@ public class Spike {
     public int isColliding(float playerX, float playerY) {
 
         if(type == SpikeType.LONG_METAL){
-            if(playerX < x + 64 && playerX + 64 > x && (playerY == y || playerY <= y + 64) ){
+            if(playerX < x + 64 && playerX + 64 > x && (playerY == y || playerY <= y + 64) ) {
+                return -50;
+            }
+        }
+        if(type == SpikeType.Bird){
+            if(playerX < x + 64 && playerX + 64 > x && (playerY == y-80 || playerY >= y-80 ) ) {
                 return -50;
             }
         }
