@@ -107,7 +107,7 @@ public class MainGameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
-        currentMap = new MapLoader("map/Level2.json", 0);
+        currentMap = new MapLoader("map/Level1.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
 
         tempLastTile = currentMap.getLastTile();
@@ -277,6 +277,7 @@ public class MainGameScreen implements Screen {
         stage.addActor(exitButton);
 
         if (currentMusic != null && !currentMusic.isPlaying()) {
+            currentMusic.setVolume(0.5f); // Set the volume to half
             currentMusic.setLooping(true);  // Set looping if required
             currentMusic.play();            // Only play if it's not already playing
         }

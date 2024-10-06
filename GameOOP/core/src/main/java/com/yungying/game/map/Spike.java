@@ -26,7 +26,7 @@ public class Spike {
     public int isColliding(float playerX, float playerY) {
 
         if(type == SpikeType.LONG_METAL){
-            if(playerX < x + 64 && playerX + 64 > x && (playerY == y || playerY <= y + 64) ) {
+            if(playerX < x + 64 && playerX + 64 > x && (playerY == y || playerY <= y + 32) ) {
                 return -50;
             }
         }
