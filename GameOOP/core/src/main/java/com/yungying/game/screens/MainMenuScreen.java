@@ -54,6 +54,8 @@ public class MainMenuScreen implements Screen {
 
     private UseUser useUser;
 
+    private float lastPollTime = 0;
+
     public MainMenuScreen(Main game) {
         this.game = game;
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
@@ -83,6 +85,7 @@ public class MainMenuScreen implements Screen {
 
         useUser.getTopUsers();
     }
+
 
     @Override
     public void show() {
@@ -290,6 +293,16 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(0.82f, 0.77f, 0.91f, 1); // Light pastel purple
 
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+
+        lastPollTime += Gdx.graphics.getDeltaTime();
+
+        //long polling to get top users every 3 seconds
+        if(lastPollTime > 3){
+            useUser.getTopUsers();
+            System.out.println("polling");
+            lastPollTime = 0;
+        }
+
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
