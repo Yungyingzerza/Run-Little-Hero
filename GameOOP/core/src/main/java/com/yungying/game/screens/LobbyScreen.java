@@ -9,8 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -23,7 +21,6 @@ public class LobbyScreen implements Screen {
     private Stage stage;
     private final Viewport viewport;
     private final OrthographicCamera camera;
-    private final Skin skin;
 
     private final Texture backgroundTexture;
 
@@ -31,6 +28,10 @@ public class LobbyScreen implements Screen {
     private ImageButton startButton;
     private Texture startTexture;
     private Texture hoverStartTexture;
+
+    private ImageButton exitButton;
+    private Texture exitTexture;
+    private Texture hoverExitTexture;
 
     // Define initial size and position
     float initialX = 400;
@@ -52,9 +53,8 @@ public class LobbyScreen implements Screen {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
-        skin = new Skin(Gdx.files.internal("uiskin.json")); // Assuming you have a "uiskin.json" for the button style
-        backgroundTexture = new Texture(Gdx.files.internal("Backgrounds/Midnight.jpeg"));
-        music = Gdx.audio.newMusic(Gdx.files.internal("Songs/Journey of Sweet Adventures.mp3"));
+        backgroundTexture = new Texture(Gdx.files.internal("Backgrounds/Lobby Screen.png"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Songs/Whimsy Welcome.mp3"));
 
 
     }
@@ -65,7 +65,12 @@ public class LobbyScreen implements Screen {
     public void show() {
         startTexture = new Texture(Gdx.files.internal("buttons/Start/Start.png"));
         hoverStartTexture = new Texture(Gdx.files.internal("buttons/Start/Hover.png"));
+
+        exitTexture = new Texture(Gdx.files.internal("buttons/Exit/Exit.png"));
+        hoverExitTexture = new Texture(Gdx.files.internal("buttons/Exit/Hover.png"));
+
         TextureRegionDrawable startDrawable = new TextureRegionDrawable(startTexture);
+        TextureRegionDrawable exitDrawable = new TextureRegionDrawable(exitTexture);
 
         // Initialize the stage and set the input processor
         stage = new Stage(viewport, game.batch);
@@ -110,24 +115,53 @@ public class LobbyScreen implements Screen {
         });
         stage.addActor(startButton);  // Add the Start button to the stage
 
-        // Create the "Exit" button
-        TextButton exitButton = new TextButton("Exit", skin);
-        exitButton.setPosition(300, 150);  // Adjust the button's position
-        exitButton.setSize(200, 50);       // Adjust the button's size
+        // Create the "Start" button
+        exitButton = new ImageButton(exitDrawable);
+        exitButton.setSize(200, 50);
+        exitButton.setPosition(initialX - initialWidth / 2, 150);  // Centering the button
+
+// Adjust the button's size on hover
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();  // This will close the game
+                // Transition to the next screen (MainMenuScreen)
+                Gdx.app.exit();
+                dispose();  // Dispose of the current screen resources
+            }
+
+
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Change the button texture on hover
+                exitButton.getStyle().imageUp = new TextureRegionDrawable(hoverExitTexture);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Change the button texture back to the original
+                exitButton.getStyle().imageUp = new TextureRegionDrawable(exitTexture);
             }
         });
         stage.addActor(exitButton);  // Add the Exit button to the stage
 
+        music.setVolume(0f);
         music.setLooping(true);
         music.play();
     }
 
+    final float fadeDuration = 10f;  // Duration for fade-in in seconds
+    float fadeTime = 0f;
+
+
     @Override
     public void render(float delta) {
+
+        if(fadeTime < fadeDuration){
+            fadeTime += delta;
+            float volume = Math.min(1f, fadeTime / fadeDuration);
+            music.setVolume(volume);
+        }
 
         renderAnimationStartButton(delta);
 
@@ -180,6 +214,5 @@ public class LobbyScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
     }
 }

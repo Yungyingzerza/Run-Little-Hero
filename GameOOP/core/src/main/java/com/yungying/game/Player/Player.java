@@ -145,6 +145,7 @@ public class Player {
         }else{
             position.y -= (gameStates.GRAVITY/3.25f) * Gdx.graphics.getDeltaTime();
         }
+
     }
 
     public void setSpeed(float speed) {
@@ -171,6 +172,11 @@ public class Player {
         //if health is 0
         if(health <= 0){
             isDead = true;
+        }
+
+        //set current frame to dead texture
+        if(isDead) {
+            currentFrame = playerTextureList.getSlideTexture(playerType, gameStates.stateTime);
         }
 
         return isDead;

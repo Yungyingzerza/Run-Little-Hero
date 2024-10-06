@@ -17,11 +17,11 @@ public class MapLoader implements Map {
     private final Texture grassTexture;
     private final Texture mossyTexture;
     private final Texture grassWinterTexture;
-    private final Texture backgroundTexture;
+    private Texture backgroundTexture;
     private final Texture potionTexture;
-    private final float mapSpeed;
-    private final String nextMap;
-    private final String nextMapPath;
+    private float mapSpeed;
+    private String nextMap;
+    private String nextMapPath;
     private Tile currentTile;
     private final float initialX;
     Music music;
@@ -228,8 +228,27 @@ public class MapLoader implements Map {
         return nextMapPath;
     }
 
+    @Override
+    public void mergeMap(Map map) {
+        tiles.addAll(map.getTiles());
+        jellies.addAll(map.getJellies());
+        spikes.addAll(map.getSpikes());
+
+        //set next map
+        nextMap = map.getNextMap();
+        nextMapPath = map.getNextMapPath();
+
+        //set speed
+        mapSpeed = map.getMapSpeed();
+
+    }
+
     public void dispose() {
         grassTexture.dispose();
         backgroundTexture.dispose();
+    }
+
+    public void setBackground(Texture backgroundTexture) {
+        this.backgroundTexture = backgroundTexture;
     }
 }

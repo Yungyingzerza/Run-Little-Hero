@@ -16,6 +16,10 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    //default highest score is 0
+    @Column(name = "highest_score")
+    private int highestScore = 0;
+
     public User() {}
 
     public User(String username, String password) {
@@ -45,6 +49,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getHighestScore() {
+        return highestScore;
+    }
+
+    public void setHighestScore(int highestScore) {
+        this.highestScore = highestScore;
     }
 
 }

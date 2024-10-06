@@ -4,9 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -15,6 +19,9 @@ public class UseUser {
     private Gson gson;
     public static String username;
     public static String userId;
+    public static List<User> topUsers;
+
+    public static String sessionCookie;
 
 
     public UseUser() {
@@ -51,6 +58,10 @@ public class UseUser {
                     // Output the username from the response
                     UseUser.username = user.getUsername();
                     UseUser.userId = user.getId();
+
+                    sessionCookie = response.getHeader("Set-Cookie");
+
+                    System.out.println("Session cookie: " + sessionCookie);
 
                     authResult.set(Authentication.SUCCESS);
 
@@ -222,17 +233,100 @@ public class UseUser {
         });
     }
 
+    public void getTopUsers(){
+        // Create a new HttpRequestBuilder
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+
+        // Build the request
+        Net.HttpRequest request = requestBuilder.newRequest()
+            .method("GET")
+            .url("https://api.yungying.com/gameoop/user/top5") // Update this URL to match your Spring Boot API
+            .header("Content-Type", "application/json")
+            .build();
+
+        // Send the HTTP request
+        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse response) {
+                if (response.getStatus().getStatusCode() == HttpStatus.SC_OK) { // Check for OK status
+                    Type userListType = new TypeToken<List<User>>(){}.getType();
+                    List<User> topUsers = gson.fromJson(response.getResultAsString(), userListType);
+
+                    UseUser.topUsers = topUsers;
+                } else {
+                    System.out.println("Failed to fetch top users: " + response.getResultAsString());
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                System.out.println("Request failed: " + t.getMessage());
+            }
+
+            @Override
+            public void cancelled() {
+                System.out.println("Request cancelled");
+            }
+        });
+    }
+
+    //post user score
+    public void postScore(int score){
+        // Create a new HttpRequestBuilder
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+
+        // Convert the User object to JSON
+        String jsonContent = gson.toJson(new User(UseUser.username, score));
+
+        // Build the request
+        Net.HttpRequest request = requestBuilder.newRequest()
+            .method("POST")
+            .url("https://api.yungying.com/gameoop/user/score") // Update this URL to match your Spring Boot API
+            .header("Content-Type", "application/json")
+            .header("Cookie", sessionCookie)
+            .content(jsonContent) // Set the JSON content for the request
+            .build();
+
+        // Send the HTTP request
+        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse response) {
+                if (response.getStatus().getStatusCode() == HttpStatus.SC_OK) { // Check for OK status
+                    System.out.println("Score posted successfully");
+                } else {
+                    System.out.println("Failed to post score: " + response.getResultAsString());
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                System.out.println("Request failed: " + t.getMessage());
+            }
+
+            @Override
+            public void cancelled() {
+                System.out.println("Request cancelled");
+            }
+        });
+    }
+
     // User class definition
     public static class User {
         private String id;
         private String username;
         private String password;
+        private int highestScore;
 
         public User() {}
 
         public User(String username, String password) {
             this.username = username;
             this.password = password;
+        }
+
+        public User(String username, int highestScore) {
+            this.username = username;
+            this.highestScore = highestScore;
         }
 
         // Getters and setters
@@ -254,6 +348,18 @@ public class UseUser {
 
         public String getPassword() {
             return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public int getHighestScore() {
+            return highestScore;
+        }
+
+        public void setHighestScore(int highestScore) {
+            this.highestScore = highestScore;
         }
 
     }

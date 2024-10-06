@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
@@ -23,6 +22,7 @@ import com.yungying.game.Player.OtherPlayer;
 import com.yungying.game.Player.Player;
 import com.yungying.game.Player.Tee;
 import com.yungying.game.gameInputHandler.gameInputHandler;
+import com.yungying.game.hooks.UseUser;
 import com.yungying.game.map.*;
 import com.yungying.game.states.gameStates;
 import com.yungying.game.textureLoader.PlayerType;
@@ -62,25 +62,34 @@ public class MainGameScreen implements Screen {
     private  ImageButton resumeButton;
     private  Texture hoverResumeTexture;
     private  Texture resumeTexture;
+    TextureRegionDrawable resumeDrawable;
 
     private  ImageButton restartButton;
     private  Texture hoverRestartTexture;
     private  Texture restartTexture;
+    TextureRegionDrawable restartDrawable;
 
     private  ImageButton exitButton;
     private  Texture hoverExitTexture;
     private  Texture exitTexture;
-    TextureRegionDrawable startDrawable;
+    TextureRegionDrawable exitDrawable;
     private Stage stage;
     private Viewport viewport;
 
+    private UseUser useUser;
 
     // Define initial size
     float initialWidth = 400;
     float initialHeight = 200;
 
     Music currentMusic;
+    Music nextMusic;
 
+    //tempLastTile
+    Tile tempLastTile;
+
+    //temp nextMap background
+    Texture nextMapBackground;
 
 
 
@@ -101,8 +110,13 @@ public class MainGameScreen implements Screen {
         currentMap = new MapLoader("map/Level2.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
 
+        tempLastTile = currentMap.getLastTile();
+
         //music
         currentMusic = currentMap.getMusic();
+        nextMusic = nextMap.getMusic();
+
+        nextMapBackground = nextMap.getBackground();
 
 
         player.setSpeed(currentMap.getMapSpeed());
@@ -129,18 +143,20 @@ public class MainGameScreen implements Screen {
         isMenuShow = false;
         resumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
         hoverResumeTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
-        startDrawable = new TextureRegionDrawable(resumeTexture);
+        resumeDrawable = new TextureRegionDrawable(resumeTexture);
 
-        exitTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
-        hoverExitTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
-        startDrawable = new TextureRegionDrawable(exitTexture);
+        exitTexture = new Texture(Gdx.files.internal("buttons/Exit/Exit.png"));
+        hoverExitTexture = new Texture(Gdx.files.internal("buttons/Exit/Hover.png"));
+        exitDrawable = new TextureRegionDrawable(exitTexture);
 
-        restartTexture = new Texture(Gdx.files.internal("buttons/Resume/Resume.png"));
-        hoverRestartTexture = new Texture(Gdx.files.internal("buttons/Resume/Hover.png"));
-        startDrawable = new TextureRegionDrawable(restartTexture);
+        restartTexture = new Texture(Gdx.files.internal("buttons/Restart/Restart.png"));
+        hoverRestartTexture = new Texture(Gdx.files.internal("buttons/Restart/Hover.png"));
+        restartDrawable = new TextureRegionDrawable(restartTexture);
 
         viewport = new FitViewport(800, 400, camera);
         viewport.apply(); // Apply the viewport settings
+
+        useUser = new UseUser();
 
     }
 
@@ -154,8 +170,8 @@ public class MainGameScreen implements Screen {
 
 
         // Create the "Start" button
-        resumeButton = new ImageButton(startDrawable);
-        resumeButton.setSize(initialWidth, initialHeight);
+        resumeButton = new ImageButton(resumeDrawable);
+        resumeButton.setSize(250, 150);
         resumeButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
 
         resumeButton.addListener(new ClickListener() {
@@ -183,8 +199,8 @@ public class MainGameScreen implements Screen {
         });
         stage.addActor(resumeButton);
 
-        restartButton = new ImageButton(startDrawable);
-        restartButton.setSize(initialWidth, initialHeight);
+        restartButton = new ImageButton(restartDrawable);
+        restartButton.setSize(250, 150);
         restartButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
 
         restartButton.addListener(new ClickListener() {
@@ -225,8 +241,8 @@ public class MainGameScreen implements Screen {
 
 
 
-        exitButton = new ImageButton(startDrawable);
-        exitButton.setSize(initialWidth, initialHeight);
+        exitButton = new ImageButton(exitDrawable);
+        exitButton.setSize(250, 150);
         exitButton.setPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);  // Centering the button
 
         exitButton.addListener(new ClickListener() {
@@ -301,24 +317,33 @@ public class MainGameScreen implements Screen {
 
 
     public void handleNextMap(){
-        if(player.getPosition().x >= currentMap.getLastTile().getEndX()) {
 
-                currentMap = nextMap;
-                nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
-//                nextMusic = nextMap.getMusic();
+        //check if player is at the end of the map
+        if(player.getPosition().x >= tempLastTile.getEndX()) {
 
+            currentMap.setBackground(nextMapBackground);
 
+            //set speed to new map speed
             player.setSpeed(currentMap.getMapSpeed());
 
-            player.setPosition(currentMap.getFirstTile().getStartX(), currentMap.getFirstTile().getEndY());
-
-
-                // Stop the current music if it's playing
+            // Stop the current music if it's playing
             currentMusic.stop();
             currentMusic.dispose();
 
-            currentMusic = currentMap.getMusic();
+            currentMusic = nextMusic;
             currentMusic.play();
+
+            //update the last tile
+            tempLastTile = currentMap.getLastTile();
+        }
+
+        //load next map
+        if(player.getPosition().x + 2048 >= currentMap.getLastTile().getEndX()) {
+
+                currentMap.mergeMap(nextMap);
+                nextMusic = nextMap.getMusic();
+                nextMapBackground = nextMap.getBackground();
+                nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
 
         }
     }
@@ -538,6 +563,7 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void dispose() {
+        useUser.postScore(player.getScore());
         currentMusic.dispose();
         currentMap.dispose();
     }

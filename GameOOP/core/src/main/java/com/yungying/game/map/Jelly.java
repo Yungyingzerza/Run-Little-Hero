@@ -24,7 +24,7 @@ public class Jelly {
     }
 
     public CollectJelly isColliding(float playerX, float playerY) {
-        if(playerX < x + 64 && playerX + 64 > x && playerY < y && playerY + 128 > y){
+        if(playerX < x + 64 && playerX + 64 > x && playerY - 32 <= y && playerY + 128 >= y){
 
             if(type == ItemType.Coin){
                 return new CollectJelly(ItemType.Coin, 10);
