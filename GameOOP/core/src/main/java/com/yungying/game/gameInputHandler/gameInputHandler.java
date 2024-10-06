@@ -16,6 +16,7 @@ public class gameInputHandler {
 
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
             player.slide();
+            return;
         }else{
             player.stopSlide();
         }
@@ -42,9 +43,9 @@ public class gameInputHandler {
             if (touchX >= screenWidth / 2) {
                 player.slide(); // Slide action
             }
-        } else {
-            player.stopSlide(); // Stop sliding when not touching
-            jumpButtonHeld = false; // Reset jump button held flag
+        }else{
+            player.stopSlide();
+            jumpButtonHeld = false;
         }
 
 
