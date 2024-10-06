@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -121,12 +120,8 @@ public class MainGameScreen implements Screen {
 
         player.setSpeed(currentMap.getMapSpeed());
         player.setUsername(username);
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Bungee-Regular.otf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 12;
-        font = generator.generateFont(parameter);
-        font.getData().setScale(2.5f);
-        generator.dispose();
+        font = new BitmapFont(Gdx.files.internal("fonts/Bungee-Regular.fnt"));
+        font.getData().setScale(1.25f);
 
         //+64 to get the middle of the player
         playerX = player.getPosition().x + 64;

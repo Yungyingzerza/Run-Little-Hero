@@ -3,14 +3,11 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -72,12 +69,9 @@ public class MainMenuScreen implements Screen {
 
 
         currentPlayerType = PlayerType.CUTEGIRL;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Bungee-Regular.otf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 16;
-        font = generator.generateFont(parameter);
-
-        generator.dispose();
+        font = new BitmapFont(Gdx.files.internal("fonts/Bungee-Regular.fnt"));
+        //set the font size
+        font.getData().setScale(0.5f);
 
         music = LobbyScreen.music;
 
@@ -315,6 +309,9 @@ public class MainMenuScreen implements Screen {
 
         font.draw(game.batch, "Current Character is: "+ currentPlayerType.toString(), camera.viewportWidth / 2 - 200, camera.viewportHeight - 20);
 
+
+        font.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+
         font.draw(game.batch, "Highest Score", 0, camera.viewportHeight / 2 + 170);
 
 
@@ -324,6 +321,8 @@ public class MainMenuScreen implements Screen {
             }
         }
 
+        //set color back to white
+        font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         game.batch.end();
 

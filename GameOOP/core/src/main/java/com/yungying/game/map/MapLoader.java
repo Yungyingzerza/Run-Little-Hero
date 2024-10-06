@@ -49,7 +49,7 @@ public class MapLoader implements Map {
         potionTexture = new Texture("Potion/1.png");
         grassWinterTexture = new Texture("GrassWinter.png");
         LongMetal = new Texture("Spikes/LongMetal/long_metal_spike.png");
-        Bird = new Texture("assets/Spikes/LongMetal/Bird/png-transparent-bird-green-animals-blue-bird-animals-cartoon-bird.png");
+        Bird = new Texture("Spikes/LongMetal/Bird/2.png");
         tiles = new Vector<>();
         jellies = new Vector<>();
         spikes = new Vector<>();
@@ -103,7 +103,7 @@ public class MapLoader implements Map {
         }
 
         if (!tiles.isEmpty()) {
-            currentTile = tiles.getFirst();
+            currentTile = tiles.elementAt(0);
         }
     }
 
