@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -38,7 +35,10 @@ public class RegisterScreen implements Screen {
     private Label userNameLabel;
     private Label passwordLabel;
     private Label registerLabel;
-    private TextButton registerButton;
+    private ImageButton registerButton;
+    TextureRegionDrawable registerDrawable;
+    private Texture registerTexture;
+    private Texture hoverRegisterTexture;
     private UseUser useUser;
     private Texture backgroundTexture;
 
@@ -141,9 +141,13 @@ public class RegisterScreen implements Screen {
 
         stage.addActor(passwordTextField);
 
+        registerTexture = new Texture(Gdx.files.internal("buttons/Register/Register.png"));
+        hoverRegisterTexture = new Texture(Gdx.files.internal("buttons/Register/Hover.png"));
+        registerDrawable = new TextureRegionDrawable(new TextureRegion(registerTexture));
+
         // Create the "Register" button
-        registerButton = new TextButton("Register",skin);
-        registerButton.setPosition(200, 0);  // Adjust the button's position
+        registerButton = new ImageButton(registerDrawable);
+        registerButton.setPosition(300, 0);  // Adjust the button's position
         registerButton.setSize(200, 50);
 
         registerButton.addListener(new ClickListener() {
@@ -171,6 +175,13 @@ public class RegisterScreen implements Screen {
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
+
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(hoverRegisterTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(registerTexture);
             }
         });
 

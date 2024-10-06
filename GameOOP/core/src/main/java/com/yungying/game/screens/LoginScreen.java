@@ -35,8 +35,14 @@ public class LoginScreen implements Screen {
     private Label userNameLabel;
     private Label passwordLabel;
     private Label createAccountLabel;
-    private TextButton loginButton;
-    private TextButton registerButton;
+    private ImageButton loginButton;
+    TextureRegionDrawable loginDrawable;
+    private Texture loginTexture;
+    private Texture hoverloginTexture;
+    private ImageButton registerButton;
+    TextureRegionDrawable registerDrawable;
+    private Texture registerTexture;
+    private Texture hoverRegisterTexture;
     private UseUser useUser;
 
     Music music;
@@ -69,7 +75,7 @@ public class LoginScreen implements Screen {
         stage.addActor(passwordLabel);
 
         createAccountLabel = new Label("Don't have an account? Join the fun!", skin);
-        createAccountLabel.setPosition(500, 50);
+        createAccountLabel.setPosition(410, 50);
         stage.addActor(createAccountLabel);
 
         Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/Fantasy_TextBox_A01-1_Red.png"));
@@ -141,9 +147,13 @@ public class LoginScreen implements Screen {
 
         stage.addActor(passwordTextField);
 
+        loginTexture = new Texture(Gdx.files.internal("buttons/Login/Login.png"));
+       hoverloginTexture = new Texture(Gdx.files.internal("buttons/Login/Hover.png"));
+        loginDrawable = new TextureRegionDrawable(new TextureRegion(loginTexture));
+
         // Create the "Login" button
-        loginButton = new TextButton("login",skin);
-        loginButton.setPosition(200, 0);  // Adjust the button's position
+        loginButton = new ImageButton(loginDrawable);
+        loginButton.setPosition(150, -1);  // Adjust the button's position
         loginButton.setSize(200, 50);
 
         loginButton.addListener(new ClickListener() {
@@ -171,13 +181,24 @@ public class LoginScreen implements Screen {
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
+
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(hoverloginTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(loginTexture);
             }
         });
 
         stage.addActor(loginButton);
 
-        registerButton = new TextButton("Create an Account",skin);
-        registerButton.setPosition(Gdx.graphics.getWidth()-80,0);  // Adjust the button's position
+        registerTexture = new Texture(Gdx.files.internal("buttons/Register/Register.png"));
+        hoverRegisterTexture = new Texture(Gdx.files.internal("buttons/Register/Hover.png"));
+        registerDrawable = new TextureRegionDrawable(new TextureRegion(registerTexture));
+
+        registerButton = new ImageButton(registerDrawable);
+        registerButton.setPosition(Gdx.graphics.getWidth()-200,0);  // Adjust the button's position
         registerButton.setSize(200, 50);
 
         registerButton.addListener(new ClickListener() {
@@ -186,6 +207,19 @@ public class LoginScreen implements Screen {
                 // Transition to the next screen (MainMenuScreen)
                 game.setScreen(new RegisterScreen(game));
                 dispose();  // Dispose of the current screen resources
+
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                isInputClick = false;
+
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(hoverRegisterTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(registerTexture);
             }
 
         });
@@ -211,7 +245,7 @@ public class LoginScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        loginButton.setPosition(camera.position.x, camera.position.y);
+//        loginButton.setPosition(camera.position.x, camera.position.y);
     }
 
     @Override
