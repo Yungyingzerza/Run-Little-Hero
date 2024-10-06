@@ -31,7 +31,7 @@ public  interface Map {
 
     CollectJelly isCollectJelly(float playerX, float playerY);
 
-    int isCollidingSpike(float playerX, float playerY);
+    int isCollidingSpike(float playerX, float playerY, boolean isSliding);
 
     Tile getLastTile();
 

@@ -399,7 +399,7 @@ public class MainGameScreen implements Screen {
         }
 
         //check if player is colliding with spike
-        int tempHealth = currentMap.isCollidingSpike(player.getPosition().x, player.getPosition().y);
+        int tempHealth = currentMap.isCollidingSpike(player.getPosition().x, player.getPosition().y, player.isSliding());
         if(tempHealth < 0){
             player.setHealth(player.getHealth() + tempHealth);
             latestHitTime = gameStates.stateTime;

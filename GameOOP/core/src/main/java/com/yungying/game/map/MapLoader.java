@@ -218,9 +218,9 @@ public class MapLoader implements Map {
     }
 
     @Override
-    public int isCollidingSpike(float playerX, float playerY) {
+    public int isCollidingSpike(float playerX, float playerY, boolean isSliding) {
         for (Spike spike : spikes) {
-            int health = spike.isColliding(playerX, playerY);
+            int health = spike.isColliding(playerX, playerY, isSliding);
             if (health < 0) {
                 spikes.remove(spike);
                 return health;
