@@ -7,5 +7,23 @@ dependencies {
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
+
   }
+  implementation 'io.socket:socket.io-client:2.1.1'
+  implementation 'com.google.code.gson:gson:2.7'
+
+  // Include gdx-freetype and exclude gdx-freetype-gwt
+  implementation ('com.badlogicgames.gdx:gdx-freetype:1.12.1') {
+    exclude group: 'com.github.intrigus.gdx-freetype-gwt', module: 'gdx-freetype-gwt'
+  }
+
+  //desktop native
+  implementation "com.badlogicgames.gdx:gdx-freetype-platform:1.12.1:natives-desktop"
+
+  // Include native libraries for Android
+  implementation "com.badlogicgames.gdx:gdx-freetype-platform:1.12.1:natives-armeabi-v7a"
+  implementation "com.badlogicgames.gdx:gdx-freetype-platform:1.12.1:natives-arm64-v8a"
+  implementation "com.badlogicgames.gdx:gdx-freetype-platform:1.12.1:natives-x86"
+  implementation "com.badlogicgames.gdx:gdx-freetype-platform:1.12.1:natives-x86_64"
+
 }
