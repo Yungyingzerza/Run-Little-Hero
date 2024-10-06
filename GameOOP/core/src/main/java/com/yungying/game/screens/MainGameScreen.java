@@ -98,7 +98,7 @@ public class MainGameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
-        currentMap = new MapLoader("map/Level1.json", 0);
+        currentMap = new MapLoader("map/Level2.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
 
         //music

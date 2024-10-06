@@ -15,6 +15,7 @@ public class MapLoader implements Map {
     private final Texture Coin;
     private final Texture Cherry;
     private final Texture grassTexture;
+    private final Texture mossyTexture;
     private final Texture grassWinterTexture;
     private final Texture backgroundTexture;
     private final Texture potionTexture;
@@ -26,15 +27,18 @@ public class MapLoader implements Map {
     Music music;
 
     private final Texture LongMetal;
+    private final Texture Bird;
 
     public MapLoader(String jsonFilePath, float initialX) {
         // Initialize textures
         grassTexture = new Texture("Grass.png");
+        mossyTexture = new Texture("assets/GrassWinter.png");
         Coin = new Texture("Point/Coin.png");
         Cherry = new Texture("Point/Cherry.png");
         potionTexture = new Texture("Potion/1.png");
         grassWinterTexture = new Texture("GrassWinter.png");
         LongMetal = new Texture("Spikes/LongMetal/long_metal_spike.png");
+        Bird = new Texture("assets/Spikes/LongMetal/Bird/png-transparent-bird-green-animals-blue-bird-animals-cartoon-bird.png");
         tiles = new Vector<>();
         jellies = new Vector<>();
         spikes = new Vector<>();
@@ -100,6 +104,8 @@ public class MapLoader implements Map {
                 return grassTexture;
             } else if (type.equals(BlockType.GrassWinter)) {
                 return grassWinterTexture;
+            } else if (type.equals(BlockType.Mossy)) {
+                return mossyTexture;
             }
         }
         return null;
@@ -116,6 +122,9 @@ public class MapLoader implements Map {
             SpikeType type = spikes.get(index).getType();
             if (type.equals(SpikeType.LONG_METAL)) {
                 return LongMetal;
+            }
+            if (type.equals(SpikeType.Bird)) {
+                return Bird;
             }
         }
         return null;

@@ -1,7 +1,7 @@
 package com.yungying.game.map;
 
 public enum SpikeType {
-    Air,LONG_METAL
+    Air,LONG_METAL,Bird
 
 
 
