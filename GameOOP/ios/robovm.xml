@@ -31,6 +31,17 @@
     <pattern>com.android.org.bouncycastle.crypto.digests.AndroidDigestFactoryOpenSSL</pattern>
     <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
     <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
+    <pattern>java.util.logging.ConsoleHandler</pattern>
+      <pattern>org.eclipse.jetty.alpn.ALPN</pattern>
+      <pattern>java.util.logging.SimpleFormatter</pattern>
+      <pattern>org.eclipse.jetty.alpn.ALPN$ClientProvider</pattern>
+      <pattern>org.eclipse.jetty.alpn.ALPN$ServerProvider</pattern>
+    <pattern>io.socket.client.**</pattern>
+    <pattern>io.socket.engineio.client.**</pattern>
+    <pattern>io.socket.engineio.parser.**</pattern>
+    <pattern>io.socket.emitter.**</pattern>
+    <pattern>org.json.**</pattern> <!-- Ensure JSON library is linked -->
+    <pattern>javax.net.ssl.**</pattern> <!-- For SSL support -->
 
   </forceLinkClasses>
   <libs>
