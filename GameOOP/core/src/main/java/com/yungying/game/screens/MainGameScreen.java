@@ -59,27 +59,24 @@ public class MainGameScreen implements Screen {
 
     public static boolean isMenuShow;
     private  ImageButton resumeButton;
-    private  Texture hoverResumeTexture;
-    private  Texture resumeTexture;
+    private final Texture hoverResumeTexture;
+    private final Texture resumeTexture;
     TextureRegionDrawable resumeDrawable;
 
     private  ImageButton restartButton;
-    private  Texture hoverRestartTexture;
-    private  Texture restartTexture;
+    private final Texture hoverRestartTexture;
+    private final Texture restartTexture;
     TextureRegionDrawable restartDrawable;
 
     private  ImageButton exitButton;
-    private  Texture hoverExitTexture;
-    private  Texture exitTexture;
+    private final Texture hoverExitTexture;
+    private final Texture exitTexture;
     TextureRegionDrawable exitDrawable;
     private Stage stage;
-    private Viewport viewport;
+    private final Viewport viewport;
 
-    private UseUser useUser;
+    private final UseUser useUser;
 
-    // Define initial size
-    float initialWidth = 400;
-    float initialHeight = 200;
 
     Music currentMusic;
     Music nextMusic;
@@ -106,7 +103,7 @@ public class MainGameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 400);
         inputHandler = new gameInputHandler();
-        currentMap = new MapLoader("map/Level1.json", 0);
+        currentMap = new MapLoader("map/Level0.json", 0);
         nextMap = new MapLoader(currentMap.getNextMapPath(), currentMap.getLastTile().getEndX());
 
         tempLastTile = currentMap.getLastTile();
@@ -271,7 +268,7 @@ public class MainGameScreen implements Screen {
 
         stage.addActor(exitButton);
 
-        if (currentMusic != null && !currentMusic.isPlaying()) {
+        if (currentMusic != null && !currentMusic.isPlaying() && gameStates.isMusicOn) {
             currentMusic.setVolume(0.5f); // Set the volume to half
             currentMusic.setLooping(true);  // Set looping if required
             currentMusic.play();            // Only play if it's not already playing
@@ -327,7 +324,7 @@ public class MainGameScreen implements Screen {
             currentMusic.dispose();
 
             currentMusic = nextMusic;
-            currentMusic.play();
+            if(gameStates.isMusicOn) currentMusic.play();
 
             //update the last tile
             tempLastTile = currentMap.getLastTile();
@@ -425,9 +422,9 @@ public class MainGameScreen implements Screen {
 
     private void updateMenuPosition(){
 
-        resumeButton.setPosition(camera.position.x -185f, camera.position.y);
-        restartButton.setPosition(camera.position.x -185f, camera.position.y-120f );
-        exitButton.setPosition(camera.position.x -185f, camera.position.y -240f);
+        resumeButton.setPosition(camera.position.x -185f, camera.position.y + 100);
+        restartButton.setPosition(camera.position.x -185f, camera.position.y - 20f - 50f );
+        exitButton.setPosition(camera.position.x -185f, camera.position.y - 140f - 100f);
     }
 
 

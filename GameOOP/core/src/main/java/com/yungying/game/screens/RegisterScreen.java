@@ -41,6 +41,10 @@ public class RegisterScreen implements Screen {
     private final UseUser useUser;
     private final Texture backgroundTexture;
 
+    private Texture backTexture;
+    private Texture backHoverTexture;
+    private ImageButton backButton;
+
     public RegisterScreen(Main game){
         this.game = game;
         camera = new OrthographicCamera();
@@ -155,6 +159,11 @@ public class RegisterScreen implements Screen {
                 String username = userNameTextField.getText();
                 String password = passwordTextField.getText();
 
+                if(username.isEmpty() || password.isEmpty()) {
+                    System.out.println("Username or password is empty");
+                    return;
+                }
+
                 CountDownLatch latch = new CountDownLatch(1); // Initialize latch with count of 1
 
                 System.out.println("register...");
@@ -166,7 +175,7 @@ public class RegisterScreen implements Screen {
                     dispose();
                 }
                 if(status.equals(Authentication.USER_ALREADY_EXISTS))
-                    System.out.println("User NOT FOUND");
+                    System.out.println("User already exists");
 
 
             }
@@ -185,6 +194,38 @@ public class RegisterScreen implements Screen {
         });
 
         stage.addActor(registerButton);
+
+        backTexture = new Texture(Gdx.files.internal("buttons/Back/Back.png"));
+        backHoverTexture = new Texture(Gdx.files.internal("buttons/Back/Hover.png"));
+        TextureRegionDrawable backDrawable = new TextureRegionDrawable(new TextureRegion(backTexture));
+
+        backButton = new ImageButton(backDrawable);
+        backButton.setPosition(20, 320);
+        backButton.setSize(200, 50);
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Transition to the next screen (MainMenuScreen)
+                game.setScreen(new LoginScreen(game));
+                dispose();  // Dispose of the current screen resources
+
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backHoverTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backTexture);
+            }
+
+        });
+
+        stage.addActor(backButton);
 
 
     }
@@ -242,5 +283,9 @@ public class RegisterScreen implements Screen {
         registerButton.remove();
         registerTexture.dispose();
         hoverRegisterTexture.dispose();
+
+        backTexture.dispose();
+        backHoverTexture.dispose();
+        backButton.remove();
     }
 }
