@@ -268,7 +268,7 @@ public class MainGameScreen implements Screen {
 
         stage.addActor(exitButton);
 
-        if (currentMusic != null && !currentMusic.isPlaying()) {
+        if (currentMusic != null && !currentMusic.isPlaying() && gameStates.isMusicOn) {
             currentMusic.setVolume(0.5f); // Set the volume to half
             currentMusic.setLooping(true);  // Set looping if required
             currentMusic.play();            // Only play if it's not already playing
@@ -324,7 +324,7 @@ public class MainGameScreen implements Screen {
             currentMusic.dispose();
 
             currentMusic = nextMusic;
-            currentMusic.play();
+            if(gameStates.isMusicOn) currentMusic.play();
 
             //update the last tile
             tempLastTile = currentMap.getLastTile();
@@ -422,9 +422,9 @@ public class MainGameScreen implements Screen {
 
     private void updateMenuPosition(){
 
-        resumeButton.setPosition(camera.position.x -185f, camera.position.y);
-        restartButton.setPosition(camera.position.x -185f, camera.position.y-120f );
-        exitButton.setPosition(camera.position.x -185f, camera.position.y -240f);
+        resumeButton.setPosition(camera.position.x -185f, camera.position.y + 100);
+        restartButton.setPosition(camera.position.x -185f, camera.position.y - 20f - 50f );
+        exitButton.setPosition(camera.position.x -185f, camera.position.y - 140f - 100f);
     }
 
 

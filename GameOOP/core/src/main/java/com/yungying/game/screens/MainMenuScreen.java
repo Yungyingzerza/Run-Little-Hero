@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 import com.yungying.game.hooks.UseUser;
 import com.yungying.game.textureLoader.PlayerType;
+import com.yungying.game.states.gameStates;
 
 import java.text.DecimalFormat;
 
@@ -58,6 +59,12 @@ public class MainMenuScreen implements Screen {
     private final UseUser useUser;
 
     private float lastPollTime = 0;
+
+    private Texture volumeTexture;
+    private Texture muteTexture;
+
+    private Texture jellySoundTexture;
+    private Texture muteJellySoundTexture;
 
     public MainMenuScreen(Main game) {
         this.game = game;
@@ -279,7 +286,7 @@ public class MainMenuScreen implements Screen {
 
         //next character button
         ImageButton nextCharacterButton = new ImageButton(characterDrawable);
-        nextCharacterButton.setPosition(camera.viewportWidth / 2 + 150, camera.viewportHeight - 50);
+        nextCharacterButton.setPosition(camera.viewportWidth / 2 + 120, camera.viewportHeight - 50);
         nextCharacterButton.setSize(150, 50);
         stage.addActor(nextCharacterButton);
 
@@ -306,8 +313,64 @@ public class MainMenuScreen implements Screen {
             }
         });
 
+        volumeTexture = new Texture(Gdx.files.internal("buttons/Volume/volume.png"));
+        muteTexture = new Texture(Gdx.files.internal("buttons/Volume/volume-mute.png"));
+        TextureRegionDrawable volumeDrawable;
+        if(gameStates.isMusicOn){
+            volumeDrawable = new TextureRegionDrawable(new TextureRegion(volumeTexture));
+        }else{
+            volumeDrawable = new TextureRegionDrawable(new TextureRegion(muteTexture));
+        }
 
-        music.play();
+        ImageButton volumeButton = new ImageButton(volumeDrawable);
+        volumeButton.setPosition(camera.viewportWidth - 130, camera.viewportHeight - 50);
+        volumeButton.setSize(50, 50);
+        volumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(music.isPlaying()){
+                    music.stop();
+                    gameStates.isMusicOn = false;
+                    volumeButton.getStyle().imageUp = new TextureRegionDrawable(muteTexture);
+                }else{
+                    music.play();
+                    gameStates.isMusicOn = true;
+                    volumeButton.getStyle().imageUp = new TextureRegionDrawable(volumeTexture);
+                }
+            }
+        });
+
+        stage.addActor(volumeButton);
+
+        jellySoundTexture = new Texture(Gdx.files.internal("buttons/SoundEffectSymbol/on.png"));
+        muteJellySoundTexture = new Texture(Gdx.files.internal("buttons/SoundEffectSymbol/off.png"));
+        TextureRegionDrawable jellySoundDrawable;
+        if(gameStates.isJellySoundOn){
+            jellySoundDrawable = new TextureRegionDrawable(new TextureRegion(jellySoundTexture));
+        }else{
+            jellySoundDrawable = new TextureRegionDrawable(new TextureRegion(muteJellySoundTexture));
+        }
+
+        ImageButton jellySoundButton = new ImageButton(jellySoundDrawable);
+        jellySoundButton.setPosition(camera.viewportWidth - 75, camera.viewportHeight - 50);
+        jellySoundButton.setSize(50, 50);
+        jellySoundButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(gameStates.isJellySoundOn){
+                    gameStates.isJellySoundOn = false;
+                    jellySoundButton.getStyle().imageUp = new TextureRegionDrawable(muteJellySoundTexture);
+                }else{
+                    gameStates.isJellySoundOn = true;
+                    jellySoundButton.getStyle().imageUp = new TextureRegionDrawable(jellySoundTexture);
+                }
+            }
+        });
+
+        stage.addActor(jellySoundButton);
+
+
+        if(gameStates.isMusicOn) music.play();
 
     }
 
@@ -401,6 +464,12 @@ public class MainMenuScreen implements Screen {
         loginButton.remove();
         loginTexture.dispose();
         hoverLoginTexture.dispose();
+
+        characterTexture.dispose();
+        hoverCharacterTexture.dispose();
+
+        volumeTexture.dispose();
+        muteTexture.dispose();
 
         font.dispose();
     }

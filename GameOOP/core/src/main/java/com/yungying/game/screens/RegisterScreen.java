@@ -198,7 +198,7 @@ public class RegisterScreen implements Screen {
         backTexture = new Texture(Gdx.files.internal("buttons/Back/Back.png"));
         backHoverTexture = new Texture(Gdx.files.internal("buttons/Back/Hover.png"));
         TextureRegionDrawable backDrawable = new TextureRegionDrawable(new TextureRegion(backTexture));
-        
+
         backButton = new ImageButton(backDrawable);
         backButton.setPosition(20, 320);
         backButton.setSize(200, 50);

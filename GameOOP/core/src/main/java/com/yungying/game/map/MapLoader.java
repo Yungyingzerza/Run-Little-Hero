@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
+import com.yungying.game.states.gameStates;
 
 import java.util.Vector;
 
@@ -206,6 +207,9 @@ public class MapLoader implements Map {
     }
 
     private void playJellySound(ItemType type) {
+
+        if(!gameStates.isJellySoundOn) return;
+
         if (type.equals(ItemType.Coin)) {
             CoinSound.play();
         }else if(type.equals(ItemType.Potion)){
