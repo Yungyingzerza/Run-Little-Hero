@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,9 +25,9 @@ public class RegisterScreen implements Screen {
 
     Main game;
     private Stage stage;
-    private Viewport viewport;
-    private OrthographicCamera camera;
-    private Skin skin;
+    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Skin skin;
     private TextField userNameTextField;
     private TextField passwordTextField;
     boolean isInputClick = false;
@@ -39,8 +38,8 @@ public class RegisterScreen implements Screen {
     TextureRegionDrawable registerDrawable;
     private Texture registerTexture;
     private Texture hoverRegisterTexture;
-    private UseUser useUser;
-    private Texture backgroundTexture;
+    private final UseUser useUser;
+    private final Texture backgroundTexture;
 
     public RegisterScreen(Main game){
         this.game = game;
@@ -239,5 +238,9 @@ public class RegisterScreen implements Screen {
         registerLabel.remove();
         registerButton.remove();
         backgroundTexture.dispose();
+
+        registerButton.remove();
+        registerTexture.dispose();
+        hoverRegisterTexture.dispose();
     }
 }

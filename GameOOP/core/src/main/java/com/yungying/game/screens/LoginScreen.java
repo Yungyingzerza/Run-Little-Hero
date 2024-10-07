@@ -26,9 +26,9 @@ public class LoginScreen implements Screen {
 
     Main game;
     private Stage stage;
-    private Viewport viewport;
-    private OrthographicCamera camera;
-    private Skin skin;
+    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Skin skin;
     private TextField userNameTextField;
     private TextField passwordTextField;
     boolean isInputClick = false;
@@ -43,7 +43,7 @@ public class LoginScreen implements Screen {
     TextureRegionDrawable registerDrawable;
     private Texture registerTexture;
     private Texture hoverRegisterTexture;
-    private UseUser useUser;
+    private final UseUser useUser;
 
     Music music;
 
@@ -275,5 +275,11 @@ public class LoginScreen implements Screen {
         createAccountLabel.remove();
         loginButton.remove();
         registerButton.remove();
+
+         loginTexture.dispose();
+         hoverloginTexture.dispose();
+        registerButton.remove();
+         registerTexture.dispose();
+         hoverRegisterTexture.dispose();
     }
 }
