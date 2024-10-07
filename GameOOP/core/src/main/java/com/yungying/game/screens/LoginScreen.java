@@ -34,7 +34,6 @@ public class LoginScreen implements Screen {
     boolean isInputClick = false;
     private Label userNameLabel;
     private Label passwordLabel;
-    private Label createAccountLabel;
     private ImageButton loginButton;
     TextureRegionDrawable loginDrawable;
     private Texture loginTexture;
@@ -44,6 +43,10 @@ public class LoginScreen implements Screen {
     private Texture registerTexture;
     private Texture hoverRegisterTexture;
     private final UseUser useUser;
+
+    private Texture backTexture;
+    private Texture backHoverTexture;
+    private ImageButton backButton;
 
     Music music;
 
@@ -73,10 +76,6 @@ public class LoginScreen implements Screen {
         passwordLabel = new Label("Password", skin);
         passwordLabel.setPosition(200, 200);
         stage.addActor(passwordLabel);
-
-        createAccountLabel = new Label("Don't have an account? Join the fun!", skin);
-        createAccountLabel.setPosition(410, 50);
-        stage.addActor(createAccountLabel);
 
         Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/Fantasy_TextBox_A01-1_Red.png"));
         Drawable backgroundDrawable = new TextureRegionDrawable(backgroundTexture);
@@ -153,7 +152,7 @@ public class LoginScreen implements Screen {
 
         // Create the "Login" button
         loginButton = new ImageButton(loginDrawable);
-        loginButton.setPosition(150, -1);  // Adjust the button's position
+        loginButton.setPosition(150, 0);  // Adjust the button's position
         loginButton.setSize(200, 50);
 
         loginButton.addListener(new ClickListener() {
@@ -198,7 +197,7 @@ public class LoginScreen implements Screen {
         registerDrawable = new TextureRegionDrawable(new TextureRegion(registerTexture));
 
         registerButton = new ImageButton(registerDrawable);
-        registerButton.setPosition(Gdx.graphics.getWidth()-200,0);  // Adjust the button's position
+        registerButton.setPosition(500,0);  // Adjust the button's position
         registerButton.setSize(200, 50);
 
         registerButton.addListener(new ClickListener() {
@@ -224,6 +223,38 @@ public class LoginScreen implements Screen {
 
         });
         stage.addActor(registerButton);
+
+        backTexture = new Texture(Gdx.files.internal("buttons/Back/Back.png"));
+        backHoverTexture = new Texture(Gdx.files.internal("buttons/Back/Hover.png"));
+        TextureRegionDrawable backDrawable = new TextureRegionDrawable(new TextureRegion(backTexture));
+
+        backButton = new ImageButton(backDrawable);
+        backButton.setPosition(20, 320);
+        backButton.setSize(200, 50);
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Transition to the next screen (MainMenuScreen)
+                game.setScreen(new MainMenuScreen(game));
+                dispose();  // Dispose of the current screen resources
+
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backHoverTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backTexture);
+            }
+
+        });
+
+        stage.addActor(backButton);
 
 
     }
@@ -272,7 +303,6 @@ public class LoginScreen implements Screen {
         passwordTextField.remove();
         userNameLabel.remove();
         passwordLabel.remove();
-        createAccountLabel.remove();
         loginButton.remove();
         registerButton.remove();
 
@@ -281,5 +311,9 @@ public class LoginScreen implements Screen {
         registerButton.remove();
          registerTexture.dispose();
          hoverRegisterTexture.dispose();
+
+            backTexture.dispose();
+            backHoverTexture.dispose();
+            backButton.remove();
     }
 }

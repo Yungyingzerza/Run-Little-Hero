@@ -22,6 +22,8 @@ import com.yungying.game.Main;
 import com.yungying.game.hooks.UseUser;
 import com.yungying.game.textureLoader.PlayerType;
 
+import java.text.DecimalFormat;
+
 public class MainMenuScreen implements Screen {
 
     Main game;
@@ -39,22 +41,21 @@ public class MainMenuScreen implements Screen {
     private Texture playTexture;
     private Texture hoverPlayTexture;
 
-    private ImageButton characterButton;
     TextureRegionDrawable characterDrawable;
     private Texture characterTexture;
     private Texture hoverCharacterTexture;
 
-    private Texture loginTexture;
-    private Texture hoverLoginTexture;
+    private final Texture loginTexture;
+    private final Texture hoverLoginTexture;
     TextureRegionDrawable loginDrawable;
 
     private PlayerType currentPlayerType;
 
     private final BitmapFont font;
 
-    private Music music;
+    private final Music music;
 
-    private UseUser useUser;
+    private final UseUser useUser;
 
     private float lastPollTime = 0;
 
@@ -162,7 +163,7 @@ public class MainMenuScreen implements Screen {
 
         });
 
-        //on enter key pressed on textfield
+        //on enter key pressed on text field
         usernameTextField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char inputKey) {
@@ -336,17 +337,24 @@ public class MainMenuScreen implements Screen {
 
         game.batch.begin();
 
-        font.draw(game.batch, "Current Character is: "+ currentPlayerType.toString(), camera.viewportWidth / 2 - 200, camera.viewportHeight - 20);
+        font.draw(game.batch, "Current Character is: ", camera.viewportWidth / 2 - 200, camera.viewportHeight - 20);
+
+        font.setColor(0.7f, 0.2f, 0.2f, 1);
 
 
-        font.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+        font.draw(game.batch, currentPlayerType.toString(), camera.viewportWidth / 2 - 200 + 230, camera.viewportHeight - 20);
 
-        font.draw(game.batch, "Highest Score", 0, camera.viewportHeight / 2 + 170);
+        font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+
+        font.draw(game.batch, "Highest Score", 0, 200);
+
+        font.setColor(1f, 0.3f, 0.2f, 1);
 
         if(UseUser.topUsers != null){
+            DecimalFormat df = new DecimalFormat("#,###");
             for(int i=0; i < UseUser.topUsers.size(); i++){
-                font.draw(game.batch, UseUser.topUsers.get(i).getUsername() + ": " + UseUser.topUsers.get(i).getHighestScore(), 0, camera.viewportHeight / 2 - 50 * (i+1) + 170);
+                font.draw(game.batch, i+1+"."+UseUser.topUsers.get(i).getUsername() + ": " + df.format(UseUser.topUsers.get(i).getHighestScore()), 10, 200 - 20 * (i+1));
             }
         }
 
