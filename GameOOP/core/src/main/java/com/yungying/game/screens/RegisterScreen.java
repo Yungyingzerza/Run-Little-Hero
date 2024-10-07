@@ -220,5 +220,13 @@ public class RegisterScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        userNameTextField.remove();
+        passwordTextField.remove();
+        userNameLabel.remove();
+        passwordLabel.remove();
+        registerLabel.remove();
+        registerButton.remove();
+        backgroundTexture.dispose();
     }
 }

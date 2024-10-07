@@ -69,7 +69,7 @@ public class LoginScreen implements Screen {
         stage.addActor(passwordLabel);
 
         createAccountLabel = new Label("Don't have an account? Join the fun!", skin);
-        createAccountLabel.setPosition(500, 50);
+        createAccountLabel.setPosition(400, 50);
         stage.addActor(createAccountLabel);
 
         Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/Fantasy_TextBox_A01-1_Red.png"));
@@ -233,5 +233,13 @@ public class LoginScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        userNameTextField.remove();
+        passwordTextField.remove();
+        userNameLabel.remove();
+        passwordLabel.remove();
+        createAccountLabel.remove();
+        loginButton.remove();
+        registerButton.remove();
     }
 }

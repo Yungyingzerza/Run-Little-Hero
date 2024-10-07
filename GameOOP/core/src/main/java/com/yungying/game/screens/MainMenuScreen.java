@@ -353,5 +353,18 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        usernameTextField.remove();
+        playButton.remove();
+        loginButton.remove();
+
+        playTexture.dispose();
+        hoverPlayTexture.dispose();
+
+        loginButton.remove();
+        loginTexture.dispose();
+        hoverLoginTexture.dispose();
+
+        font.dispose();
     }
 }
