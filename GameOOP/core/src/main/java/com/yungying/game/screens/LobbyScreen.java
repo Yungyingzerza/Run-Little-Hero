@@ -214,5 +214,15 @@ public class LobbyScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        backgroundTexture.dispose();
+
+        startButton.remove();
+        startTexture.dispose();
+        hoverStartTexture.dispose();
+
+        exitButton.remove();
+        exitTexture.dispose();
+        hoverExitTexture.dispose();
+
     }
 }

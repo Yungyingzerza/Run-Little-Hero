@@ -39,6 +39,11 @@ public class MainMenuScreen implements Screen {
     private Texture playTexture;
     private Texture hoverPlayTexture;
 
+    private ImageButton characterButton;
+    TextureRegionDrawable characterDrawable;
+    private Texture characterTexture;
+    private Texture hoverCharacterTexture;
+
     private Texture loginTexture;
     private Texture hoverLoginTexture;
     TextureRegionDrawable loginDrawable;
@@ -244,6 +249,13 @@ public class MainMenuScreen implements Screen {
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
+
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(hoverLoginTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(loginTexture);
             }
 
         });
@@ -257,10 +269,15 @@ public class MainMenuScreen implements Screen {
                 stage.setKeyboardFocus(null);
             }
 
+
         });
 
+        characterTexture = new Texture(Gdx.files.internal("buttons/Character/Character.png"));
+        hoverCharacterTexture = new Texture(Gdx.files.internal("buttons/Character/Hover.png"));
+        characterDrawable = new TextureRegionDrawable(new TextureRegion(characterTexture));
+
         //next character button
-        TextButton nextCharacterButton = new TextButton("Next Character", skin);
+        ImageButton nextCharacterButton = new ImageButton(characterDrawable);
         nextCharacterButton.setPosition(camera.viewportWidth / 2 + 150, camera.viewportHeight - 50);
         nextCharacterButton.setSize(150, 50);
         stage.addActor(nextCharacterButton);
@@ -273,6 +290,18 @@ public class MainMenuScreen implements Screen {
                 }else if(currentPlayerType == PlayerType.TEE){
                     currentPlayerType = PlayerType.CUTEGIRL;
                 }
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                isInputClick = false;
+
+                nextCharacterButton.getStyle().imageUp = new TextureRegionDrawable(hoverCharacterTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                nextCharacterButton.getStyle().imageUp = new TextureRegionDrawable(characterTexture);
             }
         });
 
@@ -353,5 +382,18 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        usernameTextField.remove();
+        playButton.remove();
+        loginButton.remove();
+
+        playTexture.dispose();
+        hoverPlayTexture.dispose();
+
+        loginButton.remove();
+        loginTexture.dispose();
+        hoverLoginTexture.dispose();
+
+        font.dispose();
     }
 }

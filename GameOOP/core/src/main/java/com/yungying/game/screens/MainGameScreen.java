@@ -563,5 +563,20 @@ public class MainGameScreen implements Screen {
         useUser.getTopUsers();
         currentMusic.dispose();
         currentMap.dispose();
+
+        resumeTexture.dispose();
+        hoverResumeTexture.dispose();
+
+        restartTexture.dispose();
+        hoverRestartTexture.dispose();
+
+        exitTexture.dispose();
+        hoverExitTexture.dispose();
+
+        stage.dispose();
+
+        font.dispose();
+
+
     }
 }
