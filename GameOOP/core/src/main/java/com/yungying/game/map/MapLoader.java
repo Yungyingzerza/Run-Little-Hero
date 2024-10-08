@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
+import com.yungying.game.states.gameStates;
 
 import java.util.Vector;
 
@@ -22,10 +23,14 @@ public class MapLoader implements Map {
 
     private final Texture Cherry;
     private final Texture grassTexture;
-    private final Texture mossyTexture;
+    private final Texture grassMidnightTexture;
+    private final Texture grassNightmareTexture;
     private final Texture grassWinterTexture;
+    private final Texture grassKungfu;
+
     private Texture backgroundTexture;
     private final Texture potionTexture;
+
     private float mapSpeed;
     private String nextMap;
     private String nextMapPath;
@@ -38,8 +43,12 @@ public class MapLoader implements Map {
 
     public MapLoader(String jsonFilePath, float initialX) {
         // Initialize textures
-        grassTexture = new Texture("Grass.png");
-        mossyTexture = new Texture("Grass.png");
+        grassTexture = new Texture("Tiles/Grass.png");
+        grassMidnightTexture = new Texture("Tiles/GrassMidnight.png");
+        grassNightmareTexture = new Texture("Tiles/GrassNightmare.png");
+        grassWinterTexture = new Texture("Tiles/GrassWinter.png");
+        grassKungfu = new Texture("Tiles/GrassKungFu.png");
+
         Coin = new Texture("Point/Coin.png");
         CoinSound = Gdx.audio.newMusic(Gdx.files.internal("Point/Coin.mp3"));
         defaultSound = Gdx.audio.newMusic(Gdx.files.internal("Point/poit-94911.mp3"));
@@ -47,9 +56,8 @@ public class MapLoader implements Map {
 
         Cherry = new Texture("Point/Cherry.png");
         potionTexture = new Texture("Potion/1.png");
-        grassWinterTexture = new Texture("GrassWinter.png");
         LongMetal = new Texture("Spikes/LongMetal/long_metal_spike.png");
-        Bird = new Texture("assets/Spikes/LongMetal/Bird/png-transparent-bird-green-animals-blue-bird-animals-cartoon-bird.png");
+        Bird = new Texture("Spikes/LongMetal/Bird/2.png");
         tiles = new Vector<>();
         jellies = new Vector<>();
         spikes = new Vector<>();
@@ -103,7 +111,7 @@ public class MapLoader implements Map {
         }
 
         if (!tiles.isEmpty()) {
-            currentTile = tiles.getFirst();
+            currentTile = tiles.elementAt(0);
         }
     }
 
@@ -115,8 +123,12 @@ public class MapLoader implements Map {
                 return grassTexture;
             } else if (type.equals(BlockType.GrassWinter)) {
                 return grassWinterTexture;
-            } else if (type.equals(BlockType.Mossy)) {
-                return mossyTexture;
+            } else if (type.equals(BlockType.GrassMidnight)) {
+                return grassMidnightTexture;
+            } else if (type.equals(BlockType.GrassNightmare)) {
+                return grassNightmareTexture;
+            } else if (type.equals(BlockType.GrassKungFu)) {
+                return grassKungfu;
             }
         }
         return null;
@@ -195,6 +207,9 @@ public class MapLoader implements Map {
     }
 
     private void playJellySound(ItemType type) {
+
+        if(!gameStates.isJellySoundOn) return;
+
         if (type.equals(ItemType.Coin)) {
             CoinSound.play();
         }else if(type.equals(ItemType.Potion)){
@@ -266,8 +281,27 @@ public class MapLoader implements Map {
     }
 
     public void dispose() {
+        tiles.clear();
+        jellies.clear();
+        spikes.clear();
+
+        Coin.dispose();
+
+        CoinSound.dispose();
+        defaultSound.dispose();
+        healthSound.dispose();
+        Cherry.dispose();
         grassTexture.dispose();
+        grassMidnightTexture.dispose();
+        grassNightmareTexture.dispose();
+        grassWinterTexture.dispose();
+        grassKungfu.dispose();
         backgroundTexture.dispose();
+        potionTexture.dispose();
+        music.dispose();
+        LongMetal.dispose();
+        Bird.dispose();
+
     }
 
     public void setBackground(Texture backgroundTexture) {

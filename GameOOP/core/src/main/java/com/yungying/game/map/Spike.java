@@ -31,9 +31,9 @@ public class Spike {
             }
         }
         if(type == SpikeType.Bird){
-            if(!isSliding && playerX < x + 64 && playerX + 64 > x && (playerY + 128 >= y && playerY <= y + 64) ) {
+            if(!isSliding && playerX < x + 40 && playerX + 40 > x && (playerY + 128 >= y && playerY <= y + 64) ) {
                 return -50;
-            }else if(isSliding && playerX < x + 64 && playerX + 64 > x && (playerY + 64 >= y && playerY <= y + 64) ) {
+            }else if(isSliding && playerX < x + 40 && playerX + 40 > x && (playerY + 64 >= y && playerY <= y + 64) ) {
                 return -50;
             }
         }

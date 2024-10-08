@@ -26,18 +26,27 @@ public class LoginScreen implements Screen {
 
     Main game;
     private Stage stage;
-    private Viewport viewport;
-    private OrthographicCamera camera;
-    private Skin skin;
+    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Skin skin;
     private TextField userNameTextField;
     private TextField passwordTextField;
     boolean isInputClick = false;
     private Label userNameLabel;
     private Label passwordLabel;
-    private Label createAccountLabel;
-    private TextButton loginButton;
-    private TextButton registerButton;
-    private UseUser useUser;
+    private ImageButton loginButton;
+    TextureRegionDrawable loginDrawable;
+    private Texture loginTexture;
+    private Texture hoverloginTexture;
+    private ImageButton registerButton;
+    TextureRegionDrawable registerDrawable;
+    private Texture registerTexture;
+    private Texture hoverRegisterTexture;
+    private final UseUser useUser;
+
+    private Texture backTexture;
+    private Texture backHoverTexture;
+    private ImageButton backButton;
 
     Music music;
 
@@ -67,10 +76,6 @@ public class LoginScreen implements Screen {
         passwordLabel = new Label("Password", skin);
         passwordLabel.setPosition(200, 200);
         stage.addActor(passwordLabel);
-
-        createAccountLabel = new Label("Don't have an account? Join the fun!", skin);
-        createAccountLabel.setPosition(500, 50);
-        stage.addActor(createAccountLabel);
 
         Texture backgroundTexture = new Texture(Gdx.files.internal("textbox/Fantasy_TextBox_A01-1_Red.png"));
         Drawable backgroundDrawable = new TextureRegionDrawable(backgroundTexture);
@@ -141,9 +146,13 @@ public class LoginScreen implements Screen {
 
         stage.addActor(passwordTextField);
 
+        loginTexture = new Texture(Gdx.files.internal("buttons/Login/Login.png"));
+       hoverloginTexture = new Texture(Gdx.files.internal("buttons/Login/Hover.png"));
+        loginDrawable = new TextureRegionDrawable(new TextureRegion(loginTexture));
+
         // Create the "Login" button
-        loginButton = new TextButton("login",skin);
-        loginButton.setPosition(200, 0);  // Adjust the button's position
+        loginButton = new ImageButton(loginDrawable);
+        loginButton.setPosition(150, 0);  // Adjust the button's position
         loginButton.setSize(200, 50);
 
         loginButton.addListener(new ClickListener() {
@@ -171,13 +180,24 @@ public class LoginScreen implements Screen {
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
+
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(hoverloginTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(loginTexture);
             }
         });
 
         stage.addActor(loginButton);
 
-        registerButton = new TextButton("Create an Account",skin);
-        registerButton.setPosition(Gdx.graphics.getWidth()-80,0);  // Adjust the button's position
+        registerTexture = new Texture(Gdx.files.internal("buttons/Register/Register.png"));
+        hoverRegisterTexture = new Texture(Gdx.files.internal("buttons/Register/Hover.png"));
+        registerDrawable = new TextureRegionDrawable(new TextureRegion(registerTexture));
+
+        registerButton = new ImageButton(registerDrawable);
+        registerButton.setPosition(500,0);  // Adjust the button's position
         registerButton.setSize(200, 50);
 
         registerButton.addListener(new ClickListener() {
@@ -186,10 +206,55 @@ public class LoginScreen implements Screen {
                 // Transition to the next screen (MainMenuScreen)
                 game.setScreen(new RegisterScreen(game));
                 dispose();  // Dispose of the current screen resources
+
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                isInputClick = false;
+
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(hoverRegisterTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(registerTexture);
             }
 
         });
         stage.addActor(registerButton);
+
+        backTexture = new Texture(Gdx.files.internal("buttons/Back/Back.png"));
+        backHoverTexture = new Texture(Gdx.files.internal("buttons/Back/Hover.png"));
+        TextureRegionDrawable backDrawable = new TextureRegionDrawable(new TextureRegion(backTexture));
+
+        backButton = new ImageButton(backDrawable);
+        backButton.setPosition(20, 320);
+        backButton.setSize(200, 50);
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Transition to the next screen (MainMenuScreen)
+                game.setScreen(new MainMenuScreen(game));
+                dispose();  // Dispose of the current screen resources
+
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backHoverTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backTexture);
+            }
+
+        });
+
+        stage.addActor(backButton);
 
 
     }
@@ -211,7 +276,7 @@ public class LoginScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        loginButton.setPosition(camera.position.x, camera.position.y);
+//        loginButton.setPosition(camera.position.x, camera.position.y);
     }
 
     @Override
@@ -233,5 +298,22 @@ public class LoginScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        userNameTextField.remove();
+        passwordTextField.remove();
+        userNameLabel.remove();
+        passwordLabel.remove();
+        loginButton.remove();
+        registerButton.remove();
+
+         loginTexture.dispose();
+         hoverloginTexture.dispose();
+        registerButton.remove();
+         registerTexture.dispose();
+         hoverRegisterTexture.dispose();
+
+            backTexture.dispose();
+            backHoverTexture.dispose();
+            backButton.remove();
     }
 }

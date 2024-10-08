@@ -3,14 +3,11 @@ package com.yungying.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,6 +21,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.yungying.game.Main;
 import com.yungying.game.hooks.UseUser;
 import com.yungying.game.textureLoader.PlayerType;
+import com.yungying.game.states.gameStates;
+
+import java.text.DecimalFormat;
 
 public class MainMenuScreen implements Screen {
 
@@ -42,17 +42,29 @@ public class MainMenuScreen implements Screen {
     private Texture playTexture;
     private Texture hoverPlayTexture;
 
-    private Texture loginTexture;
-    private Texture hoverLoginTexture;
+    TextureRegionDrawable characterDrawable;
+    private Texture characterTexture;
+    private Texture hoverCharacterTexture;
+
+    private final Texture loginTexture;
+    private final Texture hoverLoginTexture;
     TextureRegionDrawable loginDrawable;
 
     private PlayerType currentPlayerType;
 
     private final BitmapFont font;
 
-    private Music music;
+    private final Music music;
 
-    private UseUser useUser;
+    private final UseUser useUser;
+
+    private float lastPollTime = 0;
+
+    private Texture volumeTexture;
+    private Texture muteTexture;
+
+    private Texture jellySoundTexture;
+    private Texture muteJellySoundTexture;
 
     public MainMenuScreen(Main game) {
         this.game = game;
@@ -70,12 +82,9 @@ public class MainMenuScreen implements Screen {
 
 
         currentPlayerType = PlayerType.CUTEGIRL;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Bungee-Regular.otf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 16;
-        font = generator.generateFont(parameter);
-
-        generator.dispose();
+        font = new BitmapFont(Gdx.files.internal("fonts/Bungee-Regular.fnt"));
+        //set the font size
+        font.getData().setScale(0.5f);
 
         music = LobbyScreen.music;
 
@@ -83,6 +92,7 @@ public class MainMenuScreen implements Screen {
 
         useUser.getTopUsers();
     }
+
 
     @Override
     public void show() {
@@ -160,7 +170,7 @@ public class MainMenuScreen implements Screen {
 
         });
 
-        //on enter key pressed on textfield
+        //on enter key pressed on text field
         usernameTextField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char inputKey) {
@@ -247,6 +257,13 @@ public class MainMenuScreen implements Screen {
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
+
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(hoverLoginTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                loginButton.getStyle().imageUp = new TextureRegionDrawable(loginTexture);
             }
 
         });
@@ -260,11 +277,16 @@ public class MainMenuScreen implements Screen {
                 stage.setKeyboardFocus(null);
             }
 
+
         });
 
+        characterTexture = new Texture(Gdx.files.internal("buttons/Character/Character.png"));
+        hoverCharacterTexture = new Texture(Gdx.files.internal("buttons/Character/Hover.png"));
+        characterDrawable = new TextureRegionDrawable(new TextureRegion(characterTexture));
+
         //next character button
-        TextButton nextCharacterButton = new TextButton("Next Character", skin);
-        nextCharacterButton.setPosition(camera.viewportWidth / 2 + 150, camera.viewportHeight - 50);
+        ImageButton nextCharacterButton = new ImageButton(characterDrawable);
+        nextCharacterButton.setPosition(camera.viewportWidth / 2 + 120, camera.viewportHeight - 50);
         nextCharacterButton.setSize(150, 50);
         stage.addActor(nextCharacterButton);
 
@@ -277,10 +299,78 @@ public class MainMenuScreen implements Screen {
                     currentPlayerType = PlayerType.CUTEGIRL;
                 }
             }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                isInputClick = false;
+
+                nextCharacterButton.getStyle().imageUp = new TextureRegionDrawable(hoverCharacterTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                nextCharacterButton.getStyle().imageUp = new TextureRegionDrawable(characterTexture);
+            }
         });
 
+        volumeTexture = new Texture(Gdx.files.internal("buttons/Volume/volume.png"));
+        muteTexture = new Texture(Gdx.files.internal("buttons/Volume/volume-mute.png"));
+        TextureRegionDrawable volumeDrawable;
+        if(gameStates.isMusicOn){
+            volumeDrawable = new TextureRegionDrawable(new TextureRegion(volumeTexture));
+        }else{
+            volumeDrawable = new TextureRegionDrawable(new TextureRegion(muteTexture));
+        }
 
-        music.play();
+        ImageButton volumeButton = new ImageButton(volumeDrawable);
+        volumeButton.setPosition(camera.viewportWidth - 130, camera.viewportHeight - 50);
+        volumeButton.setSize(50, 50);
+        volumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(music.isPlaying()){
+                    music.stop();
+                    gameStates.isMusicOn = false;
+                    volumeButton.getStyle().imageUp = new TextureRegionDrawable(muteTexture);
+                }else{
+                    music.play();
+                    gameStates.isMusicOn = true;
+                    volumeButton.getStyle().imageUp = new TextureRegionDrawable(volumeTexture);
+                }
+            }
+        });
+
+        stage.addActor(volumeButton);
+
+        jellySoundTexture = new Texture(Gdx.files.internal("buttons/SoundEffectSymbol/on.png"));
+        muteJellySoundTexture = new Texture(Gdx.files.internal("buttons/SoundEffectSymbol/off.png"));
+        TextureRegionDrawable jellySoundDrawable;
+        if(gameStates.isJellySoundOn){
+            jellySoundDrawable = new TextureRegionDrawable(new TextureRegion(jellySoundTexture));
+        }else{
+            jellySoundDrawable = new TextureRegionDrawable(new TextureRegion(muteJellySoundTexture));
+        }
+
+        ImageButton jellySoundButton = new ImageButton(jellySoundDrawable);
+        jellySoundButton.setPosition(camera.viewportWidth - 75, camera.viewportHeight - 50);
+        jellySoundButton.setSize(50, 50);
+        jellySoundButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(gameStates.isJellySoundOn){
+                    gameStates.isJellySoundOn = false;
+                    jellySoundButton.getStyle().imageUp = new TextureRegionDrawable(muteJellySoundTexture);
+                }else{
+                    gameStates.isJellySoundOn = true;
+                    jellySoundButton.getStyle().imageUp = new TextureRegionDrawable(jellySoundTexture);
+                }
+            }
+        });
+
+        stage.addActor(jellySoundButton);
+
+
+        if(gameStates.isMusicOn) music.play();
 
     }
 
@@ -291,6 +381,16 @@ public class MainMenuScreen implements Screen {
 
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
+        lastPollTime += Gdx.graphics.getDeltaTime();
+
+        //long polling to get top users every 3 seconds
+        if(lastPollTime > 3){
+            useUser.getTopUsers();
+            System.out.println("polling");
+            lastPollTime = 0;
+        }
+
+
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
@@ -300,17 +400,29 @@ public class MainMenuScreen implements Screen {
 
         game.batch.begin();
 
-        font.draw(game.batch, "Current Character is: "+ currentPlayerType.toString(), camera.viewportWidth / 2 - 200, camera.viewportHeight - 20);
+        font.draw(game.batch, "Current Character is: ", camera.viewportWidth / 2 - 200, camera.viewportHeight - 20);
 
-        font.draw(game.batch, "Highest Score", 0, camera.viewportHeight / 2 + 170);
+        font.setColor(0.7f, 0.2f, 0.2f, 1);
 
+
+        font.draw(game.batch, currentPlayerType.toString(), camera.viewportWidth / 2 - 200 + 230, camera.viewportHeight - 20);
+
+        font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+
+        font.draw(game.batch, "Highest Score", 0, 200);
+
+        font.setColor(1f, 0.3f, 0.2f, 1);
 
         if(UseUser.topUsers != null){
+            DecimalFormat df = new DecimalFormat("#,###");
             for(int i=0; i < UseUser.topUsers.size(); i++){
-                font.draw(game.batch, UseUser.topUsers.get(i).getUsername() + ": " + UseUser.topUsers.get(i).getHighestScore(), 0, camera.viewportHeight / 2 - 50 * (i+1) + 170);
+                font.draw(game.batch, i+1+"."+UseUser.topUsers.get(i).getUsername() + ": " + df.format(UseUser.topUsers.get(i).getHighestScore()), 10, 200 - 20 * (i+1));
             }
         }
 
+        //set color back to white
+        font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         game.batch.end();
 
@@ -341,5 +453,24 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        usernameTextField.remove();
+        playButton.remove();
+        loginButton.remove();
+
+        playTexture.dispose();
+        hoverPlayTexture.dispose();
+
+        loginButton.remove();
+        loginTexture.dispose();
+        hoverLoginTexture.dispose();
+
+        characterTexture.dispose();
+        hoverCharacterTexture.dispose();
+
+        volumeTexture.dispose();
+        muteTexture.dispose();
+
+        font.dispose();
     }
 }

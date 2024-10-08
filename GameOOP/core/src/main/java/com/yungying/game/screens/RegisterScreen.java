@@ -4,15 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -29,18 +25,25 @@ public class RegisterScreen implements Screen {
 
     Main game;
     private Stage stage;
-    private Viewport viewport;
-    private OrthographicCamera camera;
-    private Skin skin;
+    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Skin skin;
     private TextField userNameTextField;
     private TextField passwordTextField;
     boolean isInputClick = false;
     private Label userNameLabel;
     private Label passwordLabel;
     private Label registerLabel;
-    private TextButton registerButton;
-    private UseUser useUser;
-    private Texture backgroundTexture;
+    private ImageButton registerButton;
+    TextureRegionDrawable registerDrawable;
+    private Texture registerTexture;
+    private Texture hoverRegisterTexture;
+    private final UseUser useUser;
+    private final Texture backgroundTexture;
+
+    private Texture backTexture;
+    private Texture backHoverTexture;
+    private ImageButton backButton;
 
     public RegisterScreen(Main game){
         this.game = game;
@@ -141,9 +144,13 @@ public class RegisterScreen implements Screen {
 
         stage.addActor(passwordTextField);
 
+        registerTexture = new Texture(Gdx.files.internal("buttons/Register/Register.png"));
+        hoverRegisterTexture = new Texture(Gdx.files.internal("buttons/Register/Hover.png"));
+        registerDrawable = new TextureRegionDrawable(new TextureRegion(registerTexture));
+
         // Create the "Register" button
-        registerButton = new TextButton("Register",skin);
-        registerButton.setPosition(200, 0);  // Adjust the button's position
+        registerButton = new ImageButton(registerDrawable);
+        registerButton.setPosition(300, 0);  // Adjust the button's position
         registerButton.setSize(200, 50);
 
         registerButton.addListener(new ClickListener() {
@@ -151,6 +158,11 @@ public class RegisterScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 String username = userNameTextField.getText();
                 String password = passwordTextField.getText();
+
+                if(username.isEmpty() || password.isEmpty()) {
+                    System.out.println("Username or password is empty");
+                    return;
+                }
 
                 CountDownLatch latch = new CountDownLatch(1); // Initialize latch with count of 1
 
@@ -163,7 +175,7 @@ public class RegisterScreen implements Screen {
                     dispose();
                 }
                 if(status.equals(Authentication.USER_ALREADY_EXISTS))
-                    System.out.println("User NOT FOUND");
+                    System.out.println("User already exists");
 
 
             }
@@ -171,10 +183,49 @@ public class RegisterScreen implements Screen {
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
                 isInputClick = false;
+
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(hoverRegisterTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                registerButton.getStyle().imageUp = new TextureRegionDrawable(registerTexture);
             }
         });
 
         stage.addActor(registerButton);
+
+        backTexture = new Texture(Gdx.files.internal("buttons/Back/Back.png"));
+        backHoverTexture = new Texture(Gdx.files.internal("buttons/Back/Hover.png"));
+        TextureRegionDrawable backDrawable = new TextureRegionDrawable(new TextureRegion(backTexture));
+
+        backButton = new ImageButton(backDrawable);
+        backButton.setPosition(20, 320);
+        backButton.setSize(200, 50);
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Transition to the next screen (MainMenuScreen)
+                game.setScreen(new LoginScreen(game));
+                dispose();  // Dispose of the current screen resources
+
+            }
+
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backHoverTexture);
+            }
+
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor){
+                backButton.getStyle().imageUp = new TextureRegionDrawable(backTexture);
+            }
+
+        });
+
+        stage.addActor(backButton);
 
 
     }
@@ -220,5 +271,21 @@ public class RegisterScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+
+        userNameTextField.remove();
+        passwordTextField.remove();
+        userNameLabel.remove();
+        passwordLabel.remove();
+        registerLabel.remove();
+        registerButton.remove();
+        backgroundTexture.dispose();
+
+        registerButton.remove();
+        registerTexture.dispose();
+        hoverRegisterTexture.dispose();
+
+        backTexture.dispose();
+        backHoverTexture.dispose();
+        backButton.remove();
     }
 }

@@ -93,7 +93,9 @@ public class Player {
         jumpCounter++;
         velocity.y = gameStates.JUMP_SPEED;
         isHighestJump = false;
-        jumpSound.play();
+
+
+        if(gameStates.isJellySoundOn) jumpSound.play();
     }
 
     public void slide() {
