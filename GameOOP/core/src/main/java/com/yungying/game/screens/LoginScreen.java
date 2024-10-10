@@ -262,7 +262,8 @@ public class LoginScreen implements Screen {
     @Override
     public void render(float delta) {
         // Clear the screen with a color
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0.82f, 0.77f, 0.91f, 1); // Light pastel purple
+
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
         // Update the camera and set the projection matrix

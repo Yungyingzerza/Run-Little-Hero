@@ -39,7 +39,6 @@ public class RegisterScreen implements Screen {
     private Texture registerTexture;
     private Texture hoverRegisterTexture;
     private final UseUser useUser;
-    private final Texture backgroundTexture;
 
     private Texture backTexture;
     private Texture backHoverTexture;
@@ -51,7 +50,6 @@ public class RegisterScreen implements Screen {
         viewport = new FitViewport(800, 400, camera); // Adjust the viewport size as needed
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         useUser = new UseUser();
-        backgroundTexture = new Texture(Gdx.files.internal("Background.png"));
     }
 
 
@@ -233,15 +231,13 @@ public class RegisterScreen implements Screen {
     @Override
     public void render(float delta) {
         // Clear the screen with a color
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0.82f, 0.77f, 0.91f, 1); // Light pastel purple
+
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
         // Update the camera and set the projection matrix
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
-        game.batch.begin();
-        game.batch.draw(backgroundTexture,0,0,camera.viewportWidth,camera.viewportHeight);
-        game.batch.end();
         stage.act(delta);  // Process input and actions
         stage.draw();
 
@@ -278,7 +274,6 @@ public class RegisterScreen implements Screen {
         passwordLabel.remove();
         registerLabel.remove();
         registerButton.remove();
-        backgroundTexture.dispose();
 
         registerButton.remove();
         registerTexture.dispose();
